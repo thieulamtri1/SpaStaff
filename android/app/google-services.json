@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "318826311103",
+    "project_id": "chatspa-66caf",
+    "storage_bucket": "chatspa-66caf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318826311103:android:830cb1eef42eec25a7850a",
+        "android_client_info": {
+          "package_name": "com.example.spa_and_beauty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318826311103-56pohfipt1adoomtlsmh858dbf9qgqre.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVk525fCu4TL721ybQ_tj2k-J2_2XkI80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318826311103-56pohfipt1adoomtlsmh858dbf9qgqre.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318826311103:android:dd0e4fa875794189a7850a",
+        "android_client_info": {
+          "package_name": "com.example.spa_and_beauty_staff"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318826311103-56pohfipt1adoomtlsmh858dbf9qgqre.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVk525fCu4TL721ybQ_tj2k-J2_2XkI80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318826311103-56pohfipt1adoomtlsmh858dbf9qgqre.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
