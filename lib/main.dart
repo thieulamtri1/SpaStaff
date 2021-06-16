@@ -6,6 +6,7 @@ import 'routs.dart';
 import 'package:spa_and_beauty_staff/theme.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 

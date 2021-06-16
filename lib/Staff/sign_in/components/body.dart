@@ -12,6 +12,8 @@ import '../../../constants.dart';
 import '../../../default_button.dart';
 import '../../../form_error.dart';
 import '../../../main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Body extends StatelessWidget {
 
@@ -67,12 +69,12 @@ class _SignFormState extends State<SignForm> {
   final List<String> errors = [];
   FirebaseMethod firebaseMethod = FirebaseMethod();
 
-  void onClickSignIn(String phoneNumber, String password) async {
+  void onClickSignIn(String phone, String password) async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
     }
 
-    String url = "https://capstonever3.herokuapp.com/authenticate";
+    String url = "https://swp490spa.herokuapp.com/api/public/login";
 
     var jsonResponse;
     final res = await http.post(url,
@@ -80,7 +82,7 @@ class _SignFormState extends State<SignForm> {
           "accept": "application/json",
           "content-type": "application/json"
         },
-        body: jsonEncode({"phoneNumber": phoneNumber, "password": password}));
+        body: jsonEncode({"phone": phone, "password": password, "role": "STAFF"}));
 
     if (res.statusCode == 200) {
 
@@ -94,6 +96,10 @@ class _SignFormState extends State<SignForm> {
           MyApp.storage.setItem("token", jsonResponse['jsonWebToken']);
           MyApp.storage.setItem("staffId", jsonResponse['idAccount']);
           print("Staff ID: ${MyApp.storage.getItem("staffId")}");
+
+          // SharedPreferences prefs = await SharedPreferences.getInstance();
+          // prefs.setString("staffId", "6");
+
           widget.isMainLogin
               ? Navigator.pushNamed(context, BottomNavigation.routeName)
               : Navigator.pop(context, );

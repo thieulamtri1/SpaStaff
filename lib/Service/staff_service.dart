@@ -7,10 +7,11 @@ import 'package:spa_and_beauty_staff/Model/Staff.dart';
 
 class StaffService {
   static const String urlGetProfile =
-      "https://capstonever3.herokuapp.com/staff/get_staff_info_by_staff_id/";
+      "https://swp490spa.herokuapp.com/api/staff/search/";
   static const String urlUpdateProfile = "chua co";
 
   static Future<Staff> getStaffProfileById(id, token) async {
+    print("ID nè: $id");
     try {
       final response = await http.get(urlGetProfile + id.toString()
       //     , headers: {

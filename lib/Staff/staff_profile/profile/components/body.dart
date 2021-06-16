@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/change_password/change_password.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/components/profile_picture.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/profile_detail_screen.dart';
+import 'package:spa_and_beauty_staff/Staff/staff_profile/register_dayoff/register_dayoff_screen.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -9,6 +10,12 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  bool loading;
+  @override
+  void initState() {
+    super.initState();
+    loading = true;
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -56,12 +63,17 @@ class _BodyState extends State<Body> {
           ),
           ProfileMenu(
             icon: Icon(
-              Icons.help_outline,
+              Icons.work_off,
               size: 30,
               color: Color(0xFFFF7643),
             ),
-            text: "Trung tâm trợ giúp",
-            press: () {},
+            text: "Đăng ký lịch nghỉ",
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RegisterDayOffScreen()),
+              );
+            },
           ),
           ProfileMenu(
             icon: Icon(

@@ -29,11 +29,11 @@ class _ProfileFormState extends State<ProfileForm> {
   TextEditingController genderTextController = TextEditingController();
 
   void fillText() {
-    fullnameTextController = TextEditingController(text: staff.fullname);
-    districtTextController = TextEditingController(text: staff.district);
-    genderTextController = TextEditingController(text: staff.gender.name);
-    provinceTextController = TextEditingController(text: staff.province);
-    streetTextController = TextEditingController(text: staff.street);
+    fullnameTextController = TextEditingController(text: staff.data.user.fullname);
+    districtTextController = TextEditingController(text: staff.data.user.address);
+    genderTextController = TextEditingController(text: staff.data.user.gender);
+    provinceTextController = TextEditingController(text: staff.data.user.address);
+    streetTextController = TextEditingController(text: staff.data.user.address);
   }
 
 
@@ -45,7 +45,6 @@ class _ProfileFormState extends State<ProfileForm> {
     await StaffService.getStaffProfileById(staffId, staffToken).then((value) => {
       setState(() {
         staff = value;
-        print("Tri");
       }),
     });
 

@@ -36,7 +36,7 @@ class _ProfilePicState extends State<ProfilePic> {
     String staffToken = await MyApp.storage.getItem("token");
     StaffService.getStaffProfileById(staffId, staffToken).then((staff) => {
           setState(() {
-            image = staff.image;
+            image = "https://huyhoanhotel.com/wp-content/uploads/2016/05/765-default-avatar.png";
             MyApp.storage.setItem("image", image);
           }),
         });

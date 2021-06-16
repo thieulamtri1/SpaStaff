@@ -3,6 +3,8 @@ import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class calendarPage extends StatefulWidget {
   @override
@@ -14,19 +16,25 @@ class _calendarPageState extends State<calendarPage> {
   DateTime selectedDay = DateTime.now();
   List<StaffSchedule> listStaffSchedule;
   int staffId;
+  String value;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
     _calendarController = CalendarController();
+
 
   }
 
   getData() async {
     await MyApp.storage.ready;
     staffId = MyApp.storage.getItem("staffId");
+
+    // SharedPreferences prefss = await SharedPreferences.getInstance();
+    // value = prefss.getString("staffId");
+    print("staffId: $staffId");
+
     StaffScheduleService.getStaffSchedule(staffId).then((value) =>
     {
       setState(() {
@@ -53,51 +61,53 @@ class _calendarPageState extends State<calendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.orange,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: Text(
-          "Schedule",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: Column(
-        children: [
-          TableCalendar(
-            calendarController: _calendarController,
-            initialCalendarFormat: CalendarFormat.week,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            formatAnimation: FormatAnimation.slide,
-            onDaySelected: _onDaySelected,
-            headerStyle: HeaderStyle(
-              centerHeaderTitle: true,
-              formatButtonVisible: false,
-              titleTextStyle: TextStyle(color: Colors.white, fontSize: 16),
-              leftChevronIcon: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: 15,
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Colors.transparent,
+      //   title: Text(
+      //     "Schedule",
+      //     style: TextStyle(color: Colors.white),
+      //   ),
+      // ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            TableCalendar(
+              calendarController: _calendarController,
+              initialCalendarFormat: CalendarFormat.week,
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              formatAnimation: FormatAnimation.slide,
+              onDaySelected: _onDaySelected,
+              headerStyle: HeaderStyle(
+                centerHeaderTitle: true,
+                formatButtonVisible: false,
+                titleTextStyle: TextStyle(color: Colors.white, fontSize: 16),
+                leftChevronIcon: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                  size: 15,
+                ),
+                rightChevronIcon: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 15,
+                ),
+                leftChevronMargin: EdgeInsets.only(left: 70),
+                rightChevronMargin: EdgeInsets.only(right: 70),
               ),
-              rightChevronIcon: Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.white,
-                size: 15,
-              ),
-              leftChevronMargin: EdgeInsets.only(left: 70),
-              rightChevronMargin: EdgeInsets.only(right: 70),
+              calendarStyle: CalendarStyle(
+                  weekendStyle: TextStyle(color: Colors.white),
+                  weekdayStyle: TextStyle(color: Colors.white)),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                  weekendStyle: TextStyle(color: Colors.white),
+                  weekdayStyle: TextStyle(color: Colors.white)),
             ),
-            calendarStyle: CalendarStyle(
-                weekendStyle: TextStyle(color: Colors.white),
-                weekdayStyle: TextStyle(color: Colors.white)),
-            daysOfWeekStyle: DaysOfWeekStyle(
-                weekendStyle: TextStyle(color: Colors.white),
-                weekdayStyle: TextStyle(color: Colors.white)),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          ListToDo(selectedDay.toString().substring(0, 10)),
-        ],
+            SizedBox(
+              height: 5,
+            ),
+            //ListToDo(selectedDay.toString().substring(0, 10)),
+          ],
+        ),
       ),
     );
   }
