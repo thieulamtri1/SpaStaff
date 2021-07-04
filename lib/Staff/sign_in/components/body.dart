@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
+import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 
 import 'package:spa_and_beauty_staff/Staff/bottom_navigation/bottom_navigation.dart';
 
@@ -12,7 +13,8 @@ import '../../../constants.dart';
 import '../../../default_button.dart';
 import '../../../form_error.dart';
 import '../../../main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+
 
 
 class Body extends StatelessWidget {
@@ -68,6 +70,7 @@ class _SignFormState extends State<SignForm> {
   String password;
   final List<String> errors = [];
   FirebaseMethod firebaseMethod = FirebaseMethod();
+  var jsonResponse;
 
   void onClickSignIn(String phone, String password) async {
     if (_formKey.currentState.validate()) {
@@ -76,8 +79,9 @@ class _SignFormState extends State<SignForm> {
 
     String url = "https://swp490spa.herokuapp.com/api/public/login";
 
-    var jsonResponse;
-    final res = await http.post(url,
+
+
+    final res = await http.post(Uri.parse(url),
         headers: {
           "accept": "application/json",
           "content-type": "application/json"
@@ -85,20 +89,23 @@ class _SignFormState extends State<SignForm> {
         body: jsonEncode({"phone": phone, "password": password, "role": "STAFF"}));
 
     if (res.statusCode == 200) {
-
       jsonResponse = json.decode(res.body);
       if (jsonResponse != null) {
         setState(() {
           isLoading = false;
         });
-
         if (jsonResponse['errorMessage'] == null) {
+          await MyApp.storage.ready;
           MyApp.storage.setItem("token", jsonResponse['jsonWebToken']);
           MyApp.storage.setItem("staffId", jsonResponse['idAccount']);
-          print("Staff ID: ${MyApp.storage.getItem("staffId")}");
 
-          // SharedPreferences prefs = await SharedPreferences.getInstance();
-          // prefs.setString("staffId", "6");
+          setUser();
+
+
+          if(MyApp.storage.getItem("image") == null){
+            MyApp.storage.setItem("image", "https://huyhoanhotel.com/wp-content/uploads/2016/05/765-default-avatar.png");
+          }
+          print("Image nè: ${MyApp.storage.getItem("image")}");
 
           widget.isMainLogin
               ? Navigator.pushNamed(context, BottomNavigation.routeName)
@@ -120,6 +127,29 @@ class _SignFormState extends State<SignForm> {
         isLoading = false;
       });
     }
+  }
+
+  setUser() async{
+    await StaffService.getStaffProfileById(MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token")).then((staff) => {
+      setState(() {
+        MyApp.storage.setItem("fullname", staff.data.user.fullname);
+        MyApp.storage.setItem("phone", staff.data.user.phone);
+        MyApp.storage.setItem("password", staff.data.user.password);
+        MyApp.storage.setItem("gender", staff.data.user.gender);
+        MyApp.storage.setItem("birthdate", staff.data.user.birthdate);
+        MyApp.storage.setItem("email", staff.data.user.email);
+        MyApp.storage.setItem("image", staff.data.user.image);
+        MyApp.storage.setItem("address", staff.data.user.address);
+      }),
+    });
+  }
+
+  setEmployee(){
+
+  }
+
+  setSpa(){
+
   }
 
   @override

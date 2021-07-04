@@ -1,120 +1,133 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:spa_and_beauty_staff/Model/DateOff.dart';
+import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
+import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:spa_and_beauty_staff/main.dart';
+import 'date_picker.dart';
+import 'date_range_picker.dart';
 
 class Body extends StatefulWidget {
+  static List<String> dateOffList = [];
+
   @override
   _BodyState createState() => _BodyState();
 }
 
 class _BodyState extends State<Body> {
-  CalendarController _calendarController;
-  DateTime selectedDay = DateTime.now();
-  bool registerDone = true;
+  TextEditingController reasonTextController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _calendarController = CalendarController();
-  }
+  addDateOff() async {
+    List<DateOff> dateOffToAdd = [];
+    Employee employee = new Employee();
+    Spa spa = new Spa();
+    DateOff dateOff = new DateOff();
 
-  void _onDaySelected(DateTime dateNow, List events, List holidays) {
-    setState(() {
-      selectedDay = dateNow;
-    });
+    await StaffService.getStaffProfileById(
+            MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+        .then((staff) => {
+              setState(() {
+                employee.active = true;
+                employee.address = staff.data.user.address;
+                employee.birthdate = staff.data.user.birthdate;
+                employee.email = staff.data.user.email;
+                employee.fullname = staff.data.user.fullname;
+                employee.gender = staff.data.user.gender;
+                employee.id = staff.data.user.id;
+                employee.image = staff.data.user.image;
+                employee.password = staff.data.user.password;
+                employee.phone = staff.data.user.phone;
+
+                spa.city = staff.data.spa.city;
+                spa.createBy = staff.data.spa.createBy;
+                spa.createTime = staff.data.spa.createTime;
+                spa.district = staff.data.spa.district;
+                spa.id = staff.data.spa.id;
+                spa.image = staff.data.spa.image;
+                spa.latitude = staff.data.spa.latitude;
+                spa.longtitude = staff.data.spa.longtitude;
+                spa.name = staff.data.spa.name;
+                spa.status = staff.data.spa.status;
+                spa.street = staff.data.spa.street;
+              }),
+            });
+
+    print("Length: " + Body.dateOffList.length.toString());
+    for (int i = 0; i < Body.dateOffList.length; i++) {
+      DateTime dateTime = DateTime.parse(Body.dateOffList[i]);
+      dateOff.dateOff = dateTime;
+      dateOff.employee = employee;
+      dateOff.spa = spa;
+      dateOff.reasonDateOff = reasonTextController.text;
+      dateOff.statusDateOff = "WAITING";
+      dateOffToAdd.add(dateOff);
+    }
+
+    final res = await StaffScheduleService()
+        .sendDateOff(MyApp.storage.getItem("token"), dateOffToAdd);
+
+    print("Status: ${res.body}");
+    //print(json.encode(dateOffToJson(dateOffToAdd)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange,
-      body: Column(
-        children: [
-          TableCalendar(
-            calendarController: _calendarController,
-            initialCalendarFormat: CalendarFormat.week,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            formatAnimation: FormatAnimation.slide,
-            onDaySelected: _onDaySelected,
-            headerStyle: HeaderStyle(
-              centerHeaderTitle: true,
-              formatButtonVisible: false,
-              titleTextStyle: TextStyle(color: Colors.white, fontSize: 16),
-              leftChevronIcon: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: 15,
-              ),
-              rightChevronIcon: Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.white,
-                size: 15,
-              ),
-              leftChevronMargin: EdgeInsets.only(left: 70),
-              rightChevronMargin: EdgeInsets.only(right: 70),
-            ),
-            calendarStyle: CalendarStyle(
-                weekendStyle: TextStyle(color: Colors.white),
-                weekdayStyle: TextStyle(color: Colors.white)),
-            daysOfWeekStyle: DaysOfWeekStyle(
-                weekendStyle: TextStyle(color: Colors.white),
-                weekdayStyle: TextStyle(color: Colors.white)),
-          ),
-          Form(selectedDay.toString().substring(0, 10))
-        ],
-      ),
-    );
-  }
-
-  Expanded Form(String date) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-            color: Colors.white),
-        child: Container(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(32),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 30, left: 65),
-                child: Row(
-                  children: [
-                    Text(
-                      "Ngày đăng ký nghỉ:   $date",
-                      style: TextStyle(color: Colors.black),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              (registerDone == false) ?  Text("Ngày đăng ký phải từ ngày xxx trở đi"): Container(),
-              SizedBox(height: 20),
-              RaisedButton(
-                onPressed: () {
-                  // setState(() {
-                  //   registerDone = false;
-                  // });
-
-                  final snackBar = SnackBar(
-                    content: Text('Bạn đã đăng ký ngày nghỉ: $date thành công'),
-                    action: SnackBarAction(
-                      label: 'Biết rồi',
-                      onPressed: () {
-                        // Some code to undo the change.
-                      },
+              DatePickerWidget(),
+              SizedBox(height: 24),
+              DateRangePickerWidget(),
+              SizedBox(height: 24),
+              Row(
+                children: [
+                  Text(
+                    "Reason",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                },
-                color: Colors.blue,
-                child: Text(
-                  "Đăng ký",
-                  style: TextStyle(
-                    color: Colors.white,
+                  ),
+                ],
+              ),
+              SizedBox(height: 24),
+              TextField(
+                controller: reasonTextController,
+                maxLines: 5,
+                style: TextStyle(
+                    color: Colors.black, decoration: TextDecoration.none),
+              ),
+              SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 60,
+                child: FlatButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  color: Colors.orangeAccent,
+                  onPressed: () async {
+                    await addDateOff();
+                    print("DateTime nè: " + Body.dateOffList.toString());
+                    Body.dateOffList.clear();
+                  },
+                  child: Text(
+                    "Đăng ký",
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

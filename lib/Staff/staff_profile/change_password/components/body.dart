@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/change_password/change_password.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/components/profile_picture.dart';
+import 'package:spa_and_beauty_staff/main.dart';
 
 import '../../../../default_button.dart';
 
@@ -10,9 +12,6 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-
-
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,8 +21,7 @@ class _BodyState extends State<Body> {
           children: [
             ProfilePic(),
             SizedBox(height: 20),
-            Text("thieulamtri2@gmail.com",
-                textAlign: TextAlign.center),
+            Text(MyApp.storage.getItem("email"), textAlign: TextAlign.center),
             SizedBox(height: 40),
             ChangePasswordForm(),
           ],
@@ -39,7 +37,6 @@ class ChangePasswordForm extends StatefulWidget {
 }
 
 class _ChangePasswordFormState extends State<ChangePasswordForm> {
-
   TextEditingController oldPasswordTextController = TextEditingController();
   TextEditingController newPasswordTextController = TextEditingController();
   TextEditingController confirmPasswordTextController = TextEditingController();
@@ -64,6 +61,16 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
     );
   }
 
+  int validate() {
+    if (oldPasswordTextController.text != MyApp.storage.getItem('password')) {
+      print("Mật khẩu không đúng");
+      return 1;
+    } else if (newPasswordTextController.text != confirmPasswordTextController.text || newPasswordTextController.text == "" || confirmPasswordTextController.text == "") {
+      print("2 mật khẩu không giống nhau ");
+      return 2;
+    }
+    return 0;
+  }
 
   TextFormField OldPasswordTextField() {
     return TextFormField(
@@ -75,6 +82,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
       ),
     );
   }
+
   TextFormField NewPasswordTextField() {
     return TextFormField(
       controller: newPasswordTextController,
@@ -85,6 +93,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
       ),
     );
   }
+
   TextFormField ConfirmPasswordTextField() {
     return TextFormField(
       controller: confirmPasswordTextController,
@@ -97,14 +106,53 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
   }
 
   DefaultButton buildUpdateButton(BuildContext context) {
-    return DefaultButton (
+    return DefaultButton(
       text: "Cập nhật",
-      press: ()  {},
+      press: () async {
+        if(validate() == 0){
+          print("Đổi mật khẩu thành công");
+          final snackBar = SnackBar(
+            content: Text('Đổi mật khẩu thành công'),
+            action: SnackBarAction(
+              label: 'Tắt',
+              onPressed: () {},
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          final res = await StaffService().editStaffPassword(
+              MyApp.storage.getItem("token"), newPasswordTextController.text);
+          print(res.body);
+          setState(() {
+            oldPasswordTextController.text == "";
+            newPasswordTextController.text == "";
+            confirmPasswordTextController.text == "";
+          });
+
+        }
+        else if(validate() == 1){
+          print("Không thể đổi mật khẩu");
+          final snackBar = SnackBar(
+            content: Text('Nhập sai mật khẩu hiện tại'),
+            action: SnackBarAction(
+              label: 'Thử lại',
+              onPressed: () {},
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        else if(validate() == 2){
+          final snackBar = SnackBar(
+            content: Text('Nhập lại mật khẩu mới'),
+            action: SnackBarAction(
+              label: 'Thử lại',
+              onPressed: () {},
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+
+
+      },
     );
   }
 }
-
-
-
-
-

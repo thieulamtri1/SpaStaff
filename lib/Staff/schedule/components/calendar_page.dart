@@ -3,8 +3,6 @@ import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 
 class calendarPage extends StatefulWidget {
   @override
@@ -14,34 +12,18 @@ class calendarPage extends StatefulWidget {
 class _calendarPageState extends State<calendarPage> {
   CalendarController _calendarController;
   DateTime selectedDay = DateTime.now();
-  List<StaffSchedule> listStaffSchedule;
+  Schedule StaffSchedule;
   int staffId;
   String value;
 
-  @override
-  void initState() {
-    super.initState();
-    getData();
-    _calendarController = CalendarController();
-
-
-  }
-
   getData() async {
-    await MyApp.storage.ready;
-    staffId = MyApp.storage.getItem("staffId");
-
-    // SharedPreferences prefss = await SharedPreferences.getInstance();
-    // value = prefss.getString("staffId");
-    print("staffId: $staffId");
-
-    StaffScheduleService.getStaffSchedule(staffId).then((value) =>
-    {
-      setState(() {
-        listStaffSchedule = value;
-
-      }),
-    });
+    // await StaffScheduleService.getStaffSchedule(
+    //         id: MyApp.storage.getItem("staffId"),
+    //         date: "2021-07-01",
+    //         token: MyApp.storage.getItem("token"))
+    //     .then((value) => {
+    //         print("LẤY DC RỒI")
+    //         });
   }
 
   // @override
@@ -55,6 +37,13 @@ class _calendarPageState extends State<calendarPage> {
     setState(() {
       selectedDay = dateNow;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    _calendarController = CalendarController();
   }
 
   @override
@@ -105,14 +94,101 @@ class _calendarPageState extends State<calendarPage> {
             SizedBox(
               height: 5,
             ),
-            //ListToDo(selectedDay.toString().substring(0, 10)),
+            //ListToDo2(selectedDay.toString().substring(0, 10)),
           ],
         ),
       ),
     );
   }
 
-  Expanded ListToDo(String date) {
+  // Expanded ListToDo(String date) {
+  //   return Expanded(
+  //     child: Container(
+  //       padding: EdgeInsets.all(20),
+  //       decoration: BoxDecoration(
+  //           borderRadius: BorderRadius.only(
+  //               topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+  //           color: Colors.white),
+  //       child: Container(
+  //         child: SingleChildScrollView(
+  //           child: Column(
+  //             children: [
+  //               Row(
+  //                 children: [
+  //                   Text(
+  //                     date,
+  //                     style: TextStyle(color: Colors.grey),
+  //                   )
+  //                 ],
+  //               ),
+  //               SizedBox(
+  //                 height: 15,
+  //               ),
+  //               Column(
+  //                 children: [
+  //                   ...List.generate(
+  //                       listStaffSchedule.length,
+  //                       (index) => date ==
+  //                               listStaffSchedule[index]
+  //                                   .day
+  //                                   .toString()
+  //                                   .substring(0, 10)
+  //                           ? Column(
+  //                               children: [
+  //                                 ...List.generate(
+  //                                     listStaffSchedule[index]
+  //                                         .listStaffScheduleForSlots
+  //                                         .length,
+  //                                     (index1) => listStaffSchedule[index]
+  //                                                 .listStaffScheduleForSlots[
+  //                                                     index1]
+  //                                                 .bookingId !=
+  //                                             null
+  //                                         ? dayTask(
+  //                                             time: listStaffSchedule[index]
+  //                                                 .listStaffScheduleForSlots[
+  //                                                     index1]
+  //                                                 .slotTime
+  //                                                 .toString(),
+  //                                             customerName: listStaffSchedule[
+  //                                                     index]
+  //                                                 .listStaffScheduleForSlots[
+  //                                                     index1]
+  //                                                 .customerInfo
+  //                                                 .fullname,
+  //                                             service: listStaffSchedule[index]
+  //                                                 .listStaffScheduleForSlots[
+  //                                                     index1]
+  //                                                 .service
+  //                                                 .name,
+  //                                             phone: listStaffSchedule[index]
+  //                                                 .listStaffScheduleForSlots[
+  //                                                     index1]
+  //                                                 .customerInfo
+  //                                                 .street,
+  //                                           )
+  //                                         : Container())
+  //                               ],
+  //                             )
+  //                           : Container())
+  //                 ],
+  //               )
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  Expanded ListToDo2(String date) {
+    StaffScheduleService.getStaffSchedule(MyApp.storage.getItem("staffId"),
+            date, MyApp.storage.getItem("token"))
+        .then((value) => {
+              setState(() {
+                StaffSchedule = value;
+              })
+            });
     return Expanded(
       child: Container(
         padding: EdgeInsets.all(20),
@@ -138,26 +214,28 @@ class _calendarPageState extends State<calendarPage> {
                 Column(
                   children: [
                     ...List.generate(
-                        listStaffSchedule.length,
-                            (index) => date == listStaffSchedule[index].day.toString().substring(0, 10)
-                                ?Column(
+                        StaffSchedule.data.length,
+                        (index) => Column(
                               children: [
-                                ...List.generate(listStaffSchedule[index].listStaffScheduleForSlots.length, (index1) =>
-                                    listStaffSchedule[index].listStaffScheduleForSlots[index1].bookingId!=null?
-                                    dayTask(
-                                      time: listStaffSchedule[index].listStaffScheduleForSlots[index1].slotTime.toString(),
-                                      customerName: listStaffSchedule[index].listStaffScheduleForSlots[index1].customerInfo.fullname,
-                                      service: listStaffSchedule[index].listStaffScheduleForSlots[index1].service.name,
-                                      phone: listStaffSchedule[index].listStaffScheduleForSlots[index1].customerInfo.street,
-                                    )
-                                        :
-                                        Container()
-                                )
+                                dayTask(
+                                    time: StaffSchedule.data[index].startTime,
+                                    customerName: StaffSchedule
+                                        .data[index]
+                                        .bookingDetail
+                                        .booking
+                                        .customer
+                                        .user
+                                        .fullname,
+                                    phone: StaffSchedule
+                                        .data[index]
+                                        .bookingDetail
+                                        .booking
+                                        .customer
+                                        .user
+                                        .phone,
+                                    service: "Trị mụn")
                               ],
-                            )
-
-                                : Container())
-
+                            ))
                   ],
                 )
               ],
@@ -168,18 +246,14 @@ class _calendarPageState extends State<calendarPage> {
     );
   }
 
-
-
-  Row dayTask({String time, String customerName, String service, String phone}) {
+  Row dayTask(
+      {String time, String customerName, String service, String phone}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.all(10),
-          width: MediaQuery
-              .of(context)
-              .size
-              .width * 0.2,
+          width: MediaQuery.of(context).size.width * 0.2,
           child: Text(
             time,
             style: TextStyle(

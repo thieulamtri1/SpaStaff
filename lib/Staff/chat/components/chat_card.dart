@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
 
@@ -17,9 +16,17 @@ class ChatCard extends StatefulWidget {
 class _ChatCardState extends State<ChatCard> {
   String customerName;
   String customerPhone;
-  String image =
-      "https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-9/118772265_1498946380291014_420621456254103894_n.jpg?_nc_cat=111&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=Lddit53dbaIAX-mN6gh&_nc_ht=scontent.fsgn5-3.fna&oh=13788629bb9d8a9db14d59a61636482c&oe=608D99AF";
-  QuerySnapshot querySnapshot;
+  String customerImage =
+      "https://www.chapter3d.com/wp-content/uploads/2020/08/anh-chan-dung.jpg";
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
 
   getUserInfo() async {
     await FirebaseMethod().getUserById(widget.customerId).then((value) {
@@ -31,24 +38,21 @@ class _ChatCardState extends State<ChatCard> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    getUserInfo();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ConversationScreen(
+                builder: (context) =>
+                    ConversationScreen(
                       chatRoomId: widget.chatRoomId,
                       phone: customerPhone,
                       name: customerName,
-                      image: image,
-                    )));
+                      image: customerImage,
+                    )
+                //ChatScreenNe(),
+            ));
       },
       child: Container(
         padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
@@ -58,7 +62,7 @@ class _ChatCardState extends State<ChatCard> {
               child: Row(
                 children: <Widget>[
                   CircleAvatar(
-                    backgroundImage: NetworkImage(image),
+                    backgroundImage: NetworkImage(customerImage),
                     maxRadius: 30,
                   ),
                   SizedBox(

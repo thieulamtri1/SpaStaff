@@ -29,30 +29,35 @@ class _ProfileFormState extends State<ProfileForm> {
   TextEditingController genderTextController = TextEditingController();
 
   void fillText() {
-    fullnameTextController = TextEditingController(text: staff.data.user.fullname);
-    districtTextController = TextEditingController(text: staff.data.user.address);
-    genderTextController = TextEditingController(text: staff.data.user.gender);
-    provinceTextController = TextEditingController(text: staff.data.user.address);
-    streetTextController = TextEditingController(text: staff.data.user.address);
+    fullnameTextController =
+        TextEditingController(text: MyApp.storage.getItem("fullname"));
+    districtTextController =
+        TextEditingController(text: MyApp.storage.getItem("address"));
+    genderTextController =
+        TextEditingController(text: MyApp.storage.getItem("gender"));
+    provinceTextController =
+        TextEditingController(text: MyApp.storage.getItem("address"));
+    streetTextController =
+        TextEditingController(text: MyApp.storage.getItem("address"));
+    dateOfBirthTextController =
+        TextEditingController(text: MyApp.storage.getItem("birthdate"));
   }
 
-
-
-  getData() async{
+  getData() async {
     await MyApp.storage.ready;
     int staffId = MyApp.storage.getItem("staffId");
     String staffToken = MyApp.storage.getItem("token");
-    await StaffService.getStaffProfileById(staffId, staffToken).then((value) => {
-      setState(() {
-        staff = value;
-      }),
-    });
-
+    await StaffService.getStaffProfileById(staffId, staffToken)
+        .then((value) => {
+              setState(() {
+                staff = value;
+              }),
+            });
   }
+
   @override
   void initState() {
     super.initState();
-    getData();
   }
 
   @override
@@ -65,13 +70,11 @@ class _ProfileFormState extends State<ProfileForm> {
           children: [
             FullNameTextField(),
             SizedBox(height: 30),
-            DistrictTextField(),
+            BirthDateTextField(),
             SizedBox(height: 30),
             GenderField(),
             SizedBox(height: 30),
-            ProvinceTextField(),
-            SizedBox(height: 30),
-            StreetTextField(),
+            DistrictTextField(),
             SizedBox(height: 30),
             buildUpdateButton(context),
           ],
@@ -83,25 +86,44 @@ class _ProfileFormState extends State<ProfileForm> {
   DefaultButton buildUpdateButton(BuildContext context) {
     return DefaultButton(
       text: "Cập nhật",
-      press: () {
+      press: () async {
+        bool active = true;
+        String address = MyApp.storage.getItem("address");
+        String birthdate = MyApp.storage.getItem("birthdate");
+        String email = MyApp.storage.getItem("email");
         String fullname = fullnameTextController.text;
-        String staffId;
-        String staffImage;
-        String staffToken;
-        String image = MyApp.storage.getItem("image");
-        setState(() async {
-          widget.edit = false;
-          await StaffService().updateStaffProfile(
-            fullname: fullname,
-            image: staffImage,
-            id: staffId,
-            token: staffToken,
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
-          );
-        });
+        String gender = MyApp.storage.getItem("gender");
+        int staffId = MyApp.storage.getItem("staffId");
+        String staffImage = MyApp.storage.getItem("image");
+        String staffToken = MyApp.storage.getItem("token");
+        String password = MyApp.storage.getItem("password");
+        String phone = MyApp.storage.getItem("phone");
+
+        final res = await StaffService().updateStaffProfile(
+          token: staffToken,
+          active: active,
+          address: address,
+          birthdate: birthdate,
+          email: email,
+          fullname: fullname,
+          gender: gender,
+          id: staffId,
+          image: staffImage,
+          password: password,
+          phone: phone,
+        );
+        print("Status: ${res.body}");
+        if(res.statusCode == 200){
+          await StaffService.getStaffProfileById(staffId,staffToken).then((value) => {
+            setState(() {
+              MyApp.storage.setItem("fullname", value.data.user.fullname);
+            }),
+          });
+        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
+        );
       },
     );
   }
@@ -111,9 +133,21 @@ class _ProfileFormState extends State<ProfileForm> {
       controller: fullnameTextController,
       enabled: widget.edit,
       decoration: InputDecoration(
-        labelText: "Họ tên",
+        labelText: "Tên",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(Icons.drive_file_rename_outline),
+      ),
+    );
+  }
+
+  TextFormField BirthDateTextField() {
+    return TextFormField(
+      controller: dateOfBirthTextController,
+      enabled: false,
+      decoration: InputDecoration(
+        labelText: "Ngày sinh",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.baby_changing_station),
       ),
     );
   }
@@ -123,7 +157,7 @@ class _ProfileFormState extends State<ProfileForm> {
       controller: districtTextController,
       enabled: false,
       decoration: InputDecoration(
-        labelText: "Quận",
+        labelText: "Địa chỉ",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(Icons.edit_road),
       ),
@@ -135,7 +169,7 @@ class _ProfileFormState extends State<ProfileForm> {
       controller: genderTextController,
       enabled: false,
       decoration: InputDecoration(
-        labelText: "Gender",
+        labelText: "Giới tính",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(Icons.support_agent),
       ),

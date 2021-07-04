@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:spa_and_beauty_staff/Service/firebase.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:spa_and_beauty_staff/Service/firebase.dart';
 import '../../../main.dart';
 import 'conversation_appBar.dart';
+
 
 class ConversationScreen extends StatefulWidget {
   final String chatRoomId;
@@ -21,18 +23,26 @@ class _ConversationScreenState extends State<ConversationScreen> {
   TextEditingController messageInput = TextEditingController();
   Stream chatMessageStream;
   int staffId;
+  int prevUserId;
 
-  Widget ChatMessageList() {
+  ChatMessageList() {
     return StreamBuilder(
       stream: chatMessageStream,
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
+                reverse: true,
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
-                  return MessageTitle(
+                  final bool isMe =
+                      snapshot.data.documents[index].data["sendBy"] == staffId;
+                  final bool isSameUser = prevUserId ==
+                      snapshot.data.documents[index].data["sendBy"];
+                  prevUserId = snapshot.data.documents[index].data["sendBy"];
+                  return _chatBubble(
                       snapshot.data.documents[index].data["message"],
-                      snapshot.data.documents[index].data["sendBy"] == staffId);
+                      isMe,
+                      isSameUser);
                 },
               )
             : Container();
@@ -52,15 +62,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
     }
   }
 
-  @override
-  void initState() {
-    getData();
-    firebaseMethod.getConversationMessage(widget.chatRoomId).then((value) {
+  getConversationMessage() async {
+    await firebaseMethod
+        .getConversationMessage(widget.chatRoomId)
+        .then((value) {
       setState(() {
         chatMessageStream = value;
       });
     });
-    super.initState();
   }
 
   getData() async {
@@ -70,100 +79,194 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   @override
+  void initState() {
+    getData();
+    getConversationMessage();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ConversationAppBar(
           image: widget.image, name: widget.name, phone: widget.phone),
-      body: Stack(
+      body: Column(
         children: [
-          ChatMessageList(),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              height: 70,
-              width: double.infinity,
-              color: Colors.grey[200],
-              child: Row(
-                children: [
-                  Expanded(
-                      child: TextField(
-                    textInputAction: TextInputAction.newline,
-                    controller: messageInput,
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      hintText: "Message...",
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                    ),
-                  )),
-                  GestureDetector(
-                    onTap: () {
-                      sendMessage();
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.grey,
-                      ),
-                      child: Icon(
-                        Icons.send_sharp,
-                      ),
-                    ),
-                  ),
-                ],
+          Expanded(
+            child: ChatMessageList(),
+          ),
+          SizedBox(height: 20),
+          sendMessageArea(),
+        ],
+      ),
+    );
+  }
+
+  sendMessageArea() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      height: 70,
+      color: Colors.grey[300],
+      child: Row(
+        children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.photo),
+            iconSize: 25,
+            color: Colors.blue,
+            onPressed: () {},
+          ),
+          Expanded(
+            child: TextField(
+              controller: messageInput,
+              decoration: InputDecoration(
+                hintText: 'Send a message..',
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
               ),
+              textCapitalization: TextCapitalization.sentences,
             ),
+          ),
+          IconButton(
+            icon: Icon(Icons.send),
+            iconSize: 25,
+            color: Theme.of(context).primaryColor,
+            onPressed: () {
+              sendMessage();
+            },
           ),
         ],
       ),
     );
   }
-}
 
-class MessageTitle extends StatelessWidget {
-  final String message;
-  final bool isSendByMe;
 
-  MessageTitle(this.message, this.isSendByMe);
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.only(
-            left: isSendByMe ? 0 : 24, right: isSendByMe ? 24 : 0),
-        margin: EdgeInsets.symmetric(vertical: 10),
-        width: MediaQuery.of(context).size.width,
-        alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7),
-          decoration: BoxDecoration(
-            color: isSendByMe ? Color(0xff0084ff) : Colors.grey.shade200,
-            borderRadius: isSendByMe
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                    bottomLeft: Radius.circular(20),
-                  )
-                : BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
+  _chatBubble(String text, bool isMe, bool isSameUser) {
+    if (isMe) {
+      return Padding(
+        padding: EdgeInsets.only(right: 20),
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.topRight,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.6,
+                ),
+                padding: EdgeInsets.all(10),
+                margin: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.white,
                   ),
-          ),
-          child: Text(
-            message,
-            style: TextStyle(
-              color: isSendByMe ? Colors.white : Colors.black,
+                ),
+              ),
             ),
-          ),
+            !isSameUser
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.7),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 15,
+                          backgroundImage:
+                              NetworkImage(MyApp.storage.getItem("image")),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(
+                    child: null,
+                  ),
+          ],
         ),
-
-      ),
-    );
+      );
+    } else {
+      return Padding(
+        padding: EdgeInsets.only(left: 20),
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.topLeft,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.6,
+                ),
+                padding: EdgeInsets.all(10),
+                margin: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+            ),
+            !isSameUser
+                ? Row(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 15,
+                          backgroundImage: NetworkImage(
+                              "https://www.chapter3d.com/wp-content/uploads/2020/08/anh-chan-dung.jpg"),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(
+                    child: null,
+                  ),
+          ],
+        ),
+      );
+    }
   }
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:spa_and_beauty_staff/Staff/bottom_navigation/bottom_navigation.dart';
+import 'package:spa_and_beauty_staff/Staff/notification/notification_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/change_password/change_password.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/components/profile_picture.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/profile_detail_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/register_dayoff/register_dayoff_screen.dart';
+import 'package:spa_and_beauty_staff/main.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -10,12 +13,8 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  bool loading;
   @override
-  void initState() {
-    super.initState();
-    loading = true;
-  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -59,7 +58,12 @@ class _BodyState extends State<Body> {
               color: Color(0xFFFF7643),
             ),
             text: "Thông báo",
-            press: () {},
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StaffNotification()),
+              );
+            },
           ),
           ProfileMenu(
             icon: Icon(
@@ -83,9 +87,7 @@ class _BodyState extends State<Body> {
             ),
             text: "Đăng xuất",
             press: () {
-              // MyApp.storage.deleteItem("token");
-              // MyApp.storage.deleteItem("customerId");
-              // Navigator.pushNamed(context, BottomNavigation.routeName);
+
             },
           ),
         ],

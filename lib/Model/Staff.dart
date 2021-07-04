@@ -121,6 +121,7 @@ class User {
     this.gender,
     this.birthdate,
     this.email,
+    this.image,
     this.address,
     this.active,
   });
@@ -129,10 +130,11 @@ class User {
   String fullname;
   String phone;
   String password;
-  String gender;
-  String birthdate;
-  String email;
-  String address;
+  dynamic gender;
+  dynamic birthdate;
+  dynamic email;
+  dynamic image;
+  dynamic address;
   bool active;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -143,6 +145,7 @@ class User {
     gender: json["gender"],
     birthdate: json["birthdate"],
     email: json["email"],
+    image: json["image"],
     address: json["address"],
     active: json["active"],
   );
@@ -155,6 +158,7 @@ class User {
     "gender": gender,
     "birthdate": birthdate,
     "email": email,
+    "image": image,
     "address": address,
     "active": active,
   };

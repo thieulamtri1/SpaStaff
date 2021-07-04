@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 
 import '../../../../main.dart';
 
@@ -27,19 +26,7 @@ class _ProfilePicState extends State<ProfilePic> {
   @override
   void initState() {
     super.initState();
-    getData();
-  }
 
-  getData() async {
-    await MyApp.storage.ready;
-    int staffId = await MyApp.storage.getItem("staffId");
-    String staffToken = await MyApp.storage.getItem("token");
-    StaffService.getStaffProfileById(staffId, staffToken).then((staff) => {
-          setState(() {
-            image = "https://huyhoanhotel.com/wp-content/uploads/2016/05/765-default-avatar.png";
-            MyApp.storage.setItem("image", image);
-          }),
-        });
   }
 
   @override
@@ -53,7 +40,7 @@ class _ProfilePicState extends State<ProfilePic> {
         children: [
           CircleAvatar(
             backgroundImage: imageFile == null
-                ? NetworkImage(image)
+                ? NetworkImage(MyApp.storage.getItem("image"))
                 : FileImage(File(imageFile.path)),
           ),
           Positioned(

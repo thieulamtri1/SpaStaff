@@ -1,289 +1,660 @@
 // To parse this JSON data, do
 //
-//     final staffSchedule = staffScheduleFromJson(jsonString);
+//     final schedule = scheduleFromJson(jsonString);
 
 import 'dart:convert';
 
-List<StaffSchedule> staffScheduleFromJson(String str) => List<StaffSchedule>.from(json.decode(str).map((x) => StaffSchedule.fromJson(x)));
+Schedule scheduleFromJson(String str) => Schedule.fromJson(json.decode(str));
 
-String staffScheduleToJson(List<StaffSchedule> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String scheduleToJson(Schedule data) => json.encode(data.toJson());
 
-class StaffSchedule {
-  StaffSchedule({
-    this.day,
-    this.listStaffScheduleForSlots,
+class Schedule {
+  Schedule({
+    this.code,
+    this.status,
+    this.data,
+    this.paging,
   });
 
-  DateTime day;
-  List<ListStaffScheduleForSlot> listStaffScheduleForSlots;
+  int code;
+  String status;
+  List<Datum> data;
+  Paging paging;
 
-  factory StaffSchedule.fromJson(Map<String, dynamic> json) => StaffSchedule(
-    day: DateTime.parse(json["day"]),
-    listStaffScheduleForSlots: List<ListStaffScheduleForSlot>.from(json["listStaffScheduleForSlots"].map((x) => ListStaffScheduleForSlot.fromJson(x))),
+  factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
+    code: json["code"],
+    status: json["status"],
+    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    paging: Paging.fromJson(json["paging"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "day": "${day.year.toString().padLeft(4, '0')}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}",
-    "listStaffScheduleForSlots": List<dynamic>.from(listStaffScheduleForSlots.map((x) => x.toJson())),
+    "code": code,
+    "status": status,
+    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "paging": paging.toJson(),
   };
 }
 
-class ListStaffScheduleForSlot {
-  ListStaffScheduleForSlot({
-    this.slotTime,
-    this.slot,
-    this.bookingId,
-    this.service,
-    this.process,
-    this.processStep,
-    this.customerInfo,
-    this.customerPhone,
+class Datum {
+  Datum({
+    this.id,
+    this.dateBooking,
+    this.startTime,
+    this.endTime,
+    this.bookingPrice,
+    this.statusBooking,
+    this.reasonCancel,
+    this.isConsultation,
+    this.treatmentService,
+    this.staff,
+    this.consultant,
+    this.bookingDetail,
   });
 
-  String slotTime;
-  Slot slot;
-  int bookingId;
-  Service service;
-  Process process;
-  dynamic processStep;
-  CustomerInfo customerInfo;
-  String customerPhone;
+  int id;
+  DateTime dateBooking;
+  String startTime;
+  String endTime;
+  int bookingPrice;
+  String statusBooking;
+  dynamic reasonCancel;
+  String isConsultation;
+  TreatmentService treatmentService;
+  Staff staff;
+  dynamic consultant;
+  BookingDetail bookingDetail;
 
-  factory ListStaffScheduleForSlot.fromJson(Map<String, dynamic> json) => ListStaffScheduleForSlot(
-    slotTime: json["slotTime"],
-    slot: Slot.fromJson(json["slot"]),
-    bookingId: json["bookingId"] == null ? null : json["bookingId"],
-    service: json["service"] == null ? null : Service.fromJson(json["service"]),
-    process: json["process"] == null ? null : Process.fromJson(json["process"]),
-    processStep: json["processStep"],
-    customerInfo: json["customerInfo"] == null ? null : CustomerInfo.fromJson(json["customerInfo"]),
-    customerPhone: json["customerPhone"] == null ? null : json["customerPhone"],
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+    id: json["id"],
+    dateBooking: DateTime.parse(json["date_booking"]),
+    startTime: json["start_time"],
+    endTime: json["end_time"],
+    bookingPrice: json["booking_price"],
+    statusBooking: json["status_booking"],
+    reasonCancel: json["reason_cancel"],
+    isConsultation: json["is_consultation"],
+    treatmentService: TreatmentService.fromJson(json["treatment_service"]),
+    staff: Staff.fromJson(json["staff"]),
+    consultant: json["consultant"],
+    bookingDetail: BookingDetail.fromJson(json["booking_detail"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "slotTime": slotTime,
-    "slot": slot.toJson(),
-    "bookingId": bookingId == null ? null : bookingId,
-    "service": service == null ? null : service.toJson(),
-    "process": process == null ? null : process.toJson(),
-    "processStep": processStep,
-    "customerInfo": customerInfo == null ? null : customerInfo.toJson(),
-    "customerPhone": customerPhone == null ? null : customerPhone,
+    "id": id,
+    "date_booking": "${dateBooking.year.toString().padLeft(4, '0')}-${dateBooking.month.toString().padLeft(2, '0')}-${dateBooking.day.toString().padLeft(2, '0')}",
+    "start_time": startTime,
+    "end_time": endTime,
+    "booking_price": bookingPrice,
+    "status_booking": statusBooking,
+    "reason_cancel": reasonCancel,
+    "is_consultation": isConsultation,
+    "treatment_service": treatmentService.toJson(),
+    "staff": staff.toJson(),
+    "consultant": consultant,
+    "booking_detail": bookingDetail.toJson(),
   };
 }
 
-class CustomerInfo {
-  CustomerInfo({
+class BookingDetail {
+  BookingDetail({
+    this.id,
+    this.totalTime,
+    this.type,
+    this.totalPrice,
+    this.statusBooking,
+    this.booking,
+    this.spaTreatment,
+    this.spaPackage,
+  });
+
+  int id;
+  int totalTime;
+  Type type;
+  int totalPrice;
+  String statusBooking;
+  Booking booking;
+  SpaTreatment spaTreatment;
+  SpaPackage spaPackage;
+
+  factory BookingDetail.fromJson(Map<String, dynamic> json) => BookingDetail(
+    id: json["id"],
+    totalTime: json["totalTime"],
+    type: typeValues.map[json["type"]],
+    totalPrice: json["totalPrice"],
+    statusBooking: json["statusBooking"],
+    booking: Booking.fromJson(json["booking"]),
+    spaTreatment: SpaTreatment.fromJson(json["spaTreatment"]),
+    spaPackage: SpaPackage.fromJson(json["spaPackage"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "totalTime": totalTime,
+    "type": typeValues.reverse[type],
+    "totalPrice": totalPrice,
+    "statusBooking": statusBooking,
+    "booking": booking.toJson(),
+    "spaTreatment": spaTreatment.toJson(),
+    "spaPackage": spaPackage.toJson(),
+  };
+}
+
+class Booking {
+  Booking({
+    this.id,
+    this.totalPrice,
+    this.totalTime,
+    this.statusBooking,
+    this.createTime,
+    this.customer,
+    this.spa,
+  });
+
+  int id;
+  int totalPrice;
+  int totalTime;
+  String statusBooking;
+  DateTime createTime;
+  Customer customer;
+  Spa spa;
+
+  factory Booking.fromJson(Map<String, dynamic> json) => Booking(
+    id: json["id"],
+    totalPrice: json["totalPrice"],
+    totalTime: json["totalTime"],
+    statusBooking: json["statusBooking"],
+    createTime: DateTime.parse(json["createTime"]),
+    customer: Customer.fromJson(json["customer"]),
+    spa: Spa.fromJson(json["spa"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "totalPrice": totalPrice,
+    "totalTime": totalTime,
+    "statusBooking": statusBooking,
+    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "customer": customer.toJson(),
+    "spa": spa.toJson(),
+  };
+}
+
+class Customer {
+  Customer({
+    this.id,
+    this.customType,
+    this.user,
+  });
+
+  int id;
+  String customType;
+  User user;
+
+  factory Customer.fromJson(Map<String, dynamic> json) => Customer(
+    id: json["id"],
+    customType: json["customType"],
+    user: User.fromJson(json["user"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "customType": customType,
+    "user": user.toJson(),
+  };
+}
+
+class User {
+  User({
     this.id,
     this.fullname,
+    this.phone,
+    this.password,
     this.gender,
-    this.dateOfBirth,
-    this.street,
-    this.district,
-    this.province,
-    this.lastLocation,
+    this.birthdate,
+    this.email,
     this.image,
+    this.address,
+    this.active,
   });
 
   int id;
   String fullname;
-  Gender gender;
-  DateTime dateOfBirth;
-  String street;
-  String district;
-  String province;
-  String lastLocation;
+  String phone;
+  String password;
+  String gender;
+  DateTime birthdate;
+  String email;
   String image;
+  String address;
+  bool active;
 
-  factory CustomerInfo.fromJson(Map<String, dynamic> json) => CustomerInfo(
+  factory User.fromJson(Map<String, dynamic> json) => User(
     id: json["id"],
     fullname: json["fullname"],
-    gender: Gender.fromJson(json["gender"]),
-    dateOfBirth: DateTime.parse(json["dateOfBirth"]),
-    street: json["street"],
-    district: json["district"],
-    province: json["province"],
-    lastLocation: json["lastLocation"],
-    image: json["image"],
+    phone: json["phone"],
+    password: json["password"],
+    gender: json["gender"] == null ? null : json["gender"],
+    birthdate: json["birthdate"] == null ? null : DateTime.parse(json["birthdate"]),
+    email: json["email"] == null ? null : json["email"],
+    image: json["image"] == null ? null : json["image"],
+    address: json["address"] == null ? null : json["address"],
+    active: json["active"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "fullname": fullname,
-    "gender": gender.toJson(),
-    "dateOfBirth": dateOfBirth.toIso8601String(),
-    "street": street,
-    "district": district,
-    "province": province,
-    "lastLocation": lastLocation,
-    "image": image,
+    "phone": phone,
+    "password": password,
+    "gender": gender == null ? null : gender,
+    "birthdate": birthdate == null ? null : "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
+    "email": email == null ? null : email,
+    "image": image == null ? null : image,
+    "address": address == null ? null : address,
+    "active": active,
   };
 }
 
-class Gender {
-  Gender({
-    this.id,
-    this.name,
-  });
-
-  int id;
-  String name;
-
-  factory Gender.fromJson(Map<String, dynamic> json) => Gender(
-    id: json["id"],
-    name: json["name"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-  };
-}
-
-class Process {
-  Process({
-    this.id,
-    this.description,
-  });
-
-  int id;
-  String description;
-
-  factory Process.fromJson(Map<String, dynamic> json) => Process(
-    id: json["id"],
-    description: json["description"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "description": description,
-  };
-}
-
-class Service {
-  Service({
-    this.id,
-    this.name,
-    this.description,
-    this.image,
-    this.company,
-    this.type,
-    this.removed,
-    this.customized,
-  });
-
-  int id;
-  String name;
-  String description;
-  String image;
-  Company company;
-  Gender type;
-  bool removed;
-  bool customized;
-
-  factory Service.fromJson(Map<String, dynamic> json) => Service(
-    id: json["id"],
-    name: json["name"],
-    description: json["description"],
-    image: json["image"],
-    company: Company.fromJson(json["company"]),
-    type: Gender.fromJson(json["type"]),
-    removed: json["removed"],
-    customized: json["customized"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "description": description,
-    "image": image,
-    "company": company.toJson(),
-    "type": type.toJson(),
-    "removed": removed,
-    "customized": customized,
-  };
-}
-
-class Company {
-  Company({
+class Spa {
+  Spa({
     this.id,
     this.name,
     this.image,
-    this.email,
-    this.location,
     this.street,
     this.district,
-    this.province,
-    this.createAt,
-    this.workStart,
-    this.workEnd,
-    this.breakStart,
-    this.breakEnd,
+    this.city,
+    this.latitude,
+    this.longtitude,
+    this.createBy,
+    this.createTime,
+    this.status,
+  });
+
+  int id;
+  SpaName name;
+  dynamic image;
+  Street street;
+  String district;
+  City city;
+  String latitude;
+  String longtitude;
+  String createBy;
+  DateTime createTime;
+  Status status;
+
+  factory Spa.fromJson(Map<String, dynamic> json) => Spa(
+    id: json["id"],
+    name: spaNameValues.map[json["name"]],
+    image: json["image"],
+    street: streetValues.map[json["street"]],
+    district: json["district"],
+    city: cityValues.map[json["city"]],
+    latitude: json["latitude"],
+    longtitude: json["longtitude"],
+    createBy: json["createBy"],
+    createTime: DateTime.parse(json["createTime"]),
+    status: statusValues.map[json["status"]],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": spaNameValues.reverse[name],
+    "image": image,
+    "street": streetValues.reverse[street],
+    "district": district,
+    "city": cityValues.reverse[city],
+    "latitude": latitude,
+    "longtitude": longtitude,
+    "createBy": createBy,
+    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "status": statusValues.reverse[status],
+  };
+}
+
+enum City { H_CH_MINH }
+
+final cityValues = EnumValues({
+  "Hồ Chí Minh": City.H_CH_MINH
+});
+
+enum SpaName { SPA_A }
+
+final spaNameValues = EnumValues({
+  "Spa A": SpaName.SPA_A
+});
+
+enum Status { AVAILABLE }
+
+final statusValues = EnumValues({
+  "AVAILABLE": Status.AVAILABLE
+});
+
+enum Street { THE_64_A_TRNG_NH }
+
+final streetValues = EnumValues({
+  "64A Trương Định": Street.THE_64_A_TRNG_NH
+});
+
+class SpaPackage {
+  SpaPackage({
+    this.id,
+    this.name,
+    this.description,
+    this.image,
+    this.type,
+    this.status,
+    this.createTime,
+    this.createBy,
+    this.category,
+    this.spa,
+  });
+
+  int id;
+  SpaPackageName name;
+  String description;
+  String image;
+  Type type;
+  Status status;
+  DateTime createTime;
+  int createBy;
+  Category category;
+  Spa spa;
+
+  factory SpaPackage.fromJson(Map<String, dynamic> json) => SpaPackage(
+    id: json["id"],
+    name: spaPackageNameValues.map[json["name"]],
+    description: json["description"],
+    image: json["image"],
+    type: typeValues.map[json["type"]],
+    status: statusValues.map[json["status"]],
+    createTime: DateTime.parse(json["createTime"]),
+    createBy: json["create_by"],
+    category: Category.fromJson(json["category"]),
+    spa: Spa.fromJson(json["spa"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": spaPackageNameValues.reverse[name],
+    "description": description,
+    "image": image,
+    "type": typeValues.reverse[type],
+    "status": statusValues.reverse[status],
+    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "create_by": createBy,
+    "category": category.toJson(),
+    "spa": spa.toJson(),
+  };
+}
+
+class Category {
+  Category({
+    this.id,
+    this.name,
+    this.icon,
+    this.description,
+    this.createTime,
+    this.createBy,
+    this.status,
+    this.spa,
+  });
+
+  int id;
+  CategoryName name;
+  String icon;
+  Description description;
+  DateTime createTime;
+  int createBy;
+  Status status;
+  Spa spa;
+
+  factory Category.fromJson(Map<String, dynamic> json) => Category(
+    id: json["id"],
+    name: categoryNameValues.map[json["name"]],
+    icon: json["icon"],
+    description: descriptionValues.map[json["description"]],
+    createTime: DateTime.parse(json["createTime"]),
+    createBy: json["createBy"],
+    status: statusValues.map[json["status"]],
+    spa: Spa.fromJson(json["spa"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": categoryNameValues.reverse[name],
+    "icon": icon,
+    "description": descriptionValues.reverse[description],
+    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "createBy": createBy,
+    "status": statusValues.reverse[status],
+    "spa": spa.toJson(),
+  };
+}
+
+enum Description { SKIN, FACE }
+
+final descriptionValues = EnumValues({
+  "Face": Description.FACE,
+  "Skin": Description.SKIN
+});
+
+enum CategoryName { IU_TR_DA, FACE }
+
+final categoryNameValues = EnumValues({
+  "Face": CategoryName.FACE,
+  "Điều trị da": CategoryName.IU_TR_DA
+});
+
+enum SpaPackageName { TR_MN, PACKAGE_B1, TR_NM, PACKAGE_C1 }
+
+final spaPackageNameValues = EnumValues({
+  "Package B1": SpaPackageName.PACKAGE_B1,
+  "Package C1": SpaPackageName.PACKAGE_C1,
+  "Trị mụn": SpaPackageName.TR_MN,
+  "Trị nám": SpaPackageName.TR_NM
+});
+
+enum Type { ONESTEP }
+
+final typeValues = EnumValues({
+  "ONESTEP": Type.ONESTEP
+});
+
+class SpaTreatment {
+  SpaTreatment({
+    this.id,
+    this.name,
+    this.description,
+    this.totalPrice,
+    this.totalTime,
+    this.createTime,
+    this.createBy,
+    this.spaPackage,
+    this.spa,
+  });
+
+  int id;
+  String name;
+  String description;
+  int totalPrice;
+  int totalTime;
+  DateTime createTime;
+  int createBy;
+  SpaPackage spaPackage;
+  Spa spa;
+
+  factory SpaTreatment.fromJson(Map<String, dynamic> json) => SpaTreatment(
+    id: json["id"],
+    name: json["name"],
+    description: json["description"],
+    totalPrice: json["totalPrice"],
+    totalTime: json["totalTime"],
+    createTime: DateTime.parse(json["createTime"]),
+    createBy: json["createBy"],
+    spaPackage: SpaPackage.fromJson(json["spaPackage"]),
+    spa: Spa.fromJson(json["spa"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "description": description,
+    "totalPrice": totalPrice,
+    "totalTime": totalTime,
+    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "createBy": createBy,
+    "spaPackage": spaPackage.toJson(),
+    "spa": spa.toJson(),
+  };
+}
+
+class Staff {
+  Staff({
+    this.id,
+    this.user,
+    this.spa,
+  });
+
+  int id;
+  User user;
+  Spa spa;
+
+  factory Staff.fromJson(Map<String, dynamic> json) => Staff(
+    id: json["id"],
+    user: User.fromJson(json["user"]),
+    spa: Spa.fromJson(json["spa"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "user": user.toJson(),
+    "spa": spa.toJson(),
+  };
+}
+
+class TreatmentService {
+  TreatmentService({
+    this.id,
+    this.ordinal,
+    this.spaService,
+  });
+
+  int id;
+  int ordinal;
+  SpaService spaService;
+
+  factory TreatmentService.fromJson(Map<String, dynamic> json) => TreatmentService(
+    id: json["id"],
+    ordinal: json["ordinal"],
+    spaService: SpaService.fromJson(json["spaService"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "ordinal": ordinal,
+    "spaService": spaService.toJson(),
+  };
+}
+
+class SpaService {
+  SpaService({
+    this.id,
+    this.name,
+    this.image,
+    this.description,
+    this.price,
+    this.status,
+    this.type,
+    this.durationMin,
+    this.createTime,
+    this.createBy,
+    this.spa,
+    this.spaPackages,
   });
 
   int id;
   String name;
   String image;
-  String email;
-  String location;
-  String street;
-  String district;
-  String province;
-  DateTime createAt;
-  String workStart;
-  String workEnd;
-  String breakStart;
-  String breakEnd;
+  String description;
+  int price;
+  Status status;
+  Type type;
+  int durationMin;
+  DateTime createTime;
+  String createBy;
+  Spa spa;
+  List<SpaPackage> spaPackages;
 
-  factory Company.fromJson(Map<String, dynamic> json) => Company(
+  factory SpaService.fromJson(Map<String, dynamic> json) => SpaService(
     id: json["id"],
     name: json["name"],
     image: json["image"],
-    email: json["email"],
-    location: json["location"],
-    street: json["street"],
-    district: json["district"],
-    province: json["province"],
-    createAt: DateTime.parse(json["createAt"]),
-    workStart: json["workStart"],
-    workEnd: json["workEnd"],
-    breakStart: json["breakStart"],
-    breakEnd: json["breakEnd"],
+    description: json["description"],
+    price: json["price"],
+    status: statusValues.map[json["status"]],
+    type: typeValues.map[json["type"]],
+    durationMin: json["durationMin"],
+    createTime: DateTime.parse(json["createTime"]),
+    createBy: json["createBy"],
+    spa: Spa.fromJson(json["spa"]),
+    spaPackages: List<SpaPackage>.from(json["spaPackages"].map((x) => SpaPackage.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
     "image": image,
-    "email": email,
-    "location": location,
-    "street": street,
-    "district": district,
-    "province": province,
-    "createAt": createAt.toIso8601String(),
-    "workStart": workStart,
-    "workEnd": workEnd,
-    "breakStart": breakStart,
-    "breakEnd": breakEnd,
+    "description": description,
+    "price": price,
+    "status": statusValues.reverse[status],
+    "type": typeValues.reverse[type],
+    "durationMin": durationMin,
+    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "createBy": createBy,
+    "spa": spa.toJson(),
+    "spaPackages": List<dynamic>.from(spaPackages.map((x) => x.toJson())),
   };
 }
 
-class Slot {
-  Slot({
-    this.id,
-    this.time,
+class Paging {
+  Paging({
+    this.page,
+    this.totalPage,
+    this.itemPerPage,
+    this.totalItem,
   });
 
-  int id;
-  String time;
+  int page;
+  int totalPage;
+  int itemPerPage;
+  int totalItem;
 
-  factory Slot.fromJson(Map<String, dynamic> json) => Slot(
-    id: json["id"],
-    time: json["time"],
+  factory Paging.fromJson(Map<String, dynamic> json) => Paging(
+    page: json["page"],
+    totalPage: json["totalPage"],
+    itemPerPage: json["itemPerPage"],
+    totalItem: json["totalItem"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "time": time,
+    "page": page,
+    "totalPage": totalPage,
+    "itemPerPage": itemPerPage,
+    "totalItem": totalItem,
   };
+}
+
+class EnumValues<T> {
+  Map<String, T> map;
+  Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
+    }
+    return reverseMap;
+  }
 }

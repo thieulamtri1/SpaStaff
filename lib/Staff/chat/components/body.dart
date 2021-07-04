@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
+import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 import '../../../main.dart';
 import 'chat_card.dart';
 
@@ -17,7 +18,7 @@ class _BodyState extends State<Body> {
   bool isSearch = false;
   int staffId;
 
-  getData() async{
+  getData() async {
     await MyApp.storage.ready;
     //staffId = MyApp.storage.getItem("staffId");
     staffId = 4;
@@ -26,12 +27,12 @@ class _BodyState extends State<Body> {
   }
 
 
+
   initiateSearch() async {
-    if(searchInput.text != ""){
+    if (searchInput.text != "") {
       await firebaseMethod.getUserByUsername(searchInput.text).then((value) {
         setState(() {
           isSearch = true;
-          print("IS SEARCH: $isSearch");
           searchResult = value;
         });
       });
@@ -42,15 +43,17 @@ class _BodyState extends State<Body> {
   Widget searchList() {
     return searchResult != null
         ? ListView.builder(
-      shrinkWrap: true,
-      itemCount: searchResult.documents.length,
-      itemBuilder: (context, index) {
-        return ChatCard(
-          customerId: searchResult.documents[index].data["id"],
-          chatRoomId: getChatRoomId(int.parse(searchResult.documents[index].data["id"]), MyApp.storage.getItem("staffId")),
-        );
-      },
-    )
+            shrinkWrap: true,
+            itemCount: searchResult.documents.length,
+            itemBuilder: (context, index) {
+              return ChatCard(
+                customerId: searchResult.documents[index].data["id"],
+                chatRoomId: getChatRoomId(
+                    int.parse(searchResult.documents[index].data["id"]),
+                    MyApp.storage.getItem("staffId")),
+              );
+            },
+          )
         : Container();
   }
 
@@ -63,9 +66,7 @@ class _BodyState extends State<Body> {
   }
 
   getChatRoom() async {
-    await firebaseMethod
-        .getChatRoomStream(staffId)
-        .then((value) {
+    await firebaseMethod.getChatRoomStream(staffId).then((value) {
       setState(() {
         chatRoomStream = value;
       });
@@ -78,17 +79,17 @@ class _BodyState extends State<Body> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-                shrinkWrap: true,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) => ChatCard(
-                    customerId: snapshot
-                        .data.documents[index].data["chatRoomId"]
-                        .toString()
-                        .replaceAll("_", "")
-                        .replaceAll("$staffId", ""),
-                    chatRoomId:
-                        snapshot.data.documents[index].data["chatRoomId"]),
-              )
+          shrinkWrap: true,
+          itemCount: snapshot.data.documents.length,
+          itemBuilder: (context, index) => ChatCard(
+              customerId: snapshot
+                  .data.documents[index].data["chatRoomId"]
+                  .toString()
+                  .replaceAll("_", "")
+                  .replaceAll("$staffId", ""),
+              chatRoomId:
+              snapshot.data.documents[index].data["chatRoomId"]),
+        )
             : Container();
       },
     );
@@ -98,9 +99,7 @@ class _BodyState extends State<Body> {
   void initState() {
     super.initState();
     getData();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +138,7 @@ class _BodyState extends State<Body> {
                     icon: Icon(Icons.search),
                     color: Colors.grey.shade400,
                     iconSize: 25,
-                    onPressed: (){
+                    onPressed: () {
                       initiateSearch();
                     },
                   ),
