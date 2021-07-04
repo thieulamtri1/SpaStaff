@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class FirebaseMethod{
 
   createChatRoom(String chatRoomId, chatRoomMap) {
