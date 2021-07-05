@@ -20,11 +20,12 @@ class _BodyState extends State<Body> {
 
   getData() async {
     await MyApp.storage.ready;
-    //staffId = MyApp.storage.getItem("staffId");
+    staffId = MyApp.storage.getItem("staffId");
     staffId = 4;
     getChatRoom();
     print("StaffID: $staffId");
   }
+
 
 
 
@@ -33,7 +34,7 @@ class _BodyState extends State<Body> {
       await firebaseMethod.getUserByUsername(searchInput.text).then((value) {
         setState(() {
           isSearch = true;
-          searchResult = value;
+          //searchResult = value;
         });
       });
     }
@@ -41,20 +42,20 @@ class _BodyState extends State<Body> {
   }
 
   Widget searchList() {
-    return searchResult != null
-        ? ListView.builder(
-            shrinkWrap: true,
-            itemCount: searchResult.documents.length,
-            itemBuilder: (context, index) {
-              return ChatCard(
-                customerId: searchResult.documents[index].data["id"],
-                chatRoomId: getChatRoomId(
-                    int.parse(searchResult.documents[index].data["id"]),
-                    MyApp.storage.getItem("staffId")),
-              );
-            },
-          )
-        : Container();
+    // return searchResult != null
+    //     ? ListView.builder(
+    //         shrinkWrap: true,
+    //         itemCount: searchResult.documents.length,
+    //         itemBuilder: (context, index) {
+    //           return ChatCard(
+    //             customerId: searchResult.documents[index].data["id"],
+    //             chatRoomId: getChatRoomId(
+    //                 int.parse(searchResult.documents[index].data["id"]),
+    //                 MyApp.storage.getItem("staffId")),
+    //           );
+    //         },
+    //       )
+    //     : Container();
   }
 
   getChatRoomId(int a, int b) {
@@ -80,20 +81,21 @@ class _BodyState extends State<Body> {
         return snapshot.hasData
             ? ListView.builder(
           shrinkWrap: true,
-          itemCount: snapshot.data.documents.length,
+          itemCount: snapshot.data.docs.length,
           itemBuilder: (context, index) => ChatCard(
               customerId: snapshot
-                  .data.documents[index].data["chatRoomId"]
+                  .data.docs[index]["chatRoomId"]
                   .toString()
                   .replaceAll("_", "")
                   .replaceAll("$staffId", ""),
               chatRoomId:
-              snapshot.data.documents[index].data["chatRoomId"]),
+              snapshot.data.docs[index]["chatRoomId"]),
         )
             : Container();
       },
     );
   }
+
 
   @override
   void initState() {
@@ -103,6 +105,29 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
+    // return Scaffold(
+    //   body: Center(
+    //     child: StreamBuilder(
+    //       stream: FirebaseFirestore.instance.collection("users").snapshots(),
+    //       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    //         return ListView(
+    //           children: snapshot.data.docs.map((users) {
+    //             return Center(
+    //               child: ListTile(
+    //                 title: Text(users["name"]),
+    //               ),
+    //             );
+    //           }).toList(),
+    //         );
+    //       },
+    //     )
+    //   ),
+    // );
+
+
     return Scaffold(
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -156,5 +181,8 @@ class _BodyState extends State<Body> {
         ),
       ),
     );
+
   }
+
+
 }

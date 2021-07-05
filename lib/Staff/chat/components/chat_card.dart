@@ -31,8 +31,10 @@ class _ChatCardState extends State<ChatCard> {
   getUserInfo() async {
     await FirebaseMethod().getUserById(widget.customerId).then((value) {
       setState(() {
-        customerName = value.documents[0].data["name"];
-        customerPhone = value.documents[0].data["phone"];
+        // customerName = value.documents[0]["name"];
+        // customerPhone = value.documents[0]["phone"];
+        customerName = "Cường";
+        customerPhone = "06040352";
       });
     });
   }

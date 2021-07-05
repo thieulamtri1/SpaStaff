@@ -32,15 +32,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
         return snapshot.hasData
             ? ListView.builder(
                 reverse: true,
-                itemCount: snapshot.data.documents.length,
+                itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
                   final bool isMe =
-                      snapshot.data.documents[index].data["sendBy"] == staffId;
+                      snapshot.data.docs[index]["sendBy"] == staffId;
                   final bool isSameUser = prevUserId ==
-                      snapshot.data.documents[index].data["sendBy"];
-                  prevUserId = snapshot.data.documents[index].data["sendBy"];
+                      snapshot.data.docs[index]["sendBy"];
+                  prevUserId = snapshot.data.docs[index]["sendBy"];
                   return _chatBubble(
-                      snapshot.data.documents[index].data["message"],
+                      snapshot.data.docs[index]["message"],
                       isMe,
                       isSameUser);
                 },

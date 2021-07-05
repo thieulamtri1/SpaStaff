@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'dart:ffi';
+
 Schedule scheduleFromJson(String str) => Schedule.fromJson(json.decode(str));
 
 String scheduleToJson(Schedule data) => json.encode(data.toJson());
@@ -53,16 +55,16 @@ class Datum {
   });
 
   int id;
-  DateTime dateBooking;
-  String startTime;
-  String endTime;
-  int bookingPrice;
+  var dateBooking;
+  var startTime;
+  var endTime;
+  double bookingPrice;
   String statusBooking;
-  dynamic reasonCancel;
+  var reasonCancel;
   String isConsultation;
   TreatmentService treatmentService;
   Staff staff;
-  dynamic consultant;
+  var consultant;
   BookingDetail bookingDetail;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -111,7 +113,7 @@ class BookingDetail {
   int id;
   int totalTime;
   Type type;
-  int totalPrice;
+  double totalPrice;
   String statusBooking;
   Booking booking;
   SpaTreatment spaTreatment;
@@ -152,7 +154,7 @@ class Booking {
   });
 
   int id;
-  int totalPrice;
+  double totalPrice;
   int totalTime;
   String statusBooking;
   DateTime createTime;
@@ -477,7 +479,7 @@ class SpaTreatment {
   int id;
   String name;
   String description;
-  int totalPrice;
+  double totalPrice;
   int totalTime;
   DateTime createTime;
   int createBy;
@@ -577,7 +579,7 @@ class SpaService {
   String name;
   String image;
   String description;
-  int price;
+  double price;
   Status status;
   Type type;
   int durationMin;

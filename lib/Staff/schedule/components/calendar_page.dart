@@ -3,6 +3,7 @@ import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:http/http.dart' as http;
 
 class calendarPage extends StatefulWidget {
   @override
@@ -16,14 +17,17 @@ class _calendarPageState extends State<calendarPage> {
   int staffId;
   String value;
 
-  getData() async {
-    // await StaffScheduleService.getStaffSchedule(
-    //         id: MyApp.storage.getItem("staffId"),
-    //         date: "2021-07-01",
-    //         token: MyApp.storage.getItem("token"))
-    //     .then((value) => {
-    //         print("LẤY DC RỒI")
-    //         });
+  getData(date)  {
+     StaffScheduleService.getStaffSchedule(
+            MyApp.storage.getItem("staffId"),
+            date,
+            MyApp.storage.getItem("token"))
+        .then((value) => {
+              setState(() {
+                StaffSchedule = value;
+                print("được nha");
+              })
+            });
   }
 
   // @override
@@ -42,7 +46,6 @@ class _calendarPageState extends State<calendarPage> {
   @override
   void initState() {
     super.initState();
-    getData();
     _calendarController = CalendarController();
   }
 
@@ -50,14 +53,6 @@ class _calendarPageState extends State<calendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.orange,
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   backgroundColor: Colors.transparent,
-      //   title: Text(
-      //     "Schedule",
-      //     style: TextStyle(color: Colors.white),
-      //   ),
-      // ),
       body: SafeArea(
         child: Column(
           children: [
@@ -94,7 +89,7 @@ class _calendarPageState extends State<calendarPage> {
             SizedBox(
               height: 5,
             ),
-            //ListToDo2(selectedDay.toString().substring(0, 10)),
+            ListToDo2(selectedDay.toString().substring(0, 10)),
           ],
         ),
       ),
@@ -181,69 +176,101 @@ class _calendarPageState extends State<calendarPage> {
   //   );
   // }
 
-  Expanded ListToDo2(String date) {
-    StaffScheduleService.getStaffSchedule(MyApp.storage.getItem("staffId"),
-            date, MyApp.storage.getItem("token"))
-        .then((value) => {
-              setState(() {
-                StaffSchedule = value;
-              })
-            });
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-            color: Colors.white),
+  ListToDo2(String date) {
+    getData(date);
+    if(StaffSchedule.data.length == 0){
+      print("Không có lịch");
+      return Expanded(
         child: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      date,
-                      style: TextStyle(color: Colors.grey),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Column(
-                  children: [
-                    ...List.generate(
-                        StaffSchedule.data.length,
-                        (index) => Column(
-                              children: [
-                                dayTask(
-                                    time: StaffSchedule.data[index].startTime,
-                                    customerName: StaffSchedule
-                                        .data[index]
-                                        .bookingDetail
-                                        .booking
-                                        .customer
-                                        .user
-                                        .fullname,
-                                    phone: StaffSchedule
-                                        .data[index]
-                                        .bookingDetail
-                                        .booking
-                                        .customer
-                                        .user
-                                        .phone,
-                                    service: "Trị mụn")
-                              ],
-                            ))
-                  ],
-                )
-              ],
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+              color: Colors.white),
+          child: Container(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        date,
+                        style: TextStyle(color: Colors.grey),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Column(
+                    children: [
+
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }else if(StaffSchedule.data.length != 0){
+      return Expanded(
+        child: Container(
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+              color: Colors.white),
+          child: Container(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        date,
+                        style: TextStyle(color: Colors.grey),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Column(
+                    children: [
+                      ...List.generate(
+                          StaffSchedule.data.length,
+                              (index) => Column(
+                            children: [
+                              dayTask(
+                                  time: StaffSchedule.data[index].startTime,
+                                  customerName: StaffSchedule
+                                      .data[index]
+                                      .bookingDetail
+                                      .booking
+                                      .customer
+                                      .user
+                                      .fullname,
+                                  phone: StaffSchedule
+                                      .data[index]
+                                      .bookingDetail
+                                      .booking
+                                      .customer
+                                      .user
+                                      .phone,
+                                  service: "Trị mụn")
+                            ],
+                          ))
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
   }
 
   Row dayTask(

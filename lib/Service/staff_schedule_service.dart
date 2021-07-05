@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -23,12 +22,10 @@ class StaffScheduleService{
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         });
-        print("Status code lấy lịch: "+response.statusCode.toString());
         print("URL: " + urlStaffSchedule + id.toString() + dateChosen + date);
-        print(response.body);
         if (response.statusCode == 200) {
-          print("Vô dc đây rồi");
-          return scheduleFromJson(utf8.decode(response.bodyBytes));
+          Schedule staffSchedule = scheduleFromJson(utf8.decode(response.bodyBytes));
+          return staffSchedule;
         } else {
           throw Exception('Failed to load staffSchedule');
         }
@@ -46,6 +43,17 @@ class StaffScheduleService{
         'Authorization': 'Bearer $token',
       },
       body: dateOffToJson(dateOff),
+    );
+  }
+
+  Future<http.Response> getLich(token) {
+    return http.get(
+      Uri.parse("https://swp490spa.herokuapp.com/api/staff/workingofstaff/findbydatechosen/6?dateChosen=2021-07-01"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
   }
   
