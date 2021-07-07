@@ -19,11 +19,12 @@ class _StaffNotificationState extends State<StaffNotification> {
             title: Row(
               children: [
                 Icon(
-                  Icons.chat,
+                  Icons.notifications_active,
                   color: Colors.white,
                 ),
+                SizedBox(width: 20),
                 Text(
-                  "Chat",
+                  "Thông báo",
                   style: TextStyle(
                       fontSize: 20,
                       color: Colors.white

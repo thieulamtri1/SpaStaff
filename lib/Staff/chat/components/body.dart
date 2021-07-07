@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
-import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 import '../../../main.dart';
 import 'chat_card.dart';
 
@@ -17,6 +16,7 @@ class _BodyState extends State<Body> {
   QuerySnapshot searchResult;
   bool isSearch = false;
   int staffId;
+  bool loading = true;
 
   getData() async {
     await MyApp.storage.ready;
@@ -25,9 +25,6 @@ class _BodyState extends State<Body> {
     getChatRoom();
     print("StaffID: $staffId");
   }
-
-
-
 
   initiateSearch() async {
     if (searchInput.text != "") {
@@ -42,20 +39,20 @@ class _BodyState extends State<Body> {
   }
 
   Widget searchList() {
-    // return searchResult != null
-    //     ? ListView.builder(
-    //         shrinkWrap: true,
-    //         itemCount: searchResult.documents.length,
-    //         itemBuilder: (context, index) {
-    //           return ChatCard(
-    //             customerId: searchResult.documents[index].data["id"],
-    //             chatRoomId: getChatRoomId(
-    //                 int.parse(searchResult.documents[index].data["id"]),
-    //                 MyApp.storage.getItem("staffId")),
-    //           );
-    //         },
-    //       )
-    //     : Container();
+    return searchResult != null
+        ? ListView.builder(
+            shrinkWrap: true,
+            itemCount: searchResult.documents.length,
+            itemBuilder: (context, index) {
+              return ChatCard(
+                customerId: searchResult.docs[index]["id"],
+                chatRoomId: getChatRoomId(
+                    int.parse(searchResult.docs[index]["id"]),
+                    MyApp.storage.getItem("staffId")),
+              );
+            },
+          )
+        : Container();
   }
 
   getChatRoomId(int a, int b) {
@@ -70,6 +67,7 @@ class _BodyState extends State<Body> {
     await firebaseMethod.getChatRoomStream(staffId).then((value) {
       setState(() {
         chatRoomStream = value;
+        loading = false;
       });
     });
   }
@@ -105,82 +103,66 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-
-
-
-    // return Scaffold(
-    //   body: Center(
-    //     child: StreamBuilder(
-    //       stream: FirebaseFirestore.instance.collection("users").snapshots(),
-    //       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-    //         return ListView(
-    //           children: snapshot.data.docs.map((users) {
-    //             return Center(
-    //               child: ListTile(
-    //                 title: Text(users["name"]),
-    //               ),
-    //             );
-    //           }).toList(),
-    //         );
-    //       },
-    //     )
-    //   ),
-    // );
-
-
-    return Scaffold(
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      "Chats",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+    if(loading){
+      return Center(
+        child: Text("Đợi xíu đang load, làm gì căng ??"),
+      );
+    }else{
+      return Scaffold(
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16, right: 16, top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        "Chats",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-              child: TextField(
-                controller: searchInput,
-                decoration: InputDecoration(
-                  hintText: "Search...",
-                  hintStyle: TextStyle(color: Colors.grey.shade400),
-                  prefixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    color: Colors.grey.shade400,
-                    iconSize: 25,
-                    onPressed: () {
-                      initiateSearch();
-                    },
+                    ],
                   ),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  contentPadding: EdgeInsets.all(8),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Colors.grey.shade100)),
                 ),
               ),
-            ),
-            isSearch ? searchList() : showChatRoomList(),
-          ],
+              Padding(
+                padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                child: TextField(
+                  controller: searchInput,
+                  decoration: InputDecoration(
+                    hintText: "Search...",
+                    hintStyle: TextStyle(color: Colors.grey.shade400),
+                    prefixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      color: Colors.grey.shade400,
+                      iconSize: 25,
+                      onPressed: () {
+                        initiateSearch();
+                      },
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    contentPadding: EdgeInsets.all(8),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(color: Colors.grey.shade100)),
+                  ),
+                ),
+              ),
+              isSearch ? searchList() : showChatRoomList(),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
+
 
   }
 

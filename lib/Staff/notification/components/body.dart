@@ -1,4 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:spa_and_beauty_staff/Model/Message.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -6,30 +9,101 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final Message messagesObject = new Message();
+  bool hasData = false;
+
+
+  getToken() async {
+    await Firebase.initializeApp();
+    _firebaseMessaging.getToken().then((value) {
+      print("Device Token: $value");
+    });
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+    _firebaseMessaging.configure(
+
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        setState(() {
+          messagesObject.title = message['notification']['title'];
+          messagesObject.body = message['notification']['body'];
+          messagesObject.message = message['data']['message'];
+          hasData = true;
+        });
+      },
+
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        final data = message['data'];
+        String mMessage = data['message'];
+        setState(() {
+          messagesObject.title = message['notification']['title'];
+          messagesObject.body = message['notification']['body'];
+          messagesObject.message = message['data']['message'];
+          hasData = true;
+        });
+      },
+
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        final data = message['data']['message'];
+        String mMessage = data['message'];
+        setState(() {
+          messagesObject.title = message['notification']['title'];
+          messagesObject.body = message['notification']['body'];
+          messagesObject.message = message['data']['message'];
+          hasData = true;
+        });
+      },
+
+    );
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        NotificationServiceAssignedItem(
-          image: "assets/images/beauty.png",
-          companyName: "Eri international",
-          serviceName: "BIO ACNE",
-          date: "25/03/2021",
-        ),
-        NotificationServiceAssignedItem(
-          image: "assets/images/body.png",
-          companyName: "Eri international",
-          serviceName: "Massage JiaczHoiz",
-          date: "26/03/2021",
-        ),
-        NotificationServiceAssignedItem(
-          image: "assets/images/Skin.png",
-          companyName: "Eri international",
-          serviceName: "AQUA DETOX",
-          date: "27/03/2021",
-        ),
-      ],
+    return Center(
+      child: Column(
+        children: [
+          hasData ? Text("Message: " + messagesObject.message) : Text("Chưa có thông báo nào"),
+          SizedBox(height: 20)
+        ],
+      ),
     );
+
+
+    // return Column(
+    //   children: [
+    //     NotificationServiceAssignedItem(
+    //       image: "assets/images/beauty.png",
+    //       companyName: "Eri international",
+    //       serviceName: "BIO ACNE",
+    //       date: "25/03/2021",
+    //     ),
+    //     NotificationServiceAssignedItem(
+    //       image: "assets/images/body.png",
+    //       companyName: "Eri international",
+    //       serviceName: "Massage JiaczHoiz",
+    //       date: "26/03/2021",
+    //     ),
+    //     NotificationServiceAssignedItem(
+    //       image: "assets/images/Skin.png",
+    //       companyName: "Eri international",
+    //       serviceName: "AQUA DETOX",
+    //       date: "27/03/2021",
+    //     ),
+    //   ],
+    // );
+
   }
 }
 

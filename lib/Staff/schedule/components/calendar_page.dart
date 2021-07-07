@@ -16,18 +16,18 @@ class _calendarPageState extends State<calendarPage> {
   Schedule StaffSchedule;
   int staffId;
   String value;
+  bool loading = true;
 
-  getData(date)  {
-     StaffScheduleService.getStaffSchedule(
-            MyApp.storage.getItem("staffId"),
-            date,
-            MyApp.storage.getItem("token"))
+  getData(date) {
+    StaffScheduleService.getStaffSchedule(MyApp.storage.getItem("staffId"),
+            date, MyApp.storage.getItem("token"))
         .then((value) => {
               setState(() {
                 StaffSchedule = value;
-                print("được nha");
+                loading = false;
               })
             });
+    //print("TRIIIIIIIIIIIIIIIIIIII");
   }
 
   // @override
@@ -178,99 +178,111 @@ class _calendarPageState extends State<calendarPage> {
 
   ListToDo2(String date) {
     getData(date);
-    if(StaffSchedule.data.length == 0){
-      print("Không có lịch");
-      return Expanded(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-              color: Colors.white),
-          child: Container(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        date,
-                        style: TextStyle(color: Colors.grey),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Column(
-                    children: [
-
-                    ],
-                  )
-                ],
-              ),
-            ),
+    if (loading) {
+      return Center(
+        child: Text(
+          "Đang load đợi xíu",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
       );
-    }else if(StaffSchedule.data.length != 0){
-      return Expanded(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-              color: Colors.white),
+    } else {
+      if (StaffSchedule.data.length == 0) {
+        return Expanded(
           child: Container(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        date,
-                        style: TextStyle(color: Colors.grey),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Column(
-                    children: [
-                      ...List.generate(
-                          StaffSchedule.data.length,
-                              (index) => Column(
-                            children: [
-                              dayTask(
-                                  time: StaffSchedule.data[index].startTime,
-                                  customerName: StaffSchedule
-                                      .data[index]
-                                      .bookingDetail
-                                      .booking
-                                      .customer
-                                      .user
-                                      .fullname,
-                                  phone: StaffSchedule
-                                      .data[index]
-                                      .bookingDetail
-                                      .booking
-                                      .customer
-                                      .user
-                                      .phone,
-                                  service: "Trị mụn")
-                            ],
-                          ))
-                    ],
-                  )
-                ],
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40)),
+                color: Colors.white),
+            child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          date,
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Column(
+                      children: [],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
+      } else if (StaffSchedule.data.length != 0) {
+        return Expanded(
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40)),
+                color: Colors.white),
+            child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          date,
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Column(
+                      children: [
+                        ...List.generate(
+                            StaffSchedule.data.length,
+                            (index) => Column(
+                                  children: [
+                                    dayTask(
+                                        time:
+                                            StaffSchedule.data[index].startTime,
+                                        customerName: StaffSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .fullname,
+                                        phone: StaffSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .phone,
+                                        service: "Trị mụn")
+                                  ],
+                                ))
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }
     }
-
   }
 
   Row dayTask(

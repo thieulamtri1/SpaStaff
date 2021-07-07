@@ -1,10 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
 import '../../../main.dart';
 import 'conversation_appBar.dart';
-
 
 class ConversationScreen extends StatefulWidget {
   final String chatRoomId;
@@ -36,13 +34,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 itemBuilder: (context, index) {
                   final bool isMe =
                       snapshot.data.docs[index]["sendBy"] == staffId;
-                  final bool isSameUser = prevUserId ==
-                      snapshot.data.docs[index]["sendBy"];
+                  final bool isSameUser =
+                      prevUserId == snapshot.data.docs[index]["sendBy"];
                   prevUserId = snapshot.data.docs[index]["sendBy"];
                   return _chatBubble(
-                      snapshot.data.docs[index]["message"],
-                      isMe,
-                      isSameUser);
+                      snapshot.data.docs[index]["message"], isMe, isSameUser);
                 },
               )
             : Container();
@@ -143,7 +139,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
       ),
     );
   }
-
 
   _chatBubble(String text, bool isMe, bool isSameUser) {
     if (isMe) {
