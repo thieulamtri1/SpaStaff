@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
 import '../../../main.dart';
 import 'chat_card.dart';
@@ -80,14 +81,16 @@ class _BodyState extends State<Body> {
             ? ListView.builder(
           shrinkWrap: true,
           itemCount: snapshot.data.docs.length,
-          itemBuilder: (context, index) => ChatCard(
-              customerId: snapshot
-                  .data.docs[index]["chatRoomId"]
-                  .toString()
-                  .replaceAll("_", "")
-                  .replaceAll("$staffId", ""),
-              chatRoomId:
-              snapshot.data.docs[index]["chatRoomId"]),
+          itemBuilder: (context, index) {
+            return ChatCard(
+                customerId: snapshot
+                    .data.docs[index]["chatRoomId"]
+                    .toString()
+                    .replaceAll("_", "")
+                    .replaceAll("$staffId", ""),
+                chatRoomId:
+                snapshot.data.docs[index]["chatRoomId"]);
+          }
         )
             : Container();
       },
@@ -105,9 +108,13 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     if(loading){
       return Center(
-        child: Text("Đợi xíu đang load, làm gì căng ??"),
+        child: SpinKitWave(
+          color: Colors.orange,
+          size: 50,
+        )
       );
-    }else{
+    }
+    else{
       return Scaffold(
         body: SingleChildScrollView(
           physics: BouncingScrollPhysics(),

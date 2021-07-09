@@ -4,8 +4,6 @@
 
 import 'dart:convert';
 
-import 'dart:ffi';
-
 Schedule scheduleFromJson(String str) => Schedule.fromJson(json.decode(str));
 
 String scheduleToJson(Schedule data) => json.encode(data.toJson());
@@ -40,6 +38,7 @@ class Schedule {
 
 class Datum {
   Datum({
+    this.bookingDetail,
     this.id,
     this.dateBooking,
     this.startTime,
@@ -51,23 +50,23 @@ class Datum {
     this.treatmentService,
     this.staff,
     this.consultant,
-    this.bookingDetail,
   });
 
+  BookingDetail bookingDetail;
   int id;
-  var dateBooking;
-  var startTime;
-  var endTime;
+  DateTime dateBooking;
+  String startTime;
+  String endTime;
   double bookingPrice;
   String statusBooking;
-  var reasonCancel;
+  dynamic reasonCancel;
   String isConsultation;
   TreatmentService treatmentService;
   Staff staff;
-  var consultant;
-  BookingDetail bookingDetail;
+  dynamic consultant;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+    bookingDetail: BookingDetail.fromJson(json["bookingDetail"]),
     id: json["id"],
     dateBooking: DateTime.parse(json["date_booking"]),
     startTime: json["start_time"],
@@ -79,10 +78,10 @@ class Datum {
     treatmentService: TreatmentService.fromJson(json["treatment_service"]),
     staff: Staff.fromJson(json["staff"]),
     consultant: json["consultant"],
-    bookingDetail: BookingDetail.fromJson(json["booking_detail"]),
   );
 
   Map<String, dynamic> toJson() => {
+    "bookingDetail": bookingDetail.toJson(),
     "id": id,
     "date_booking": "${dateBooking.year.toString().padLeft(4, '0')}-${dateBooking.month.toString().padLeft(2, '0')}-${dateBooking.day.toString().padLeft(2, '0')}",
     "start_time": startTime,
@@ -94,7 +93,6 @@ class Datum {
     "treatment_service": treatmentService.toJson(),
     "staff": staff.toJson(),
     "consultant": consultant,
-    "booking_detail": bookingDetail.toJson(),
   };
 }
 

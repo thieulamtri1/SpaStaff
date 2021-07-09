@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
-import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 
 import 'package:spa_and_beauty_staff/Staff/bottom_navigation/bottom_navigation.dart';
 
@@ -79,14 +78,12 @@ class _SignFormState extends State<SignForm> {
 
     String url = "https://swp490spa.herokuapp.com/api/public/login";
 
-
-
     final res = await http.post(Uri.parse(url),
         headers: {
           "accept": "application/json",
           "content-type": "application/json"
         },
-        body: jsonEncode({"phone": phone, "password": password, "role": "STAFF"}));
+        body: jsonEncode(  {"phone": phone, "password": password, "role": "CONSULTANT"} ));
 
     if (res.statusCode == 200) {
       jsonResponse = json.decode(res.body);

@@ -23,6 +23,7 @@ class StaffScheduleService{
           'Authorization': 'Bearer $token',
         });
         print("URL: " + urlStaffSchedule + id.toString() + dateChosen + date);
+        print("status code: " + response.statusCode.toString());
         if (response.statusCode == 200) {
           Schedule staffSchedule = scheduleFromJson(utf8.decode(response.bodyBytes));
           return staffSchedule;
