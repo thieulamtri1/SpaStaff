@@ -32,7 +32,7 @@ class ConsultantService {
     }
   }
 
-  static Future<BookingDetailByCustomerAndConsultant> findByCustomerAndConsultant(
+  static Future<BookingDetail> findBookingDetailByCustomerAndConsultant(
       idCustomer, idConsultant, token) async {
     try {
       final response = await http.get(

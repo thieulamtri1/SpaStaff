@@ -4,12 +4,12 @@
 
 import 'dart:convert';
 
-BookingDetailByCustomerAndConsultant bookingDetailByCustomerAndConsultantFromJson(String str) => BookingDetailByCustomerAndConsultant.fromJson(json.decode(str));
+BookingDetail bookingDetailByCustomerAndConsultantFromJson(String str) => BookingDetail.fromJson(json.decode(str));
 
-String bookingDetailByCustomerAndConsultantToJson(BookingDetailByCustomerAndConsultant data) => json.encode(data.toJson());
+String bookingDetailByCustomerAndConsultantToJson(BookingDetail data) => json.encode(data.toJson());
 
-class BookingDetailByCustomerAndConsultant {
-  BookingDetailByCustomerAndConsultant({
+class BookingDetail {
+  BookingDetail({
     this.code,
     this.status,
     this.data,
@@ -21,7 +21,7 @@ class BookingDetailByCustomerAndConsultant {
   List<Datum> data;
   Paging paging;
 
-  factory BookingDetailByCustomerAndConsultant.fromJson(Map<String, dynamic> json) => BookingDetailByCustomerAndConsultant(
+  factory BookingDetail.fromJson(Map<String, dynamic> json) => BookingDetail(
     code: json["code"],
     status: json["status"],
     data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),

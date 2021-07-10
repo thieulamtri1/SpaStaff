@@ -7,7 +7,7 @@ import 'package:spa_and_beauty_staff/Staff/chat/components/conversation_appBar.d
 
 import '../../../main.dart';
 
-class BookingDetailScreen extends StatefulWidget {
+class CustomerDetail extends StatefulWidget {
   final String customerId;
   final String customerName;
   final String customerPhone;
@@ -15,20 +15,20 @@ class BookingDetailScreen extends StatefulWidget {
   final String customerEmail;
   final String customerGender;
 
-  BookingDetailScreen(this.customerId, this.customerName, this.customerPhone,
+  CustomerDetail(this.customerId, this.customerName, this.customerPhone,
       this.customerImage, this.customerEmail, this.customerGender);
 
   @override
   _BookingDetailState createState() => _BookingDetailState();
 }
 
-class _BookingDetailState extends State<BookingDetailScreen> {
-  BookingDetailByCustomerAndConsultant bookingDetail =
-      BookingDetailByCustomerAndConsultant();
+class _BookingDetailState extends State<CustomerDetail> {
+  BookingDetail bookingDetail =
+      BookingDetail();
   bool loading = true;
 
   getBookingDetail() {
-    ConsultantService.findByCustomerAndConsultant(widget.customerId,
+    ConsultantService.findBookingDetailByCustomerAndConsultant(widget.customerId,
             MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
         .then((value) => {
               setState(() {
@@ -152,12 +152,7 @@ class _BookingDetailState extends State<BookingDetailScreen> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: bookingDetail.data.length,
                     itemBuilder: (BuildContext ctx, int index) {
-                      return BookingdetailList(
-                        bookingDetail.data[index].spaPackage.name,
-                        bookingDetail.data[index].spaPackage.image,
-                        bookingDetail.data[index].statusBooking,
-                        bookingDetail.data[index].totalPrice,
-                        bookingDetail.data[index].totalTime,
+                      return BookingdetailList(bookingDetail: bookingDetail.data[index],
                       );
                     },
                   ),
@@ -168,73 +163,76 @@ class _BookingDetailState extends State<BookingDetailScreen> {
     }
   }
 }
+class BookingdetailList extends StatefulWidget {
+  const BookingdetailList({Key key, this.bookingDetail}) : super(key: key);
+  final Datum bookingDetail;
+  @override
+  _BookingdetailListState createState() => _BookingdetailListState();
+}
 
-Widget BookingdetailList(name, image, status, totalPrice, totalTime) {
-  return GestureDetector(
-    onTap: () {},
-    child: Container(
-      height: 150,
-      width: 150,
-      color: Colors.grey[200],
-      padding: EdgeInsets.all(10),
+class _BookingdetailListState extends State<BookingdetailList> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {},
       child: Container(
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(5),
-              width: 110,
-              height: 110,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+        height: 150,
+        width: 150,
+        color: Colors.grey[200],
+        padding: EdgeInsets.all(10),
+        child: Container(
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(5),
+                width: 110,
+                height: 110,
+                child: Image.network(
+                  widget.bookingDetail.spaPackage.image,
+                  fit: BoxFit.cover,
+                ),
               ),
-              child: Image.network(
-                image,
-                fit: BoxFit.cover,
+              SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Status: " + widget.bookingDetail.statusBooking,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    height: 0.5,
+                    width: 150,
+                    color: Colors.black,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Tên: " + widget.bookingDetail.spaPackage.name,
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Giá: " + widget.bookingDetail.totalPrice.toString(),
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+
+                ],
               ),
-            ),
-            SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Status: " + status,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  height: 0.5,
-                  width: 150,
-                  color: Colors.black,
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Tên: " + name,
-                  style: TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Giá: " + totalPrice.toString(),
-                  style: TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Thời gian: " + totalTime.toString() + " phút ",
-                  style: TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
+
+

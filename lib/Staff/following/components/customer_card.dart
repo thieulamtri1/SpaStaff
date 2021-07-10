@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'booking_detail.dart';
+import 'customer_detail.dart';
 
 class CustomerCard extends StatefulWidget {
   final String customerId;
   final String customerName;
   final String customerPhone;
-   String customerImage;
+  String customerImage;
   final String customerEmail;
   final String customerGender;
-
 
   CustomerCard(
       {this.customerId,
@@ -25,15 +24,6 @@ class CustomerCard extends StatefulWidget {
 
 class _CustomerCardState extends State<CustomerCard> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    if (widget.customerImage == null) {
-      widget.customerImage =
-          "https://huyhoanhotel.com/wp-content/uploads/2016/05/765-default-avatar.png";
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -41,14 +31,13 @@ class _CustomerCardState extends State<CustomerCard> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => BookingDetailScreen(
+                builder: (context) => CustomerDetail(
                       widget.customerId,
                       widget.customerName,
                       widget.customerPhone,
                       widget.customerImage,
                       widget.customerEmail,
                       widget.customerGender,
-
                     )));
       },
       child: Container(
@@ -58,10 +47,16 @@ class _CustomerCardState extends State<CustomerCard> {
             Expanded(
               child: Row(
                 children: <Widget>[
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(widget.customerImage),
-                    maxRadius: 30,
-                  ),
+                  widget.customerImage == null
+                      ? CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              "https://huyhoanhotel.com/wp-content/uploads/2016/05/765-default-avatar.png"),
+                          maxRadius: 30,
+                        )
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(widget.customerImage),
+                          maxRadius: 30,
+                        ),
                   SizedBox(
                     width: 16,
                   ),
