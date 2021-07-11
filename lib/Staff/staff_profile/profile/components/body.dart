@@ -87,7 +87,12 @@ class _BodyState extends State<Body> {
             ),
             text: "Đăng xuất",
             press: () {
-
+              MyApp.storage.deleteItem("token");
+              MyApp.storage.deleteItem("staffId");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => BottomNavigation()),
+              );
             },
           ),
         ],
