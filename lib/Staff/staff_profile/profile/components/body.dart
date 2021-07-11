@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Staff/bottom_navigation/bottom_navigation.dart';
 import 'package:spa_and_beauty_staff/Staff/notification/notification_screen.dart';
+import 'package:spa_and_beauty_staff/Staff/sign_in/sign_in_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/change_password/change_password.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/components/profile_picture.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/profile_detail_screen.dart';
@@ -91,7 +92,7 @@ class _BodyState extends State<Body> {
               MyApp.storage.deleteItem("staffId");
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BottomNavigation()),
+                MaterialPageRoute(builder: (context) => SignIn()),
               );
             },
           ),
