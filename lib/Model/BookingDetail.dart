@@ -4,12 +4,12 @@
 
 import 'dart:convert';
 
-BookingDetailByCustomerAndConsultant bookingDetailByCustomerAndConsultantFromJson(String str) => BookingDetailByCustomerAndConsultant.fromJson(json.decode(str));
+BookingDetailByConsultant bookingDetailByCustomerAndConsultantFromJson(String str) => BookingDetailByConsultant.fromJson(json.decode(str));
 
-String bookingDetailByCustomerAndConsultantToJson(BookingDetailByCustomerAndConsultant data) => json.encode(data.toJson());
+String bookingDetailByCustomerAndConsultantToJson(BookingDetailByConsultant data) => json.encode(data.toJson());
 
-class BookingDetailByCustomerAndConsultant {
-  BookingDetailByCustomerAndConsultant({
+class BookingDetailByConsultant {
+  BookingDetailByConsultant({
     this.code,
     this.status,
     this.data,
@@ -18,13 +18,13 @@ class BookingDetailByCustomerAndConsultant {
 
   int code;
   String status;
-  List<Datum> data;
+  List<BookingDetailInstance> data;
   Paging paging;
 
-  factory BookingDetailByCustomerAndConsultant.fromJson(Map<String, dynamic> json) => BookingDetailByCustomerAndConsultant(
+  factory BookingDetailByConsultant.fromJson(Map<String, dynamic> json) => BookingDetailByConsultant(
     code: json["code"],
     status: json["status"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<BookingDetailInstance>.from(json["data"].map((x) => BookingDetailInstance.fromJson(x))),
     paging: Paging.fromJson(json["paging"]),
   );
 
@@ -36,8 +36,8 @@ class BookingDetailByCustomerAndConsultant {
   };
 }
 
-class Datum {
-  Datum({
+class BookingDetailInstance {
+  BookingDetailInstance({
     this.id,
     this.totalTime,
     this.type,
@@ -57,7 +57,7 @@ class Datum {
   dynamic spaTreatment;
   SpaPackage spaPackage;
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory BookingDetailInstance.fromJson(Map<String, dynamic> json) => BookingDetailInstance(
     id: json["id"],
     totalTime: json["totalTime"],
     type: json["type"],

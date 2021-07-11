@@ -58,7 +58,7 @@ class _BodyState extends State<Body> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        "Theo dõi liệu trình",
+                        "Danh sách khách hàng",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,

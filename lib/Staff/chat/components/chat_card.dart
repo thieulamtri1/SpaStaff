@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
-import 'package:spa_and_beauty_staff/Staff/following/components/booking_detail.dart';
+import 'package:spa_and_beauty_staff/Staff/following/components/customer_detail.dart';
 
 import 'conversation_screen.dart';
 
