@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
@@ -35,7 +36,12 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return
+      _loading
+          ? Container(
+        child: Lottie.asset("assets/lottie/loading.json"),
+      ):
+      Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         StatusSection(),
