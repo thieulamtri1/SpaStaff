@@ -5,6 +5,7 @@ import 'package:spa_and_beauty_staff/Staff/notification/notification_screen.dart
 import 'package:spa_and_beauty_staff/Staff/schedule/schedule_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/profile_screen.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
+import 'package:spa_and_beauty_staff/size_config.dart';
 
 class BottomNavigation extends StatefulWidget {
   static String routeName = "/bottom_navigation";
@@ -31,6 +32,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Scaffold(
 
       body: Center(

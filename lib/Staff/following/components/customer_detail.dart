@@ -175,7 +175,7 @@ class _BookingDetailState extends State<CustomerDetail> {
                         press: (){
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => CustomerProcessDetailScreen(bookingDetail: bookingDetail.data[index],)),
+                            MaterialPageRoute(builder: (context) => CustomerProcessDetailScreen(bookingDetail: bookingDetail.data[index],customerId: int.tryParse(widget.customerId),)),
                           );
                         },
                       );
@@ -205,6 +205,7 @@ class _BookingdetailListState extends State<BookingdetailList> {
     return GestureDetector(
       onTap: widget.press,
       child: Container(
+        margin: EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.white,
@@ -245,7 +246,7 @@ class _BookingdetailListState extends State<BookingdetailList> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Status: " + widget.bookingDetail.statusBooking,
+                    "Dịch vụ: " + widget.bookingDetail.spaPackage.name,
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -259,7 +260,7 @@ class _BookingdetailListState extends State<BookingdetailList> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    "Tên: " + widget.bookingDetail.spaPackage.name,
+                    "Trạng thái: " + widget.bookingDetail.statusBooking,
                     style: TextStyle(
                       fontSize: 15,
                     ),

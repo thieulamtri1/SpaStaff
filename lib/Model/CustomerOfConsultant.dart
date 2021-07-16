@@ -22,17 +22,17 @@ class CustomerOfConsultant {
   Paging paging;
 
   factory CustomerOfConsultant.fromJson(Map<String, dynamic> json) => CustomerOfConsultant(
-    code: json["code"],
-    status: json["status"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
-    paging: Paging.fromJson(json["paging"]),
+    code: json["code"] == null ? null : json["code"],
+    status: json["status"] == null ? null : json["status"],
+    data: json["data"] == null ? null : List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    paging: json["paging"] == null ? null : Paging.fromJson(json["paging"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "code": code,
-    "status": status,
-    "data": List<dynamic>.from(data.map((x) => x.toJson())),
-    "paging": paging.toJson(),
+    "code": code == null ? null : code,
+    "status": status == null ? null : status,
+    "data": data == null ? null : List<dynamic>.from(data.map((x) => x.toJson())),
+    "paging": paging == null ? null : paging.toJson(),
   };
 }
 
@@ -62,29 +62,29 @@ class Datum {
   bool active;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: json["id"],
-    fullname: json["fullname"],
-    phone: json["phone"],
-    password: json["password"],
-    gender: json["gender"],
-    birthdate: DateTime.parse(json["birthdate"]),
-    email: json["email"],
+    id: json["id"] == null ? null : json["id"],
+    fullname: json["fullname"] == null ? null : json["fullname"],
+    phone: json["phone"] == null ? null : json["phone"],
+    password: json["password"] == null ? null : json["password"],
+    gender: json["gender"] == null ? null : json["gender"],
+    birthdate: json["birthdate"] == null ? null : DateTime.parse(json["birthdate"]),
+    email: json["email"] == null ? null : json["email"],
     image: json["image"],
-    address: json["address"],
-    active: json["active"],
+    address: json["address"] == null ? null : json["address"],
+    active: json["active"] == null ? null : json["active"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "fullname": fullname,
-    "phone": phone,
-    "password": password,
-    "gender": gender,
-    "birthdate": "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
-    "email": email,
+    "id": id == null ? null : id,
+    "fullname": fullname == null ? null : fullname,
+    "phone": phone == null ? null : phone,
+    "password": password == null ? null : password,
+    "gender": gender == null ? null : gender,
+    "birthdate": birthdate == null ? null : "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
+    "email": email == null ? null : email,
     "image": image,
-    "address": address,
-    "active": active,
+    "address": address == null ? null : address,
+    "active": active == null ? null : active,
   };
 }
 
@@ -102,16 +102,16 @@ class Paging {
   int totalItem;
 
   factory Paging.fromJson(Map<String, dynamic> json) => Paging(
-    page: json["page"],
-    totalPage: json["totalPage"],
-    itemPerPage: json["itemPerPage"],
-    totalItem: json["totalItem"],
+    page: json["page"] == null ? null : json["page"],
+    totalPage: json["totalPage"] == null ? null : json["totalPage"],
+    itemPerPage: json["itemPerPage"] == null ? null : json["itemPerPage"],
+    totalItem: json["totalItem"] == null ? null : json["totalItem"],
   );
 
   Map<String, dynamic> toJson() => {
-    "page": page,
-    "totalPage": totalPage,
-    "itemPerPage": itemPerPage,
-    "totalItem": totalItem,
+    "page": page == null ? null : page,
+    "totalPage": totalPage == null ? null : totalPage,
+    "itemPerPage": itemPerPage == null ? null : itemPerPage,
+    "totalItem": totalItem == null ? null : totalItem,
   };
 }

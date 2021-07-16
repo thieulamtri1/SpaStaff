@@ -3,13 +3,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
+import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
+import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_first_step/booking_for_first_step_screen.dart';
+import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/choose_treatment.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
+import 'package:spa_and_beauty_staff/size_config.dart';
 
 class Body extends StatefulWidget {
-  const Body({Key key, this.bookingDetail}) : super(key: key);
+  const Body({Key key, this.bookingDetail, this.customerId}) : super(key: key);
   final BookingDetailInstance bookingDetail;
+  final customerId;
 
   @override
   _BodyState createState() => _BodyState();
@@ -23,75 +28,85 @@ class _BodyState extends State<Body> {
   void initState() {
     _loading = true;
     ConsultantService.getBookingDetailStepsByBookingDetailId(
-            widget.bookingDetail.id)
-        .then((value) => {
-              setState(() {
-                _bookingDetailSteps = value;
-                _loading = false;
-              })
-            });
+        widget.bookingDetail.id)
+        .then((value) =>
+    {
+      setState(() {
+        _bookingDetailSteps = value;
+        _loading = false;
+      })
+    });
     // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return
-      _loading
-          ? Container(
-        child: Lottie.asset("assets/lottie/loading.json"),
-      ):
-      Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        StatusSection(),
-        SizedBox(
-          height: 10,
-        ),
-        CompanySection(
-          address: widget.bookingDetail.spaPackage.spa.street +
-              " " +
-              widget.bookingDetail.spaPackage.spa.district +
-              " " +
-              widget.bookingDetail.spaPackage.spa.city,
-          name: widget.bookingDetail.spaPackage.spa.name,
-        ),
-        Divider(
-          thickness: 1,
-          height: 20,
-        ),
-        StaffSection(
-          name: _bookingDetailSteps.data[0].consultant.user.fullname == null
-              ? "Chưa có tư vấn viên"
-              : _bookingDetailSteps.data[0].consultant.user.fullname,
-          phone: _bookingDetailSteps.data[0].consultant.user.fullname == null
-              ? "Chưa có tư vấn viên"
-              : _bookingDetailSteps.data[0].consultant.user.phone,
-        ),
-        Divider(
-          thickness: 1,
-          height: 20,
-        ),
-        ProcessSection(
-          serviceName: widget.bookingDetail.spaPackage.name,
-          serviceId: widget.bookingDetail.spaPackage.id,
-          bookingDetailSteps: _bookingDetailSteps,
-        )
-      ],
+    return _loading
+        ? Container(
+      child: Lottie.asset("assets/lottie/loading.json"),
+    )
+        : SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          StatusSection(),
+          SizedBox(
+            height: 10,
+          ),
+          CompanySection(
+            address: widget.bookingDetail.booking.spa.street +
+                " " +
+                widget.bookingDetail.booking.spa.district +
+                " " +
+                widget.bookingDetail.booking.spa.city,
+            name: widget.bookingDetail.booking.spa.name,
+          ),
+          Divider(
+            thickness: 1,
+            height: 20,
+          ),
+          StaffSection(
+            name: _bookingDetailSteps.data[0].consultant.user.fullname,
+            phone: _bookingDetailSteps.data[0].consultant.user.phone,
+          ),
+          Divider(
+            thickness: 1,
+            height: 20,
+          ),
+          ProcessSection(
+            packageName: widget.bookingDetail.spaPackage.name,
+            packageId: widget.bookingDetail.spaPackage.id,
+            bookingDetailSteps: _bookingDetailSteps,
+            treatment: widget.bookingDetail.spaTreatment == null
+                ? "Chưa có liệu trình"
+                : widget.bookingDetail.spaTreatment.name,
+            consultantId: _bookingDetailSteps.data[0].consultant.id,
+            spaId: _bookingDetailSteps.data[0].consultant.spa.id,
+            customerId: widget.customerId,
+          )
+        ],
+      ),
     );
   }
 }
 
 class ProcessSection extends StatefulWidget {
-  final String serviceName;
-  final int serviceId;
+  final int consultantId;
+  final int spaId;
+  final int customerId;
+  final String packageName;
+  final String treatment;
+  final int packageId;
   final BookingDetailSteps bookingDetailSteps;
 
   const ProcessSection({
     Key key,
-    @required this.serviceName,
-    @required this.serviceId,
+    @required this.packageName,
+    @required this.packageId,
     @required this.bookingDetailSteps,
+    @required this.treatment,
+    @required this.consultantId, this.spaId, this.customerId,
   }) : super(key: key);
 
   @override
@@ -99,9 +114,15 @@ class ProcessSection extends StatefulWidget {
 }
 
 class _ProcessSectionState extends State<ProcessSection> {
+  String _treatmentName;
+
+  TreatmentInstance _treatmentInstance;
 
   @override
   Widget build(BuildContext context) {
+    if (_treatmentName == null) {
+      _treatmentName = widget.treatment;
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
@@ -119,7 +140,7 @@ class _ProcessSectionState extends State<ProcessSection> {
                 width: 5,
               ),
               Text(
-                "Thông tin chi tiết liệu trình",
+                "Thông tin chi tiết dịch vụ",
                 style: TextStyle(fontSize: 15, color: Colors.black),
               ),
             ],
@@ -133,38 +154,211 @@ class _ProcessSectionState extends State<ProcessSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Dịch Vụ: " + widget.serviceName,
+                  "Dịch Vụ: " + widget.packageName,
                   style: TextStyle(fontSize: 15, color: Colors.black),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Liệu trình: " + _treatmentName,
+                        style: TextStyle(fontSize: 15, color: Colors.black),
+                      ),
+                      widget.treatment == "Chưa có liệu trình"
+                          ? GestureDetector(
+                        onTap: () async {
+                          TreatmentInstance choosenTreatment =
+                          await showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext buildContext) {
+                                return Container(
+                                  height: SizeConfig
+                                      .getProportionateScreenHeight(
+                                      800),
+                                  child: ListView(
+                                    children: [
+                                      IconButton(
+                                        alignment: Alignment.topRight,
+                                        icon: Icon(
+                                          Icons.close,
+                                          color: kPrimaryColor,
+                                          size: 25,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      ChooseTreatmentScreen(
+                                        packageId: widget.packageId,
+                                      )
+                                    ],
+                                  ),
+                                );
+                              });
+                          print("treatment đã chọn: " +
+                              choosenTreatment.id.toString() +
+                              choosenTreatment.name);
+                          setState(() {
+                            _treatmentName = choosenTreatment.name;
+                            print(_treatmentName);
+                            _treatmentInstance = choosenTreatment;
+                          });
+                        },
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                              color: kGreen,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Center(
+                            child: Text(
+                              "+",
+                              style: TextStyle(
+                                  fontSize: 25, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      )
+                          : SizedBox()
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 ...List.generate(
                   widget.bookingDetailSteps.data.length,
-                  (index) => ProcessStepSection(
-                    status: widget.bookingDetailSteps.data[index].statusBooking,
-                    date: widget.bookingDetailSteps.data[index]
-                                .dateBooking ==
+                      (index) =>
+                      ProcessStepSection(
+                        status: widget.bookingDetailSteps.data[index]
+                            .statusBooking,
+                        date: widget.bookingDetailSteps.data[index]
+                            .dateBooking ==
                             null
-                        ? "Chưa đặt lịch"
-                        : MyHelper.getUserDate(widget.bookingDetailSteps.data[index].dateBooking) +
+                            ? "Chưa đặt lịch"
+                            : MyHelper.getUserDate(widget
+                            .bookingDetailSteps.data[index].dateBooking) +
                             " Lúc " +
-                        widget.bookingDetailSteps.data[index]
-                                .startTime
+                            widget.bookingDetailSteps.data[index].startTime
                                 .substring(0, 5),
-                    stepName: widget.bookingDetailSteps.data[index]
-                                .treatmentService ==
+                        stepName: widget.bookingDetailSteps.data[index]
+                            .treatmentService ==
                             null
-                        ? "Tư Vấn"
-                        : widget.bookingDetailSteps.data[index]
-                            .treatmentService.spaService.name,
-                  ),
+                            ? "Tư Vấn"
+                            : widget.bookingDetailSteps.data[index]
+                            .treatmentService
+                            .spaService.name,
+                      ),
                 ),
+                _treatmentInstance != null ?
+                ProcessStepSectionForConsultant(
+                  treatmentInstance: _treatmentInstance,
+                  consultantId: widget.consultantId,
+                  spaId:widget.spaId,
+                  customerId:widget.customerId,
+                  bookingDetailId: widget.bookingDetailSteps.data[0].bookingDetail.id,
+                )
+                    : SizedBox()
               ],
             ),
           )
         ],
       ),
+    );
+  }
+}
+
+class ProcessStepSectionForConsultant extends StatelessWidget {
+  final int consultantId;
+  final int customerId;
+  final int spaId;
+  final int bookingDetailId;
+  final TreatmentInstance treatmentInstance;
+
+  const ProcessStepSectionForConsultant(
+      {Key key, this.treatmentInstance, this.consultantId, this.customerId, this.spaId, this.bookingDetailId})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ...List.generate(
+            treatmentInstance.treatmentservices.length,
+                (index) =>
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 5),
+                  padding: EdgeInsets.only(
+                      top: 5, bottom: 5, left: 10, right: 20),
+                  height: 80,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey[400],
+                        blurRadius: 4,
+                        offset: Offset(4, 4), // Shadow position
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "bước ${index + 1}: " + treatmentInstance
+                                .treatmentservices[index].spaService.name,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          Text(
+                              treatmentInstance.treatmentservices[index]
+                                  .spaService.description
+                          )
+                        ],
+                      ),
+                      index == 0 ?
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                BookingForFirstStepScreen(
+                                  consultantId: consultantId,
+                                  customerId:customerId,
+                                  spaId:spaId,
+                                  spaTreatmentId: treatmentInstance.id,
+                                  bookingDetailId: bookingDetailId,
+                                )),
+                          );
+                        },
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                              color: kGreen,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Center(
+                            child: Icon(
+                              Icons.schedule_outlined,
+                              color: Colors.white,
+                              size: 17.0,
+                            ),
+                          ),
+                        ),
+                      ) : SizedBox(),
+                    ],
+                  ),
+                ))
+      ],
     );
   }
 }
@@ -193,8 +387,8 @@ class ProcessStepSection extends StatelessWidget {
                 color: status == "FINISH"
                     ? kGreen
                     : status == "PENDING"
-                        ? Colors.black
-                        : kYellow,
+                    ? Colors.black
+                    : kYellow,
               ),
             ),
             SizedBox(
@@ -204,14 +398,14 @@ class ProcessStepSection extends StatelessWidget {
               status == "FINISH"
                   ? "$stepName (Đã hoàn tất)"
                   : status == "PENDING"
-                      ? stepName
-                      : "$stepName (Đang chờ...)",
+                  ? stepName
+                  : "$stepName (Đang chờ...)",
               style: TextStyle(
                   color: status == "FINISH"
                       ? kGreen
                       : status == "PENDING"
-                          ? Colors.black
-                          : kYellow,
+                      ? Colors.black
+                      : kYellow,
                   fontSize: 17),
             ),
           ],

@@ -4,8 +4,9 @@ import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/bo
 import 'package:spa_and_beauty_staff/constants.dart';
 
 class CustomerProcessDetailScreen extends StatefulWidget {
-  const CustomerProcessDetailScreen({Key key, this.bookingDetail}) : super(key: key);
+  const CustomerProcessDetailScreen({Key key, this.bookingDetail, this.customerId}) : super(key: key);
   final BookingDetailInstance bookingDetail;
+  final int customerId;
   @override
   _CustomerProcessDetailScreenState createState() => _CustomerProcessDetailScreenState();
 }
@@ -14,6 +15,7 @@ class _CustomerProcessDetailScreenState extends State<CustomerProcessDetailScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         iconTheme: IconThemeData(
             color: kPrimaryColor
@@ -23,7 +25,7 @@ class _CustomerProcessDetailScreenState extends State<CustomerProcessDetailScree
         ),
         centerTitle: true,
       ),
-      body: Body(bookingDetail: widget.bookingDetail,),
+      body: Body(bookingDetail: widget.bookingDetail,customerId: widget.customerId,),
     );
   }
 }
