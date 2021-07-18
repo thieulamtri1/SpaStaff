@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
@@ -14,19 +16,32 @@ class _calendarPageState extends State<calendarPage> {
   CalendarController _calendarController;
   DateTime selectedDay = DateTime.now();
   Schedule StaffSchedule;
+  ScheduleConsultant ConsultantSchedule;
   int staffId;
   String value;
   bool loading = true;
 
   getData(date) {
-    StaffScheduleService.getStaffSchedule(MyApp.storage.getItem("staffId"),
-            date, MyApp.storage.getItem("token"))
-        .then((value) => {
-              setState(() {
-                StaffSchedule = value;
-                loading = false;
-              })
-            });
+    if(MyApp.storage.getItem("role") == "STAFF"){
+      StaffScheduleService.getStaffSchedule(MyApp.storage.getItem("staffId"),
+          date, MyApp.storage.getItem("token"))
+          .then((value) => {
+        setState(() {
+          StaffSchedule = value;
+          loading = false;
+        })
+      });
+    }else{
+      StaffScheduleService.getConsultantSchedule(MyApp.storage.getItem("staffId"),
+          date, MyApp.storage.getItem("token"))
+          .then((value) => {
+        setState(() {
+          ConsultantSchedule = value;
+          loading = false;
+        })
+      });
+    }
+
   }
 
   // @override
@@ -88,105 +103,126 @@ class _calendarPageState extends State<calendarPage> {
             SizedBox(
               height: 5,
             ),
-            ListToDo2(selectedDay.toString().substring(0, 10)),
+            MyApp.storage.getItem("role") == "STAFF" ? ListToDoStaff(selectedDay.toString().substring(0, 10)) : ListToDoConsultant(selectedDay.toString().substring(0, 10)) ,
           ],
         ),
       ),
     );
   }
 
-  // Expanded ListToDo(String date) {
-  //   return Expanded(
-  //     child: Container(
-  //       padding: EdgeInsets.all(20),
-  //       decoration: BoxDecoration(
-  //           borderRadius: BorderRadius.only(
-  //               topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-  //           color: Colors.white),
-  //       child: Container(
-  //         child: SingleChildScrollView(
-  //           child: Column(
-  //             children: [
-  //               Row(
-  //                 children: [
-  //                   Text(
-  //                     date,
-  //                     style: TextStyle(color: Colors.grey),
-  //                   )
-  //                 ],
-  //               ),
-  //               SizedBox(
-  //                 height: 15,
-  //               ),
-  //               Column(
-  //                 children: [
-  //                   ...List.generate(
-  //                       listStaffSchedule.length,
-  //                       (index) => date ==
-  //                               listStaffSchedule[index]
-  //                                   .day
-  //                                   .toString()
-  //                                   .substring(0, 10)
-  //                           ? Column(
-  //                               children: [
-  //                                 ...List.generate(
-  //                                     listStaffSchedule[index]
-  //                                         .listStaffScheduleForSlots
-  //                                         .length,
-  //                                     (index1) => listStaffSchedule[index]
-  //                                                 .listStaffScheduleForSlots[
-  //                                                     index1]
-  //                                                 .bookingId !=
-  //                                             null
-  //                                         ? dayTask(
-  //                                             time: listStaffSchedule[index]
-  //                                                 .listStaffScheduleForSlots[
-  //                                                     index1]
-  //                                                 .slotTime
-  //                                                 .toString(),
-  //                                             customerName: listStaffSchedule[
-  //                                                     index]
-  //                                                 .listStaffScheduleForSlots[
-  //                                                     index1]
-  //                                                 .customerInfo
-  //                                                 .fullname,
-  //                                             service: listStaffSchedule[index]
-  //                                                 .listStaffScheduleForSlots[
-  //                                                     index1]
-  //                                                 .service
-  //                                                 .name,
-  //                                             phone: listStaffSchedule[index]
-  //                                                 .listStaffScheduleForSlots[
-  //                                                     index1]
-  //                                                 .customerInfo
-  //                                                 .street,
-  //                                           )
-  //                                         : Container())
-  //                               ],
-  //                             )
-  //                           : Container())
-  //                 ],
-  //               )
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  ListToDo2(String date) {
+  ListToDoConsultant(String date) {
     getData(date);
-    if (loading) {
+    if(loading){
       return Center(
-        child: Text(
-          "Đang load đợi xíu",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+          child: SpinKitWave(
+            color: Colors.white,
+            size: 50,
+          )
+      );
+    } else {
+      if (ConsultantSchedule.data.length == 0) {
+        return Expanded(
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40)),
+                color: Colors.white),
+            child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          date,
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Column(
+                      children: [],
+                    )
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
+        );
+      } else if (ConsultantSchedule.data.length != 0) {
+        return Expanded(
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40)),
+                color: Colors.white),
+            child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          date,
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Column(
+                      children: [
+                        ...List.generate(
+                            ConsultantSchedule.data.length,
+                                (index) => Column(
+                              children: [
+                                dayTask(
+                                    time:
+                                    ConsultantSchedule.data[index].startTime,
+                                    customerName: ConsultantSchedule
+                                        .data[index]
+                                        .bookingDetail
+                                        .booking
+                                        .customer
+                                        .user
+                                        .fullname,
+                                    phone: ConsultantSchedule
+                                        .data[index]
+                                        .bookingDetail
+                                        .booking
+                                        .customer
+                                        .user
+                                        .phone,
+                                    service: "Trị mụn")
+                              ],
+                            ))
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  ListToDoStaff(String date) {
+    getData(date);
+    if(loading){
+      return Center(
+          child: SpinKitWave(
+            color: Colors.white,
+            size: 50,
+          )
       );
     } else {
       if (StaffSchedule.data.length == 0) {

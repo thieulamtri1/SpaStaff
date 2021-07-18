@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/DateOff.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
@@ -10,6 +11,8 @@ import '../main.dart';
 class StaffScheduleService{
   static final String urlStaffSchedule =
       "https://swp490spa.herokuapp.com/api/staff/workingofstaff/findbydatechosen/";
+  static final String urlConsultantSchedule =
+      "https://swp490spa.herokuapp.com/api/consultant/workingofconsultant/findbydatechosen/";
   static final String dateChosen =
       "?dateChosen=";
   static final String urlDateOff =
@@ -34,6 +37,26 @@ class StaffScheduleService{
         throw Exception('Failed to load staffSchedule');
       }
     }
+
+  static Future<ScheduleConsultant> getConsultantSchedule(id, date, token) async {
+    try {
+      final response = await http.get(Uri.parse(urlConsultantSchedule + id.toString() + dateChosen + date), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        print("lấy lịch Thành công");
+        ScheduleConsultant consultantSchedule = scheduleConsultantFromJson(utf8.decode(response.bodyBytes));
+        return consultantSchedule;
+      } else {
+        throw Exception('Failed to load staffSchedule');
+      }
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to load staffSchedule');
+    }
+  }
 
   Future<http.Response> sendDateOff(token, dateOff) {
     return http.post(

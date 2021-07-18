@@ -22,7 +22,6 @@ class _BodyState extends State<Body> {
   getData() async {
     await MyApp.storage.ready;
     staffId = MyApp.storage.getItem("staffId");
-    staffId = 4;
     getChatRoom();
     print("StaffID: $staffId");
   }
