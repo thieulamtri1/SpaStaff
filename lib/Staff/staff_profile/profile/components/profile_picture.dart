@@ -26,21 +26,17 @@ class _ProfilePicState extends State<ProfilePic> {
 
   getStaffProfile() async{
     if(MyApp.storage.getItem("role") == "CONSULTANT"){
-      await StaffService.getConsultantProfileById(
-          MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
-          .then((staff) => {
+      await StaffService.getConsultantProfileById(MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+          .then((value) => {
         setState(() {
-          staff.data.user.image = image;
-          MyApp.storage.setItem('email', staff.data.user.email);
+          image = value.data.user.image;
         }),
       });
     }else{
-      await StaffService.getStaffProfileById(
-          MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
-          .then((staff) => {
+      await StaffService.getStaffProfileById(MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+          .then((value) => {
         setState(() {
-          staff.data.user.image = image;
-          MyApp.storage.setItem('email', staff.data.user.email);
+          image = value.data.user.image;
         }),
       });
     }

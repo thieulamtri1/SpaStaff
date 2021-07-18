@@ -49,6 +49,7 @@ class _ProfileFormState extends State<ProfileForm> {
         setState(() {
           staff = value;
           loading = false;
+          print("IMAGE nè duma: " + staff.data.user.image);
         }),
       });
     }

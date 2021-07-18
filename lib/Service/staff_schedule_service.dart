@@ -18,7 +18,7 @@ class StaffScheduleService{
   static final String urlDateOff =
       "https://swp490spa.herokuapp.com/api/staff/dateoff/create";
 
-  static Future<Schedule> getStaffSchedule(id, date, token) async {
+  static Future<ScheduleStaff> getStaffSchedule(id, date, token) async {
       try {
         final response = await http.get(Uri.parse(urlStaffSchedule + id.toString() + dateChosen + date), headers: {
           'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ class StaffScheduleService{
         print("URL: " + urlStaffSchedule + id.toString() + dateChosen + date);
         print("status code: " + response.statusCode.toString());
         if (response.statusCode == 200) {
-          Schedule staffSchedule = scheduleFromJson(utf8.decode(response.bodyBytes));
+          ScheduleStaff staffSchedule = scheduleStaffFromJson(utf8.decode(response.bodyBytes));
           return staffSchedule;
         } else {
           throw Exception('Failed to load staffSchedule');

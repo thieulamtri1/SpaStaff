@@ -1,15 +1,15 @@
 // To parse this JSON data, do
 //
-//     final schedule = scheduleFromJson(jsonString);
+//     final scheduleStaff = scheduleStaffFromJson(jsonString);
 
 import 'dart:convert';
 
-Schedule scheduleFromJson(String str) => Schedule.fromJson(json.decode(str));
+ScheduleStaff scheduleStaffFromJson(String str) => ScheduleStaff.fromJson(json.decode(str));
 
-String scheduleToJson(Schedule data) => json.encode(data.toJson());
+String scheduleStaffToJson(ScheduleStaff data) => json.encode(data.toJson());
 
-class Schedule {
-  Schedule({
+class ScheduleStaff {
+  ScheduleStaff({
     this.code,
     this.status,
     this.data,
@@ -21,7 +21,7 @@ class Schedule {
   List<Datum> data;
   Paging paging;
 
-  factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
+  factory ScheduleStaff.fromJson(Map<String, dynamic> json) => ScheduleStaff(
     code: json["code"],
     status: json["status"],
     data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
@@ -45,7 +45,7 @@ class Datum {
     this.endTime,
     this.bookingPrice,
     this.statusBooking,
-    this.reasonCancel,
+    this.reason,
     this.isConsultation,
     this.treatmentService,
     this.staff,
@@ -59,11 +59,11 @@ class Datum {
   String endTime;
   double bookingPrice;
   String statusBooking;
-  dynamic reasonCancel;
+  dynamic reason;
   String isConsultation;
   TreatmentService treatmentService;
-  Staff staff;
-  dynamic consultant;
+  Consultant staff;
+  Consultant consultant;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     bookingDetail: BookingDetail.fromJson(json["bookingDetail"]),
@@ -73,11 +73,11 @@ class Datum {
     endTime: json["end_time"],
     bookingPrice: json["booking_price"],
     statusBooking: json["status_booking"],
-    reasonCancel: json["reason_cancel"],
+    reason: json["reason"],
     isConsultation: json["is_consultation"],
     treatmentService: TreatmentService.fromJson(json["treatment_service"]),
-    staff: Staff.fromJson(json["staff"]),
-    consultant: json["consultant"],
+    staff: Consultant.fromJson(json["staff"]),
+    consultant: Consultant.fromJson(json["consultant"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -88,11 +88,11 @@ class Datum {
     "end_time": endTime,
     "booking_price": bookingPrice,
     "status_booking": statusBooking,
-    "reason_cancel": reasonCancel,
+    "reason": reason,
     "is_consultation": isConsultation,
     "treatment_service": treatmentService.toJson(),
     "staff": staff.toJson(),
-    "consultant": consultant,
+    "consultant": consultant.toJson(),
   };
 }
 
@@ -110,7 +110,7 @@ class BookingDetail {
 
   int id;
   int totalTime;
-  Type type;
+  String type;
   double totalPrice;
   String statusBooking;
   Booking booking;
@@ -120,7 +120,7 @@ class BookingDetail {
   factory BookingDetail.fromJson(Map<String, dynamic> json) => BookingDetail(
     id: json["id"],
     totalTime: json["totalTime"],
-    type: typeValues.map[json["type"]],
+    type: json["type"],
     totalPrice: json["totalPrice"],
     statusBooking: json["statusBooking"],
     booking: Booking.fromJson(json["booking"]),
@@ -131,7 +131,7 @@ class BookingDetail {
   Map<String, dynamic> toJson() => {
     "id": id,
     "totalTime": totalTime,
-    "type": typeValues.reverse[type],
+    "type": type,
     "totalPrice": totalPrice,
     "statusBooking": statusBooking,
     "booking": booking.toJson(),
@@ -185,22 +185,26 @@ class Customer {
     this.id,
     this.customType,
     this.user,
+    this.tokenFcm,
   });
 
   int id;
   String customType;
   User user;
+  String tokenFcm;
 
   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
     id: json["id"],
     customType: json["customType"],
     user: User.fromJson(json["user"]),
+    tokenFcm: json["tokenFCM"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "customType": customType,
     "user": user.toJson(),
+    "tokenFCM": tokenFcm,
   };
 }
 
@@ -234,11 +238,11 @@ class User {
     fullname: json["fullname"],
     phone: json["phone"],
     password: json["password"],
-    gender: json["gender"] == null ? null : json["gender"],
-    birthdate: json["birthdate"] == null ? null : DateTime.parse(json["birthdate"]),
-    email: json["email"] == null ? null : json["email"],
+    gender: json["gender"],
+    birthdate: DateTime.parse(json["birthdate"]),
+    email: json["email"],
     image: json["image"] == null ? null : json["image"],
-    address: json["address"] == null ? null : json["address"],
+    address: json["address"],
     active: json["active"],
   );
 
@@ -247,11 +251,11 @@ class User {
     "fullname": fullname,
     "phone": phone,
     "password": password,
-    "gender": gender == null ? null : gender,
-    "birthdate": birthdate == null ? null : "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
-    "email": email == null ? null : email,
+    "gender": gender,
+    "birthdate": "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
+    "email": email,
     "image": image == null ? null : image,
-    "address": address == null ? null : address,
+    "address": address,
     "active": active,
   };
 }
@@ -272,69 +276,45 @@ class Spa {
   });
 
   int id;
-  SpaName name;
+  String name;
   dynamic image;
-  Street street;
+  String street;
   String district;
-  City city;
+  String city;
   String latitude;
   String longtitude;
   String createBy;
   DateTime createTime;
-  Status status;
+  String status;
 
   factory Spa.fromJson(Map<String, dynamic> json) => Spa(
     id: json["id"],
-    name: spaNameValues.map[json["name"]],
+    name: json["name"],
     image: json["image"],
-    street: streetValues.map[json["street"]],
+    street: json["street"],
     district: json["district"],
-    city: cityValues.map[json["city"]],
+    city: json["city"],
     latitude: json["latitude"],
     longtitude: json["longtitude"],
     createBy: json["createBy"],
     createTime: DateTime.parse(json["createTime"]),
-    status: statusValues.map[json["status"]],
+    status: json["status"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": spaNameValues.reverse[name],
+    "name": name,
     "image": image,
-    "street": streetValues.reverse[street],
+    "street": street,
     "district": district,
-    "city": cityValues.reverse[city],
+    "city": city,
     "latitude": latitude,
     "longtitude": longtitude,
     "createBy": createBy,
     "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
-    "status": statusValues.reverse[status],
+    "status": status,
   };
 }
-
-enum City { H_CH_MINH }
-
-final cityValues = EnumValues({
-  "Hồ Chí Minh": City.H_CH_MINH
-});
-
-enum SpaName { SPA_A }
-
-final spaNameValues = EnumValues({
-  "Spa A": SpaName.SPA_A
-});
-
-enum Status { AVAILABLE }
-
-final statusValues = EnumValues({
-  "AVAILABLE": Status.AVAILABLE
-});
-
-enum Street { THE_64_A_TRNG_NH }
-
-final streetValues = EnumValues({
-  "64A Trương Định": Street.THE_64_A_TRNG_NH
-});
 
 class SpaPackage {
   SpaPackage({
@@ -347,44 +327,40 @@ class SpaPackage {
     this.createTime,
     this.createBy,
     this.category,
-    this.spa,
   });
 
   int id;
-  SpaPackageName name;
+  String name;
   String description;
   String image;
-  Type type;
-  Status status;
+  String type;
+  String status;
   DateTime createTime;
   int createBy;
   Category category;
-  Spa spa;
 
   factory SpaPackage.fromJson(Map<String, dynamic> json) => SpaPackage(
     id: json["id"],
-    name: spaPackageNameValues.map[json["name"]],
+    name: json["name"],
     description: json["description"],
     image: json["image"],
-    type: typeValues.map[json["type"]],
-    status: statusValues.map[json["status"]],
+    type: json["type"],
+    status: json["status"],
     createTime: DateTime.parse(json["createTime"]),
     createBy: json["create_by"],
     category: Category.fromJson(json["category"]),
-    spa: Spa.fromJson(json["spa"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": spaPackageNameValues.reverse[name],
+    "name": name,
     "description": description,
     "image": image,
-    "type": typeValues.reverse[type],
-    "status": statusValues.reverse[status],
+    "type": type,
+    "status": status,
     "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
     "create_by": createBy,
     "category": category.toJson(),
-    "spa": spa.toJson(),
   };
 }
 
@@ -397,69 +373,36 @@ class Category {
     this.createTime,
     this.createBy,
     this.status,
-    this.spa,
   });
 
   int id;
-  CategoryName name;
+  String name;
   String icon;
-  Description description;
+  String description;
   DateTime createTime;
   int createBy;
-  Status status;
-  Spa spa;
+  String status;
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
     id: json["id"],
-    name: categoryNameValues.map[json["name"]],
+    name: json["name"],
     icon: json["icon"],
-    description: descriptionValues.map[json["description"]],
+    description: json["description"],
     createTime: DateTime.parse(json["createTime"]),
     createBy: json["createBy"],
-    status: statusValues.map[json["status"]],
-    spa: Spa.fromJson(json["spa"]),
+    status: json["status"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": categoryNameValues.reverse[name],
+    "name": name,
     "icon": icon,
-    "description": descriptionValues.reverse[description],
+    "description": description,
     "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
     "createBy": createBy,
-    "status": statusValues.reverse[status],
-    "spa": spa.toJson(),
+    "status": status,
   };
 }
-
-enum Description { SKIN, FACE }
-
-final descriptionValues = EnumValues({
-  "Face": Description.FACE,
-  "Skin": Description.SKIN
-});
-
-enum CategoryName { IU_TR_DA, FACE }
-
-final categoryNameValues = EnumValues({
-  "Face": CategoryName.FACE,
-  "Điều trị da": CategoryName.IU_TR_DA
-});
-
-enum SpaPackageName { TR_MN, PACKAGE_B1, TR_NM, PACKAGE_C1 }
-
-final spaPackageNameValues = EnumValues({
-  "Package B1": SpaPackageName.PACKAGE_B1,
-  "Package C1": SpaPackageName.PACKAGE_C1,
-  "Trị mụn": SpaPackageName.TR_MN,
-  "Trị nám": SpaPackageName.TR_NM
-});
-
-enum Type { ONESTEP }
-
-final typeValues = EnumValues({
-  "ONESTEP": Type.ONESTEP
-});
 
 class SpaTreatment {
   SpaTreatment({
@@ -471,7 +414,6 @@ class SpaTreatment {
     this.createTime,
     this.createBy,
     this.spaPackage,
-    this.spa,
   });
 
   int id;
@@ -482,7 +424,6 @@ class SpaTreatment {
   DateTime createTime;
   int createBy;
   SpaPackage spaPackage;
-  Spa spa;
 
   factory SpaTreatment.fromJson(Map<String, dynamic> json) => SpaTreatment(
     id: json["id"],
@@ -493,7 +434,6 @@ class SpaTreatment {
     createTime: DateTime.parse(json["createTime"]),
     createBy: json["createBy"],
     spaPackage: SpaPackage.fromJson(json["spaPackage"]),
-    spa: Spa.fromJson(json["spa"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -505,31 +445,38 @@ class SpaTreatment {
     "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
     "createBy": createBy,
     "spaPackage": spaPackage.toJson(),
-    "spa": spa.toJson(),
   };
 }
 
-class Staff {
-  Staff({
+class Consultant {
+  Consultant({
     this.id,
     this.user,
     this.spa,
+    this.tokenFcm,
+    this.status,
   });
 
   int id;
   User user;
   Spa spa;
+  String tokenFcm;
+  String status;
 
-  factory Staff.fromJson(Map<String, dynamic> json) => Staff(
+  factory Consultant.fromJson(Map<String, dynamic> json) => Consultant(
     id: json["id"],
     user: User.fromJson(json["user"]),
     spa: Spa.fromJson(json["spa"]),
+    tokenFcm: json["tokenFCM"],
+    status: json["status"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "user": user.toJson(),
     "spa": spa.toJson(),
+    "tokenFCM": tokenFcm,
+    "status": status,
   };
 }
 
@@ -569,7 +516,6 @@ class SpaService {
     this.durationMin,
     this.createTime,
     this.createBy,
-    this.spa,
     this.spaPackages,
   });
 
@@ -578,12 +524,11 @@ class SpaService {
   String image;
   String description;
   double price;
-  Status status;
-  Type type;
+  String status;
+  String type;
   int durationMin;
   DateTime createTime;
   String createBy;
-  Spa spa;
   List<SpaPackage> spaPackages;
 
   factory SpaService.fromJson(Map<String, dynamic> json) => SpaService(
@@ -592,12 +537,11 @@ class SpaService {
     image: json["image"],
     description: json["description"],
     price: json["price"],
-    status: statusValues.map[json["status"]],
-    type: typeValues.map[json["type"]],
+    status: json["status"],
+    type: json["type"],
     durationMin: json["durationMin"],
     createTime: DateTime.parse(json["createTime"]),
     createBy: json["createBy"],
-    spa: Spa.fromJson(json["spa"]),
     spaPackages: List<SpaPackage>.from(json["spaPackages"].map((x) => SpaPackage.fromJson(x))),
   );
 
@@ -607,12 +551,11 @@ class SpaService {
     "image": image,
     "description": description,
     "price": price,
-    "status": statusValues.reverse[status],
-    "type": typeValues.reverse[type],
+    "status": status,
+    "type": type,
     "durationMin": durationMin,
     "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
     "createBy": createBy,
-    "spa": spa.toJson(),
     "spaPackages": List<dynamic>.from(spaPackages.map((x) => x.toJson())),
   };
 }
@@ -643,18 +586,4 @@ class Paging {
     "itemPerPage": itemPerPage,
     "totalItem": totalItem,
   };
-}
-
-class EnumValues<T> {
-  Map<String, T> map;
-  Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    if (reverseMap == null) {
-      reverseMap = map.map((k, v) => new MapEntry(v, k));
-    }
-    return reverseMap;
-  }
 }

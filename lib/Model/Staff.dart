@@ -133,7 +133,7 @@ class User {
   dynamic gender;
   dynamic birthdate;
   dynamic email;
-  dynamic image;
+  String image;
   dynamic address;
   bool active;
 

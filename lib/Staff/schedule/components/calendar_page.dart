@@ -15,33 +15,34 @@ class calendarPage extends StatefulWidget {
 class _calendarPageState extends State<calendarPage> {
   CalendarController _calendarController;
   DateTime selectedDay = DateTime.now();
-  Schedule StaffSchedule;
+  ScheduleStaff StaffSchedule;
   ScheduleConsultant ConsultantSchedule;
   int staffId;
   String value;
   bool loading = true;
 
   getData(date) {
-    if(MyApp.storage.getItem("role") == "STAFF"){
+    if (MyApp.storage.getItem("role") == "STAFF") {
       StaffScheduleService.getStaffSchedule(MyApp.storage.getItem("staffId"),
-          date, MyApp.storage.getItem("token"))
+              date, MyApp.storage.getItem("token"))
           .then((value) => {
-        setState(() {
-          StaffSchedule = value;
-          loading = false;
-        })
-      });
-    }else{
-      StaffScheduleService.getConsultantSchedule(MyApp.storage.getItem("staffId"),
-          date, MyApp.storage.getItem("token"))
+                setState(() {
+                  StaffSchedule = value;
+                  loading = false;
+                })
+              });
+    } else {
+      StaffScheduleService.getConsultantSchedule(
+              MyApp.storage.getItem("staffId"),
+              date,
+              MyApp.storage.getItem("token"))
           .then((value) => {
-        setState(() {
-          ConsultantSchedule = value;
-          loading = false;
-        })
-      });
+                setState(() {
+                  ConsultantSchedule = value;
+                  loading = false;
+                })
+              });
     }
-
   }
 
   // @override
@@ -103,7 +104,9 @@ class _calendarPageState extends State<calendarPage> {
             SizedBox(
               height: 5,
             ),
-            MyApp.storage.getItem("role") == "STAFF" ? ListToDoStaff(selectedDay.toString().substring(0, 10)) : ListToDoConsultant(selectedDay.toString().substring(0, 10)) ,
+            MyApp.storage.getItem("role") == "STAFF"
+                ? ListToDoStaff(selectedDay.toString().substring(0, 10))
+                : ListToDoConsultant(selectedDay.toString().substring(0, 10)),
           ],
         ),
       ),
@@ -112,13 +115,12 @@ class _calendarPageState extends State<calendarPage> {
 
   ListToDoConsultant(String date) {
     getData(date);
-    if(loading){
+    if (loading) {
       return Center(
           child: SpinKitWave(
-            color: Colors.white,
-            size: 50,
-          )
-      );
+        color: Colors.white,
+        size: 50,
+      ));
     } else {
       if (ConsultantSchedule.data.length == 0) {
         return Expanded(
@@ -181,28 +183,28 @@ class _calendarPageState extends State<calendarPage> {
                       children: [
                         ...List.generate(
                             ConsultantSchedule.data.length,
-                                (index) => Column(
-                              children: [
-                                dayTask(
-                                    time:
-                                    ConsultantSchedule.data[index].startTime,
-                                    customerName: ConsultantSchedule
-                                        .data[index]
-                                        .bookingDetail
-                                        .booking
-                                        .customer
-                                        .user
-                                        .fullname,
-                                    phone: ConsultantSchedule
-                                        .data[index]
-                                        .bookingDetail
-                                        .booking
-                                        .customer
-                                        .user
-                                        .phone,
-                                    service: "Trị mụn")
-                              ],
-                            ))
+                            (index) => Column(
+                                  children: [
+                                    dayTask(
+                                        time: ConsultantSchedule
+                                            .data[index].startTime,
+                                        customerName: ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .fullname,
+                                        phone: ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .phone,
+                                        service: "Trị mụn")
+                                  ],
+                                ))
                       ],
                     )
                   ],
@@ -217,13 +219,12 @@ class _calendarPageState extends State<calendarPage> {
 
   ListToDoStaff(String date) {
     getData(date);
-    if(loading){
+    if (loading) {
       return Center(
           child: SpinKitWave(
-            color: Colors.white,
-            size: 50,
-          )
-      );
+        color: Colors.white,
+        size: 50,
+      ));
     } else {
       if (StaffSchedule.data.length == 0) {
         return Expanded(
@@ -289,8 +290,10 @@ class _calendarPageState extends State<calendarPage> {
                             (index) => Column(
                                   children: [
                                     dayTask(
-                                        time:
-                                            StaffSchedule.data[index].startTime,
+                                        time: StaffSchedule
+                                            .data[index].startTime
+                                            .toString()
+                                            .substring(0, 5),
                                         customerName: StaffSchedule
                                             .data[index]
                                             .bookingDetail
@@ -305,7 +308,8 @@ class _calendarPageState extends State<calendarPage> {
                                             .customer
                                             .user
                                             .phone,
-                                        service: "Trị mụn")
+                                        service: StaffSchedule.data[index]
+                                            .treatmentService.spaService.name)
                                   ],
                                 ))
                       ],
