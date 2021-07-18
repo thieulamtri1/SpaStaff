@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
@@ -14,13 +17,11 @@ import '../../../form_error.dart';
 import '../../../main.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 
-
-
 class Body extends StatelessWidget {
-
   final bool isMainLogin;
 
   const Body({Key key, @required this.isMainLogin}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -70,21 +71,24 @@ class _SignFormState extends State<SignForm> {
   final List<String> errors = [];
   FirebaseMethod firebaseMethod = FirebaseMethod();
   var jsonResponse;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  void onClickSignIn(String phone, String password) async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-    }
-
+  loginAsStaff(phone, password, tokenFCM) async{
+    print("Login as STaff");
     String url = "https://swp490spa.herokuapp.com/api/public/login";
-
     final res = await http.post(Uri.parse(url),
         headers: {
           "accept": "application/json",
           "content-type": "application/json"
         },
-        body: jsonEncode(  {"phone": phone, "password": password, "role": "CONSULTANT"} ));
-
+        body: jsonEncode(
+            {"phone": phone,
+              "password": password,
+              "role": "STAFF",
+              "tokenFCM": tokenFCM,
+            }));
     if (res.statusCode == 200) {
       jsonResponse = json.decode(res.body);
       if (jsonResponse != null) {
@@ -95,19 +99,17 @@ class _SignFormState extends State<SignForm> {
           await MyApp.storage.ready;
           MyApp.storage.setItem("token", jsonResponse['jsonWebToken']);
           MyApp.storage.setItem("staffId", jsonResponse['idAccount']);
-
-          setUser();
-
-
-          if(MyApp.storage.getItem("image") == null){
-            MyApp.storage.setItem("image", "https://huyhoanhotel.com/wp-content/uploads/2016/05/765-default-avatar.png");
-          }
-          print("Image nè: ${MyApp.storage.getItem("image")}");
+          MyApp.storage.setItem("role", "STAFF");
+          MyApp.storage.setItem("password", password);
 
           widget.isMainLogin
               ? Navigator.pushNamed(context, BottomNavigation.routeName)
-              : Navigator.pop(context, );
-        } else {
+              : Navigator.pop(
+            context,
+          );
+        }
+        else
+        {
           if (jsonResponse['errorCode'] == 1 &&
               !errors.contains(kWrongPhoneNumberError)) {
             errors.add(kWrongPhoneNumberError);
@@ -126,27 +128,118 @@ class _SignFormState extends State<SignForm> {
     }
   }
 
-  setUser() async{
-    await StaffService.getStaffProfileById(MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token")).then((staff) => {
+  void onClickSignIn(String phone, String password, String tokenFCM) async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+    }
+    String url = "https://swp490spa.herokuapp.com/api/public/login";
+
+    final res = await http.post(Uri.parse(url),
+        headers: {
+          "accept": "application/json",
+          "content-type": "application/json"
+        },
+        body: jsonEncode(
+            {"phone": phone,
+              "password": password,
+              "role": "CONSULTANT",
+              "tokenFCM": tokenFCM,
+            }));
+    if (res.statusCode == 200) {
+      jsonResponse = json.decode(res.body);
+      if (jsonResponse != null) {
+        setState(() {
+          isLoading = false;
+        });
+        if (jsonResponse['errorMessage'] == null) {
+          await MyApp.storage.ready;
+          MyApp.storage.setItem("token", jsonResponse['jsonWebToken']);
+          MyApp.storage.setItem("staffId", jsonResponse['idAccount']);
+          MyApp.storage.setItem("role", "CONSULTANT");
+          MyApp.storage.setItem("password", password);
+
+          widget.isMainLogin
+              ? Navigator.pushNamed(context, BottomNavigation.routeName)
+              : Navigator.pop(
+                  context,
+                );
+        }
+        else
+          {
+            if(jsonResponse['jsonWebToken'] == null){
+              loginAsStaff(phone, password, tokenFCM);
+            }
+          if (jsonResponse['errorCode'] == 1 &&
+              !errors.contains(kWrongPhoneNumberError)) {
+            errors.add(kWrongPhoneNumberError);
+          }
+          if (jsonResponse['errorCode'] == 2 &&
+              !errors.contains(kInvalidPasswordError)) {
+            errors.add(kInvalidPasswordError);
+            errors.remove(kWrongPhoneNumberError);
+          }
+        }
+      }
+    } else {
+
       setState(() {
-        MyApp.storage.setItem("fullname", staff.data.user.fullname);
-        MyApp.storage.setItem("phone", staff.data.user.phone);
-        MyApp.storage.setItem("password", staff.data.user.password);
-        MyApp.storage.setItem("gender", staff.data.user.gender);
-        MyApp.storage.setItem("birthdate", staff.data.user.birthdate);
-        MyApp.storage.setItem("email", staff.data.user.email);
-        MyApp.storage.setItem("image", staff.data.user.image);
-        MyApp.storage.setItem("address", staff.data.user.address);
-      }),
+        isLoading = false;
+      });
+    }
+  }
+
+
+  Future showNotification(NotiTitle, NotiBody) async {
+    var androidDetails = new AndroidNotificationDetails(
+        "channelId", "Local Notification", "channelDescription",
+        importance: Importance.high);
+    var iosDetails = new IOSNotificationDetails();
+    var generalNotification =
+        new NotificationDetails(android: androidDetails, iOS: iosDetails);
+    await flutterLocalNotificationsPlugin.show(
+        0, NotiTitle, NotiBody, generalNotification);
+  }
+
+  getToken() async {
+    await Firebase.initializeApp();
+    _firebaseMessaging.getToken().then((value) {
+      print("TokenFCM: $value");
+      MyApp.storage.setItem('tokenFCM', value);
     });
   }
 
-  setEmployee(){
-
+  getNotification() {
+    var initialzationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings =
+        InitializationSettings(android: initialzationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        showNotification(
+            message['notification']['title'], message['notification']['body']);
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        final data = message['data'];
+        String mMessage = data['message'];
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        final data = message['data']['message'];
+        String mMessage = data['message'];
+      },
+    );
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
   }
 
-  setSpa(){
-
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+    getNotification();
   }
 
   @override
@@ -173,7 +266,7 @@ class _SignFormState extends State<SignForm> {
           DefaultButton(
             text: "Đăng nhập",
             press: () {
-              onClickSignIn(phoneNumber, password);
+              onClickSignIn(phoneNumber, password, MyApp.storage.getItem("tokenFCM"));
             },
           ),
           SizedBox(height: 50),
@@ -187,7 +280,7 @@ class _SignFormState extends State<SignForm> {
                 ),
               ),
               GestureDetector(
-                onTap: (){},
+                onTap: () {},
                 child: Text(
                   "Đăng ký ngay.",
                   style: TextStyle(

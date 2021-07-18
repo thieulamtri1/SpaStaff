@@ -119,14 +119,30 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
             ),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          final res = await StaffService().editStaffPassword(
-              MyApp.storage.getItem("token"), newPasswordTextController.text);
-          print(res.body);
-          setState(() {
-            oldPasswordTextController.text == "";
-            newPasswordTextController.text == "";
-            confirmPasswordTextController.text == "";
-          });
+          if(MyApp.storage.getItem('role') == "STAFF"){
+            print("bên staff");
+            final res = await StaffService().editStaffPasswordStaff(
+                MyApp.storage.getItem("token"), newPasswordTextController.text);
+            print(res.body);
+            setState(() {
+              MyApp.storage.setItem("password", newPasswordTextController.text);
+              oldPasswordTextController.clear();
+              newPasswordTextController.clear();
+              confirmPasswordTextController.clear();
+            });
+          }else{
+            print("bên consultant");
+            final res = await StaffService().editStaffPasswordConsultant(
+                MyApp.storage.getItem("token"), newPasswordTextController.text);
+            print(res.body);
+            setState(() {
+              MyApp.storage.setItem("password", newPasswordTextController.text);
+              oldPasswordTextController.clear();
+              newPasswordTextController.clear();
+              confirmPasswordTextController.clear();
+            });
+          }
+
 
         }
         else if(validate() == 1){

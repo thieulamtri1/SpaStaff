@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 
 import '../../../../main.dart';
 
@@ -23,10 +24,29 @@ class _ProfilePicState extends State<ProfilePic> {
     });
   }
 
+  getStaffProfile() async{
+    if(MyApp.storage.getItem("role") == "CONSULTANT"){
+      await StaffService.getConsultantProfileById(MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+          .then((value) => {
+        setState(() {
+          image = value.data.user.image;
+        }),
+      });
+    }else{
+      await StaffService.getStaffProfileById(MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+          .then((value) => {
+        setState(() {
+          image = value.data.user.image;
+        }),
+      });
+    }
+
+  }
+
   @override
   void initState() {
     super.initState();
-
+    getStaffProfile();
   }
 
   @override
@@ -40,7 +60,7 @@ class _ProfilePicState extends State<ProfilePic> {
         children: [
           CircleAvatar(
             backgroundImage: imageFile == null
-                ? NetworkImage(MyApp.storage.getItem("image"))
+                ? NetworkImage(image == null ? "https://thinkingschool.vn/wp-content/uploads/avatars/753/753-bpfull.jpg" : image)
                 : FileImage(File(imageFile.path)),
           ),
           Positioned(

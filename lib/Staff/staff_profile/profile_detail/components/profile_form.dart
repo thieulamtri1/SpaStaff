@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/default_button.dart';
@@ -20,48 +21,68 @@ class _ProfileFormState extends State<ProfileForm> {
   Staff staff;
   String genderChoose;
   DateTime selectedDate;
+  bool loading = true;
 
   TextEditingController fullnameTextController = TextEditingController();
-  TextEditingController districtTextController = TextEditingController();
   TextEditingController streetTextController = TextEditingController();
-  TextEditingController provinceTextController = TextEditingController();
   TextEditingController dateOfBirthTextController = TextEditingController();
   TextEditingController genderTextController = TextEditingController();
 
   void fillText() {
     fullnameTextController =
-        TextEditingController(text: MyApp.storage.getItem("fullname"));
-    districtTextController =
-        TextEditingController(text: MyApp.storage.getItem("address"));
+        TextEditingController(text: staff.data.user.fullname);
     genderTextController =
-        TextEditingController(text: MyApp.storage.getItem("gender"));
-    provinceTextController =
-        TextEditingController(text: MyApp.storage.getItem("address"));
+        TextEditingController(text: staff.data.user.gender);
     streetTextController =
-        TextEditingController(text: MyApp.storage.getItem("address"));
+        TextEditingController(text: staff.data.user.address);
     dateOfBirthTextController =
-        TextEditingController(text: MyApp.storage.getItem("birthdate"));
+        TextEditingController(text: staff.data.user.birthdate.toString().substring(0,10));
   }
 
   getData() async {
     await MyApp.storage.ready;
-    int staffId = MyApp.storage.getItem("staffId");
-    String staffToken = MyApp.storage.getItem("token");
-    await StaffService.getStaffProfileById(staffId, staffToken)
-        .then((value) => {
-              setState(() {
-                staff = value;
-              }),
-            });
+    if(MyApp.storage.getItem('role') == "STAFF"){
+      int staffId = MyApp.storage.getItem("staffId");
+      String staffToken = MyApp.storage.getItem("token");
+      await StaffService.getStaffProfileById(staffId, staffToken)
+          .then((value) => {
+        setState(() {
+          staff = value;
+          loading = false;
+          print("IMAGE nè duma: " + staff.data.user.image);
+        }),
+      });
+    }
+    else{
+      print("lấy consultant");
+      int staffId = MyApp.storage.getItem("staffId");
+      String staffToken = MyApp.storage.getItem("token");
+      await StaffService.getConsultantProfileById(staffId, staffToken)
+          .then((value) => {
+        setState(() {
+          staff = value;
+          loading = false;
+        }),
+      });
+    }
+    
   }
-
   @override
   void initState() {
     super.initState();
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
+    if(loading){
+      return Center(
+          child: SpinKitWave(
+            color: Colors.orange,
+            size: 50,
+          )
+      );
+    }
     fillText();
     return Container(
       child: Form(
@@ -87,43 +108,46 @@ class _ProfileFormState extends State<ProfileForm> {
     return DefaultButton(
       text: "Cập nhật",
       press: () async {
-        bool active = true;
-        String address = MyApp.storage.getItem("address");
-        String birthdate = MyApp.storage.getItem("birthdate");
-        String email = MyApp.storage.getItem("email");
-        String fullname = fullnameTextController.text;
-        String gender = MyApp.storage.getItem("gender");
-        int staffId = MyApp.storage.getItem("staffId");
-        String staffImage = MyApp.storage.getItem("image");
-        String staffToken = MyApp.storage.getItem("token");
-        String password = MyApp.storage.getItem("password");
-        String phone = MyApp.storage.getItem("phone");
-
-        final res = await StaffService().updateStaffProfile(
-          token: staffToken,
-          active: active,
-          address: address,
-          birthdate: birthdate,
-          email: email,
-          fullname: fullname,
-          gender: gender,
-          id: staffId,
-          image: staffImage,
-          password: password,
-          phone: phone,
-        );
-        print("Status: ${res.body}");
-        if(res.statusCode == 200){
-          await StaffService.getStaffProfileById(staffId,staffToken).then((value) => {
-            setState(() {
-              MyApp.storage.setItem("fullname", value.data.user.fullname);
-            }),
-          });
+        if(MyApp.storage.getItem("role") == "STAFF"){
+          final res = await StaffService().updateStaffProfile(
+            token: MyApp.storage.getItem('token'),
+            active: true,
+            address: streetTextController.text,
+            birthdate: dateOfBirthTextController.text,
+            email: staff.data.user.email,
+            fullname: fullnameTextController.text,
+            gender: genderTextController.text,
+            id: MyApp.storage.getItem("staffId"),
+            image: staff.data.user.image,
+            password: staff.data.user.password,
+            phone: staff.data.user.phone,
+          );
+          print("Status: ${res.body}");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
+          );
+        }else{
+          final res = await StaffService().updateConsultantProfile(
+            token: MyApp.storage.getItem('token'),
+            active: true,
+            address: streetTextController.text,
+            birthdate: dateOfBirthTextController.text,
+            email: staff.data.user.email,
+            fullname: fullnameTextController.text,
+            gender: genderTextController.text,
+            id: MyApp.storage.getItem("staffId"),
+            image: staff.data.user.image,
+            password: staff.data.user.password,
+            phone: staff.data.user.phone,
+          );
+          print("Status: ${res.body}");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
+          );
         }
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
-        );
+
       },
     );
   }
@@ -154,12 +178,12 @@ class _ProfileFormState extends State<ProfileForm> {
 
   TextFormField DistrictTextField() {
     return TextFormField(
-      controller: districtTextController,
+      controller: streetTextController,
       enabled: false,
       decoration: InputDecoration(
         labelText: "Địa chỉ",
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.edit_road),
+        suffixIcon: Icon(Icons.home),
       ),
     );
   }
@@ -176,27 +200,4 @@ class _ProfileFormState extends State<ProfileForm> {
     );
   }
 
-  TextFormField ProvinceTextField() {
-    return TextFormField(
-      controller: provinceTextController,
-      enabled: false,
-      decoration: InputDecoration(
-        labelText: "Tỉnh thành",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.home),
-      ),
-    );
-  }
-
-  TextFormField StreetTextField() {
-    return TextFormField(
-      controller: streetTextController,
-      enabled: false,
-      decoration: InputDecoration(
-        labelText: "Đường",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.add_location_alt_rounded),
-      ),
-    );
-  }
 }

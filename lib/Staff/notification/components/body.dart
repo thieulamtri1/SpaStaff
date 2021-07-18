@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:spa_and_beauty_staff/Model/Message.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -10,103 +10,95 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  final Message messagesObject = new Message();
   bool hasData = false;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
-
-  getToken() async {
-    await Firebase.initializeApp();
-    _firebaseMessaging.getToken().then((value) {
-      print("Device Token: $value");
-    });
-  }
-
+  // getToken() async {
+  //   await Firebase.initializeApp();
+  //   _firebaseMessaging.getToken().then((value) {
+  //     print("Device Token: $value");
+  //   });
+  // }
+  //
+  // Future showNotification(NotiTitle, NotiBody) async {
+  //   var androidDetails = new AndroidNotificationDetails(
+  //       "channelId", "Local Notification", "channelDescription",
+  //       importance: Importance.high);
+  //   var iosDetails = new IOSNotificationDetails();
+  //   var generalNotification =
+  //       new NotificationDetails(android: androidDetails, iOS: iosDetails);
+  //   await flutterLocalNotificationsPlugin.show(
+  //       0, NotiTitle, NotiBody, generalNotification);
+  // }
+  //
+  // getNotification(){
+  //   getToken();
+  //
+  //   var initialzationSettingsAndroid =
+  //   AndroidInitializationSettings('@mipmap/ic_launcher');
+  //   var initializationSettings =
+  //   InitializationSettings(android: initialzationSettingsAndroid);
+  //   flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  //
+  //   _firebaseMessaging.configure(
+  //     onMessage: (Map<String, dynamic> message) async {
+  //       print("onMessage: $message");
+  //       setState(() {
+  //         hasData = true;
+  //       });
+  //       showNotification(
+  //           message['notification']['title'], message['notification']['body']);
+  //       showNotification("123", "123");
+  //     },
+  //     onLaunch: (Map<String, dynamic> message) async {
+  //       print("onLaunch: $message");
+  //       final data = message['data'];
+  //       String mMessage = data['message'];
+  //       setState(() {
+  //         hasData = true;
+  //       });
+  //     },
+  //     onResume: (Map<String, dynamic> message) async {
+  //       print("onResume: $message");
+  //       final data = message['data']['message'];
+  //       String mMessage = data['message'];
+  //       setState(() {
+  //         hasData = true;
+  //       });
+  //     },
+  //   );
+  //   _firebaseMessaging.requestNotificationPermissions(
+  //       const IosNotificationSettings(sound: true, badge: true, alert: true));
+  // }
 
   @override
   void initState() {
     super.initState();
-    getToken();
-    _firebaseMessaging.configure(
-
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        setState(() {
-          messagesObject.title = message['notification']['title'];
-          messagesObject.body = message['notification']['body'];
-          messagesObject.message = message['data']['message'];
-          hasData = true;
-        });
-      },
-
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        final data = message['data'];
-        String mMessage = data['message'];
-        setState(() {
-          messagesObject.title = message['notification']['title'];
-          messagesObject.body = message['notification']['body'];
-          messagesObject.message = message['data']['message'];
-          hasData = true;
-        });
-      },
-
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        final data = message['data']['message'];
-        String mMessage = data['message'];
-        setState(() {
-          messagesObject.title = message['notification']['title'];
-          messagesObject.body = message['notification']['body'];
-          messagesObject.message = message['data']['message'];
-          hasData = true;
-        });
-      },
-
-    );
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
+    // getToken();
+    // getNotification();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          hasData ? Text("Message: " + messagesObject.message) : Text("Chưa có thông báo nào"),
-          SizedBox(height: 20)
-        ],
-      ),
+    return Column(
+      children: [
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: 3,
+          itemBuilder: (context, index) {
+            return NotificationServiceAssignedItem(
+                image: "https://bizweb.dktcdn.net/100/110/917/files/ms-da-nong.jpg?v=1568863806870",
+                companyName: "test",
+                date: index.toString(),
+                serviceName: "test");
+          },
+        ),
+
+      ],
     );
-
-
-    // return Column(
-    //   children: [
-    //     NotificationServiceAssignedItem(
-    //       image: "assets/images/beauty.png",
-    //       companyName: "Eri international",
-    //       serviceName: "BIO ACNE",
-    //       date: "25/03/2021",
-    //     ),
-    //     NotificationServiceAssignedItem(
-    //       image: "assets/images/body.png",
-    //       companyName: "Eri international",
-    //       serviceName: "Massage JiaczHoiz",
-    //       date: "26/03/2021",
-    //     ),
-    //     NotificationServiceAssignedItem(
-    //       image: "assets/images/Skin.png",
-    //       companyName: "Eri international",
-    //       serviceName: "AQUA DETOX",
-    //       date: "27/03/2021",
-    //     ),
-    //   ],
-    // );
-
   }
 }
-
 
 class NotificationServiceAssignedItem extends StatelessWidget {
   const NotificationServiceAssignedItem({
@@ -123,6 +115,12 @@ class NotificationServiceAssignedItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+              color: Colors.white,
+              width: 5
+          ),
+        ),
         color: Colors.grey.withOpacity(0.1),
       ),
       child: Padding(
@@ -130,7 +128,7 @@ class NotificationServiceAssignedItem extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              child: Image.asset(
+              child: Image.network(
                 image,
               ),
               width: 80,
@@ -163,7 +161,7 @@ class NotificationServiceAssignedItem extends StatelessWidget {
                           ),
                           TextSpan(
                             text:
-                            " đã được đặt thành công, vui lòng đợi xác nhận từ phía cửa hàng",
+                                " đã được đặt thành công, vui lòng đợi xác nhận từ phía cửa hàng",
                           ),
                         ],
                       ),
@@ -182,7 +180,6 @@ class NotificationServiceAssignedItem extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.more_horiz),
           ],
         ),
       ),
