@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
+import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import '../../../main.dart';
 import 'conversation_appBar.dart';
 
 class ConversationScreen extends StatefulWidget {
   final String chatRoomId;
-  final String name;
-  final String phone;
-  final String image;
+  final String customerName;
+  final String customerPhone;
+  final String customerImage;
 
-  ConversationScreen({this.chatRoomId, this.name, this.phone, this.image});
+  ConversationScreen({this.chatRoomId, this.customerName, this.customerPhone, this.customerImage});
 
   @override
   _ConversationScreenState createState() => _ConversationScreenState();
@@ -22,6 +23,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Stream chatMessageStream;
   int staffId;
   int prevUserId;
+  String consultantImage;
 
   ChatMessageList() {
     return StreamBuilder(
@@ -44,6 +46,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
             : Container();
       },
     );
+  }
+  getConsultantImage() async{
+    await StaffService.getConsultantProfileById(MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+        .then((value) => {
+      setState(() {
+        consultantImage = value.data.user.image;
+      }),
+    });
   }
 
   sendMessage() {
@@ -84,7 +94,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ConversationAppBar(
-          image: widget.image, name: widget.name, phone: widget.phone),
+          image: widget.customerImage, name: widget.customerName, phone: widget.customerPhone),
       body: Column(
         children: [
           Expanded(
@@ -190,7 +200,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         child: CircleAvatar(
                           radius: 15,
                           backgroundImage:
-                              NetworkImage(MyApp.storage.getItem("image")),
+                              NetworkImage(consultantImage == null ? "https://xaydunghoanghung.com/wp-content/uploads/2020/11/JaZBMzV14fzRI4vBWG8jymplSUGSGgimkqtJakOV.jpeg" : consultantImage),
                         ),
                       ),
                     ],
@@ -250,7 +260,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         child: CircleAvatar(
                           radius: 15,
                           backgroundImage: NetworkImage(
-                              "https://www.chapter3d.com/wp-content/uploads/2020/08/anh-chan-dung.jpg"),
+                              widget.customerImage == null ? "https://xaydunghoanghung.com/wp-content/uploads/2020/11/JaZBMzV14fzRI4vBWG8jymplSUGSGgimkqtJakOV.jpeg" : widget.customerImage),
                         ),
                       ),
                     ],

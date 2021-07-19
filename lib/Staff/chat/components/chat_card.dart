@@ -8,52 +8,27 @@ import 'conversation_screen.dart';
 class ChatCard extends StatefulWidget {
    String customerId = "";
    String chatRoomId = "";
+   String customerImage = "";
+   String customerName = "";
+   String customerPhone = "";
 
-  ChatCard({this.customerId, this.chatRoomId});
+
+   ChatCard(
+      {this.customerId,
+      this.chatRoomId,
+      this.customerImage,
+      this.customerName,
+      this.customerPhone});
 
   @override
   _ChatCardState createState() => _ChatCardState();
 }
 
 class _ChatCardState extends State<ChatCard> {
-  String customerName;
-  String customerPhone;
-  String customerImage =
-      "https://www.chapter3d.com/wp-content/uploads/2020/08/anh-chan-dung.jpg";
-  bool loading = true;
-
-
-
-  @override
-  void initState() {
-    super.initState();
-    getUserInfo();
-  }
-
-
-  getUserInfo() async {
-    await FirebaseMethod().getUserById(widget.customerId).then((value) {
-      setState(() {
-        // customerName = value.documents[0]["name"];
-        // customerPhone = value.documents[0]["phone"];
-        customerName = "Cường";
-        customerPhone = "06040352";
-        loading = false;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    if(loading){
-      return Center(
-          child: SpinKitWave(
-            color: Colors.orange,
-            size: 50,
-          )
-      );
-    }
-    else{
+
       return GestureDetector(
         onTap: () {
           Navigator.push(
@@ -62,9 +37,9 @@ class _ChatCardState extends State<ChatCard> {
                   builder: (context) =>
                       ConversationScreen(
                         chatRoomId: widget.chatRoomId,
-                        phone: customerPhone,
-                        name: customerName,
-                        image: customerImage,
+                        customerPhone: widget.customerPhone,
+                        customerName: widget.customerName,
+                        customerImage: widget.customerImage,
                       )
               ));
         },
@@ -76,7 +51,7 @@ class _ChatCardState extends State<ChatCard> {
                 child: Row(
                   children: <Widget>[
                     CircleAvatar(
-                      backgroundImage: NetworkImage(customerImage),
+                      backgroundImage: NetworkImage(widget.customerImage),
                       maxRadius: 30,
                     ),
                     SizedBox(
@@ -89,7 +64,7 @@ class _ChatCardState extends State<ChatCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              customerName,
+                              widget.customerName,
                               style: TextStyle(
                                 color: Colors.black,
                               ),
@@ -98,7 +73,7 @@ class _ChatCardState extends State<ChatCard> {
                               height: 6,
                             ),
                             Text(
-                              customerPhone,
+                              widget.customerPhone,
                               style: TextStyle(
                                   fontSize: 14, color: Colors.grey.shade500),
                             ),
@@ -114,6 +89,4 @@ class _ChatCardState extends State<ChatCard> {
         ),
       );
     }
-
-  }
 }
