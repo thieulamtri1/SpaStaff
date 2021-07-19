@@ -85,6 +85,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   void initState() {
+    getConsultantImage();
     getData();
     getConversationMessage();
     super.initState();
