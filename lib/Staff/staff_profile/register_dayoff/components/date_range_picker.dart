@@ -84,7 +84,7 @@ class _DateRangePickerWidgetState extends State<DateRangePickerWidget> {
 
     while (dateTimeStart != dateTimeEnd.add(Duration(days: 1))) {
       print(dateTimeStart);
-      Body.dateOffList.add(dateTimeStart.toString().substring(0,10));
+      Body.dateOff = dateTimeStart.toString().substring(0,10);
       dateTimeStart = dateTimeStart.add(Duration(days: 1));
     }
 
