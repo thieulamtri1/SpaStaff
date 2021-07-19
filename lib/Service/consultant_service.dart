@@ -18,7 +18,9 @@ class ConsultantService {
   static final String GET_BOOKING_DETAIL_STEP_BY_BOOKING_DETAIL_ID = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/findByBookingDetail/";
   static final String GET_TREATMENTS_BY_PACKAGE_ID = "https://swp490spa.herokuapp.com/api/consultant/spatreatment/findbyspapackage?spaPackageId=";
   static final String GET_AVAILABLE_TIME_FOR_FIRST_STEP = "https://swp490spa.herokuapp.com/api/consultant/getListTimeBookingForAddTreatment?";
+  static final String GET_AVAILABLE_TIME_FOR_NEXT_STEP = "https://swp490spa.herokuapp.com/api/consultant/getListTimeBookingForAStep?";
   static final String ADD_TREATMENT_FOR_BOOKING_DETAIL = "https://swp490spa.herokuapp.com/api/consultant/bookingdetailstep/addtreatment";
+  static final String BOOKING_FOR_NEXT_STEP = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/addTimeNextStep";
   static Future<CustomerOfConsultant> getListCustomerOfConsultant(id, token) async {
     try {
       final response = await http.get(
@@ -144,5 +146,47 @@ class ConsultantService {
     }
     print("LOI ROI" + "Status code = " + res.statusCode.toString());
     return res.statusCode.toString();
+  }
+  static Future<String> bookingForNextStep(int bookingDetailStepId, String dateBooking, String timeBooking) async {
+    var jsonResponse;
+    final res = await http.put(BOOKING_FOR_NEXT_STEP,
+        headers: {
+          "accept" : "application/json",
+          "content-type" : "application/json",
+          "authorization" : "Bearer " + MyApp.storage.getItem("token"),
+        },
+        body: jsonEncode(
+            {
+              "bookingDetailStepId": bookingDetailStepId,
+              "dateBooking": dateBooking,
+              "timeBooking": timeBooking,
+            }));
+    if (res.statusCode == 200){
+      jsonResponse = utf8.decode(res.bodyBytes);
+      print(jsonResponse.toString());
+    }
+    print("LOI ROI" + "Status code = " + res.statusCode.toString());
+    return res.statusCode.toString();
+  }
+
+  static Future<AvailableTime> getAvailableTimeForNextStep(int bookingDetailStepId, int customerId, String dateBooking, spaId, spaServiceId) async {
+    try {
+      final response = await http.get(
+          Uri.parse(GET_AVAILABLE_TIME_FOR_NEXT_STEP + "bookingDetailStepId=$bookingDetailStepId&customerId=$customerId&dateBooking=$dateBooking&spaId=$spaId&spaServiceId=$spaServiceId"),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${MyApp.storage.getItem("token")}',
+          });
+      print(response.body);
+      if (response.statusCode == 200) {
+        AvailableTime availableTime = availableTimeFromJson(utf8.decode(response.bodyBytes));
+        return availableTime;
+      } else {
+        return AvailableTime();
+      }
+    } catch (e) {
+      return AvailableTime();
+    }
   }
 }

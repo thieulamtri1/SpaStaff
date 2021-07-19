@@ -6,6 +6,7 @@ import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_first_step/booking_for_first_step_screen.dart';
+import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_next_step/booking_for_next_step.dart';
 import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/choose_treatment.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
@@ -28,14 +29,13 @@ class _BodyState extends State<Body> {
   void initState() {
     _loading = true;
     ConsultantService.getBookingDetailStepsByBookingDetailId(
-        widget.bookingDetail.id)
-        .then((value) =>
-    {
-      setState(() {
-        _bookingDetailSteps = value;
-        _loading = false;
-      })
-    });
+            widget.bookingDetail.id)
+        .then((value) => {
+              setState(() {
+                _bookingDetailSteps = value;
+                _loading = false;
+              })
+            });
     // TODO: implement initState
     super.initState();
   }
@@ -44,54 +44,68 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return _loading
         ? Container(
-      child: Lottie.asset("assets/lottie/loading.json"),
-    )
-        : SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          StatusSection(),
-          SizedBox(
-            height: 10,
-          ),
-          CompanySection(
-            address: widget.bookingDetail.booking.spa.street +
-                " " +
-                widget.bookingDetail.booking.spa.district +
-                " " +
-                widget.bookingDetail.booking.spa.city,
-            name: widget.bookingDetail.booking.spa.name,
-          ),
-          Divider(
-            thickness: 1,
-            height: 20,
-          ),
-          StaffSection(
-            name: _bookingDetailSteps.data[0].consultant.user.fullname,
-            phone: _bookingDetailSteps.data[0].consultant.user.phone,
-          ),
-          Divider(
-            thickness: 1,
-            height: 20,
-          ),
-          ProcessSection(
-            packageName: widget.bookingDetail.spaPackage.name,
-            packageId: widget.bookingDetail.spaPackage.id,
-            bookingDetailSteps: _bookingDetailSteps,
-            treatment: widget.bookingDetail.spaTreatment == null
-                ? "Chưa có liệu trình"
-                : widget.bookingDetail.spaTreatment.name,
-            consultantId: _bookingDetailSteps.data[0].consultant.id,
-            spaId: _bookingDetailSteps.data[0].consultant.spa.id,
-            customerId: widget.customerId,
+            child: Lottie.asset("assets/lottie/loading.json"),
           )
-        ],
-      ),
-    );
+        : SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                StatusSection(),
+                SizedBox(
+                  height: 10,
+                ),
+                CompanySection(
+                  address: widget.bookingDetail.booking.spa.street +
+                      " " +
+                      widget.bookingDetail.booking.spa.district +
+                      " " +
+                      widget.bookingDetail.booking.spa.city,
+                  name: widget.bookingDetail.booking.spa.name,
+                ),
+                Divider(
+                  thickness: 1,
+                  height: 20,
+                ),
+                StaffSection(
+                  name: _bookingDetailSteps.data[0].consultant.user.fullname,
+                  phone: _bookingDetailSteps.data[0].consultant.user.phone,
+                ),
+                Divider(
+                  thickness: 1,
+                  height: 20,
+                ),
+                ProcessSection(
+                  notifyParent: (){setState(() {
+                    print("dang reload ne");
+                    _loading = true;
+                    ConsultantService.getBookingDetailStepsByBookingDetailId(
+                        widget.bookingDetail.id)
+                        .then((value) => {
+                      setState(() {
+                        _bookingDetailSteps = value;
+                        _loading = false;
+                      })
+                    });
+                  });
+                  },
+                  packageName: widget.bookingDetail.spaPackage.name,
+                  packageId: widget.bookingDetail.spaPackage.id,
+                  bookingDetailSteps: _bookingDetailSteps,
+                  treatment: widget.bookingDetail.spaTreatment == null
+                      ? "Chưa có liệu trình"
+                      : widget.bookingDetail.spaTreatment.name,
+                  consultantId: _bookingDetailSteps.data[0].consultant.id,
+                  spaId: _bookingDetailSteps.data[0].consultant.spa.id,
+                  customerId: widget.customerId,
+                )
+              ],
+            ),
+          );
   }
 }
 
 class ProcessSection extends StatefulWidget {
+  final Function() notifyParent;
   final int consultantId;
   final int spaId;
   final int customerId;
@@ -106,7 +120,9 @@ class ProcessSection extends StatefulWidget {
     @required this.packageId,
     @required this.bookingDetailSteps,
     @required this.treatment,
-    @required this.consultantId, this.spaId, this.customerId,
+    @required this.consultantId,
+    this.spaId,
+    this.customerId, this.notifyParent,
   }) : super(key: key);
 
   @override
@@ -171,59 +187,59 @@ class _ProcessSectionState extends State<ProcessSection> {
                       ),
                       widget.treatment == "Chưa có liệu trình"
                           ? GestureDetector(
-                        onTap: () async {
-                          TreatmentInstance choosenTreatment =
-                          await showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext buildContext) {
-                                return Container(
-                                  height: SizeConfig
-                                      .getProportionateScreenHeight(
-                                      800),
-                                  child: ListView(
-                                    children: [
-                                      IconButton(
-                                        alignment: Alignment.topRight,
-                                        icon: Icon(
-                                          Icons.close,
-                                          color: kPrimaryColor,
-                                          size: 25,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      ChooseTreatmentScreen(
-                                        packageId: widget.packageId,
-                                      )
-                                    ],
+                              onTap: () async {
+                                TreatmentInstance choosenTreatment =
+                                    await showModalBottomSheet(
+                                        context: context,
+                                        builder: (BuildContext buildContext) {
+                                          return Container(
+                                            height: SizeConfig
+                                                .getProportionateScreenHeight(
+                                                    800),
+                                            child: ListView(
+                                              children: [
+                                                IconButton(
+                                                  alignment: Alignment.topRight,
+                                                  icon: Icon(
+                                                    Icons.close,
+                                                    color: kPrimaryColor,
+                                                    size: 25,
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                                ChooseTreatmentScreen(
+                                                  packageId: widget.packageId,
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                print("treatment đã chọn: " +
+                                    choosenTreatment.id.toString() +
+                                    choosenTreatment.name);
+                                setState(() {
+                                  _treatmentName = choosenTreatment.name;
+                                  print(_treatmentName);
+                                  _treatmentInstance = choosenTreatment;
+                                });
+                              },
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                    color: kGreen,
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Center(
+                                  child: Text(
+                                    "+",
+                                    style: TextStyle(
+                                        fontSize: 25, color: Colors.white),
                                   ),
-                                );
-                              });
-                          print("treatment đã chọn: " +
-                              choosenTreatment.id.toString() +
-                              choosenTreatment.name);
-                          setState(() {
-                            _treatmentName = choosenTreatment.name;
-                            print(_treatmentName);
-                            _treatmentInstance = choosenTreatment;
-                          });
-                        },
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                              color: kGreen,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Center(
-                            child: Text(
-                              "+",
-                              style: TextStyle(
-                                  fontSize: 25, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      )
+                                ),
+                              ),
+                            )
                           : SizedBox()
                     ],
                   ),
@@ -233,36 +249,38 @@ class _ProcessSectionState extends State<ProcessSection> {
                 ),
                 ...List.generate(
                   widget.bookingDetailSteps.data.length,
-                      (index) =>
-                      ProcessStepSection(
-                        status: widget.bookingDetailSteps.data[index]
-                            .statusBooking,
-                        date: widget.bookingDetailSteps.data[index]
-                            .dateBooking ==
+                  (index) => ProcessStepSection(
+                    notifyParent: widget.notifyParent,
+                    spaId: widget.spaId,
+                    customerId: widget.customerId,
+                    bookingDetailStepId: widget.bookingDetailSteps.data[index].id,
+                    spaServiceId: widget.bookingDetailSteps.data[index].treatmentService==null?0:widget.bookingDetailSteps.data[index].treatmentService.spaService.id,
+                    status: widget.bookingDetailSteps.data[index].statusBooking,
+                    date: widget.bookingDetailSteps.data[index].dateBooking ==
                             null
-                            ? "Chưa đặt lịch"
-                            : MyHelper.getUserDate(widget
-                            .bookingDetailSteps.data[index].dateBooking) +
+                        ? "Chưa đặt lịch"
+                        : MyHelper.getUserDate(widget
+                                .bookingDetailSteps.data[index].dateBooking) +
                             " Lúc " +
                             widget.bookingDetailSteps.data[index].startTime
                                 .substring(0, 5),
-                        stepName: widget.bookingDetailSteps.data[index]
-                            .treatmentService ==
+                    stepName: widget.bookingDetailSteps.data[index]
+                                .treatmentService ==
                             null
-                            ? "Tư Vấn"
-                            : widget.bookingDetailSteps.data[index]
-                            .treatmentService
+                        ? "Tư Vấn"
+                        : widget.bookingDetailSteps.data[index].treatmentService
                             .spaService.name,
-                      ),
+                  ),
                 ),
-                _treatmentInstance != null ?
-                ProcessStepSectionForConsultant(
-                  treatmentInstance: _treatmentInstance,
-                  consultantId: widget.consultantId,
-                  spaId:widget.spaId,
-                  customerId:widget.customerId,
-                  bookingDetailId: widget.bookingDetailSteps.data[0].bookingDetail.id,
-                )
+                _treatmentInstance != null
+                    ? ProcessStepSectionForConsultant(
+                        treatmentInstance: _treatmentInstance,
+                        consultantId: widget.consultantId,
+                        spaId: widget.spaId,
+                        customerId: widget.customerId,
+                        bookingDetailId:
+                            widget.bookingDetailSteps.data[0].bookingDetail.id,
+                      )
                     : SizedBox()
               ],
             ),
@@ -281,7 +299,12 @@ class ProcessStepSectionForConsultant extends StatelessWidget {
   final TreatmentInstance treatmentInstance;
 
   const ProcessStepSectionForConsultant(
-      {Key key, this.treatmentInstance, this.consultantId, this.customerId, this.spaId, this.bookingDetailId})
+      {Key key,
+      this.treatmentInstance,
+      this.consultantId,
+      this.customerId,
+      this.spaId,
+      this.bookingDetailId})
       : super(key: key);
 
   @override
@@ -290,11 +313,10 @@ class ProcessStepSectionForConsultant extends StatelessWidget {
       children: [
         ...List.generate(
             treatmentInstance.treatmentservices.length,
-                (index) =>
-                Container(
+            (index) => Container(
                   margin: EdgeInsets.symmetric(vertical: 5),
-                  padding: EdgeInsets.only(
-                      top: 5, bottom: 5, left: 10, right: 20),
+                  padding:
+                      EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 20),
                   height: 80,
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -315,46 +337,48 @@ class ProcessStepSectionForConsultant extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "bước ${index + 1}: " + treatmentInstance
-                                .treatmentservices[index].spaService.name,
+                            "bước ${index + 1}: " +
+                                treatmentInstance
+                                    .treatmentservices[index].spaService.name,
                             style: TextStyle(fontSize: 18),
                           ),
-                          Text(
-                              treatmentInstance.treatmentservices[index]
-                                  .spaService.description
-                          )
+                          Text(treatmentInstance
+                              .treatmentservices[index].spaService.description)
                         ],
                       ),
-                      index == 0 ?
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) =>
-                                BookingForFirstStepScreen(
-                                  consultantId: consultantId,
-                                  customerId:customerId,
-                                  spaId:spaId,
-                                  spaTreatmentId: treatmentInstance.id,
-                                  bookingDetailId: bookingDetailId,
-                                )),
-                          );
-                        },
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                              color: kGreen,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Center(
-                            child: Icon(
-                              Icons.schedule_outlined,
-                              color: Colors.white,
-                              size: 17.0,
-                            ),
-                          ),
-                        ),
-                      ) : SizedBox(),
+                      index == 0
+                          ? GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          BookingForFirstStepScreen(
+                                            consultantId: consultantId,
+                                            customerId: customerId,
+                                            spaId: spaId,
+                                            spaTreatmentId:
+                                                treatmentInstance.id,
+                                            bookingDetailId: bookingDetailId,
+                                          )),
+                                );
+                              },
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                    color: kGreen,
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.schedule_outlined,
+                                    color: Colors.white,
+                                    size: 17.0,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : SizedBox(),
                     ],
                   ),
                 ))
@@ -363,16 +387,27 @@ class ProcessStepSectionForConsultant extends StatelessWidget {
   }
 }
 
-class ProcessStepSection extends StatelessWidget {
+class ProcessStepSection extends StatefulWidget {
+  final Function() notifyParent;
   final String date, stepName, status;
+  final int bookingDetailStepId, customerId, spaId, spaServiceId;
 
   const ProcessStepSection({
     Key key,
     this.date,
     this.stepName,
     this.status,
+    this.bookingDetailStepId,
+    this.customerId,
+    this.spaId,
+    this.spaServiceId, this.notifyParent,
   }) : super(key: key);
 
+  @override
+  _ProcessStepSectionState createState() => _ProcessStepSectionState();
+}
+
+class _ProcessStepSectionState extends State<ProcessStepSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -384,28 +419,28 @@ class ProcessStepSection extends StatelessWidget {
               height: 10,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: status == "FINISH"
+                color: widget.status == "FINISH"
                     ? kGreen
-                    : status == "PENDING"
-                    ? Colors.black
-                    : kYellow,
+                    : widget.status == "PENDING"
+                        ? Colors.black
+                        : kYellow,
               ),
             ),
             SizedBox(
               width: 10,
             ),
             Text(
-              status == "FINISH"
-                  ? "$stepName (Đã hoàn tất)"
-                  : status == "PENDING"
-                  ? stepName
-                  : "$stepName (Đang chờ...)",
+              widget.status == "FINISH"
+                  ? "${widget.stepName} (Đã hoàn tất)"
+                  : widget.status == "PENDING"
+                      ? widget.stepName
+                      : "${widget.stepName} (Đang chờ...)",
               style: TextStyle(
-                  color: status == "FINISH"
+                  color: widget.status == "FINISH"
                       ? kGreen
-                      : status == "PENDING"
-                      ? Colors.black
-                      : kYellow,
+                      : widget.status == "PENDING"
+                          ? Colors.black
+                          : kYellow,
                   fontSize: 17),
             ),
           ],
@@ -413,16 +448,59 @@ class ProcessStepSection extends StatelessWidget {
         Container(
           height: 40,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              VerticalDivider(
-                thickness: 1,
-                width: 10,
-                color: Colors.grey,
+              Row(
+                children: [
+                  VerticalDivider(
+                    thickness: 1,
+                    width: 10,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text("Ngày hẹn : ${widget.date}"),
+                ],
               ),
-              SizedBox(
-                width: 10,
+              Container(
+                padding: EdgeInsets.only(right: 10),
+                child: Row(
+                  children: [
+                    Visibility(
+                      visible: widget.date == "Chưa đặt lịch" ? true : false,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BookingForNextStepScreen(
+                                      spaServiceId: widget.spaServiceId,
+                                      bookingDetailStepId: widget.bookingDetailStepId,
+                                      customerId: widget.customerId,
+                                      spaId: widget.spaId,
+                                    )),
+                          ).then((value) => setState(widget.notifyParent));
+                        },
+                        child: Icon(
+                          Icons.schedule_outlined,
+                          color: kGreen,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Visibility(
+                      visible: true,
+                      child: Icon(
+                        Icons.edit,
+                        color: kGreen,
+                      ),
+                    )
+                  ],
+                ),
               ),
-              Text("Ngày hẹn : $date"),
             ],
           ),
         ),
