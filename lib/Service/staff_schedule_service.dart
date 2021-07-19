@@ -15,10 +15,8 @@ class StaffScheduleService{
       "https://swp490spa.herokuapp.com/api/consultant/workingofconsultant/findbydatechosen/";
   static final String dateChosen =
       "?dateChosen=";
-  static final String urlDateOffStaff =
+  static final String urlDateOff =
       "https://swp490spa.herokuapp.com/api/staff/dateoff/create/";
-  static final String urlDateOffConsultant =
-      "https://swp490spa.herokuapp.com/api/consultant/dateoff/create/";
 
   static Future<ScheduleStaff> getStaffSchedule(id, date, token) async {
       try {
@@ -60,9 +58,9 @@ class StaffScheduleService{
     }
   }
 
-  Future<http.Response> sendDateOffStaff(token, dateOff, reasonDateOff) {
+  Future<http.Response> sendDateOff(token, dateOff, reasonDateOff) {
     return http.post(
-      Uri.parse(urlDateOffStaff + MyApp.storage.getItem('staffId').toString()),
+      Uri.parse(urlDateOff + MyApp.storage.getItem('staffId').toString()),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -76,22 +74,6 @@ class StaffScheduleService{
     );
   }
 
-
-  Future<http.Response> sendDateOffConsultant(token, dateOff, reasonDateOff) {
-    return http.post(
-      Uri.parse(urlDateOffConsultant + MyApp.storage.getItem('staffId').toString()),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "id": MyApp.storage.getItem("staffId"),
-        "dateOff": dateOff,
-        "reasonDateOff": reasonDateOff,
-      }),
-    );
-  }
 
   Future<http.Response> getLich(token) {
     return http.get(
