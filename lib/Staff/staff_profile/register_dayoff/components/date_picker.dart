@@ -16,7 +16,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     if (date == null) {
       return 'Select Date';
     } else {
-      Body.dateOffList.add(date.toString().substring(0,10));
+      Body.dateOff = date.toString().substring(0,10);
       return DateFormat('MM/dd/yyyy').format(date);
       // return '${date.month}/${date.day}/${date.year}';
     }

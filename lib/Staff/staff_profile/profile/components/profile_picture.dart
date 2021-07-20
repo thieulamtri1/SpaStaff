@@ -11,16 +11,18 @@ class ProfilePic extends StatefulWidget {
 }
 
 class _ProfilePicState extends State<ProfilePic> {
-  PickedFile imageFile;
+  File imageFile;
+  ImagePicker imagePicker;
   final ImagePicker picker = ImagePicker();
   String image;
 
   void takePhoto(ImageSource source) async {
-    final pickedFile = await picker.getImage(
+    final pickedFile = await ImagePicker.pickImage(
       source: source,
     );
     setState(() {
       imageFile = pickedFile;
+      print("imageFilePath: " + imageFile.path);
     });
   }
 
@@ -127,7 +129,7 @@ class _ProfilePicState extends State<ProfilePic> {
               FlatButton.icon(
                 onPressed: () async {
                   await takePhoto(ImageSource.gallery);
-                  print("Chụp xong rồi!!");
+                  print("Lấy hình xong rồi!!");
                 },
                 icon: Icon(Icons.image),
                 label: Text("Gallery"),

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:spa_and_beauty_staff/Model/CustomerOfConsultant.dart';
+import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
 import '../../../main.dart';
 import 'chat_card.dart';
@@ -18,11 +20,16 @@ class _BodyState extends State<Body> {
   bool isSearch = false;
   int staffId;
   bool loading = true;
+  CustomerOfConsultant customerOfConsultant = CustomerOfConsultant();
+  String customerImage;
+  String customerName;
+  String customerPhone;
 
   getData() async {
     await MyApp.storage.ready;
     staffId = MyApp.storage.getItem("staffId");
-    getChatRoom();
+    await getListCustomerOfConsultant();
+    await getChatRoom();
     print("StaffID: $staffId");
   }
 
@@ -72,6 +79,28 @@ class _BodyState extends State<Body> {
     });
   }
 
+  getListCustomerOfConsultant() async{
+    await ConsultantService.getListCustomerOfConsultant(
+        MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+        .then((value) => {
+      setState(() {
+        customerOfConsultant = value;
+        loading = false;
+      })
+    });
+  }
+
+  getCustomerInfo(customerId){
+    for(int i = 0; i < customerOfConsultant.data.length; i++){
+      if(customerOfConsultant.data[i].id.toString() == customerId){
+          customerName = customerOfConsultant.data[i].fullname;
+          customerPhone = customerOfConsultant.data[i].phone;
+          customerImage = customerOfConsultant.data[i].image;
+      }
+    }
+   // print("customerName: " + customerName);
+  }
+
   Widget showChatRoomList() {
     return StreamBuilder(
       stream: chatRoomStream,
@@ -81,14 +110,20 @@ class _BodyState extends State<Body> {
           shrinkWrap: true,
           itemCount: snapshot.data.docs.length,
           itemBuilder: (context, index) {
+            String customerId = snapshot
+                .data.docs[index]["chatRoomId"]
+                .toString()
+                .replaceAll("_", "")
+                .replaceAll("$staffId", "");
+            getCustomerInfo(customerId);
             return ChatCard(
-                customerId: snapshot
-                    .data.docs[index]["chatRoomId"]
-                    .toString()
-                    .replaceAll("_", "")
-                    .replaceAll("$staffId", ""),
+                customerId: customerId,
                 chatRoomId:
-                snapshot.data.docs[index]["chatRoomId"]);
+                snapshot.data.docs[index]["chatRoomId"],
+              customerName: customerName,
+              customerPhone: customerPhone,
+              customerImage: customerImage == null ? "https://huyhoanhotel.com/wp-content/uploads/2016/05/765-default-avatar.png" : customerImage,
+            );
           }
         )
             : Container();

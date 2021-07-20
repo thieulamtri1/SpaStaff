@@ -1,15 +1,12 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Model/DateOff.dart';
 import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
-import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'date_picker.dart';
-import 'date_range_picker.dart';
 
 class Body extends StatefulWidget {
-  static List<String> dateOffList = [];
+  static String dateOff;
 
   @override
   _BodyState createState() => _BodyState();
@@ -19,56 +16,9 @@ class _BodyState extends State<Body> {
   TextEditingController reasonTextController = TextEditingController();
 
   addDateOff() async {
-    List<DateOff> dateOffToAdd = [];
-    Employee employee = new Employee();
-    Spa spa = new Spa();
-    DateOff dateOff = new DateOff();
-
-    await StaffService.getStaffProfileById(
-            MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
-        .then((staff) => {
-              setState(() {
-                employee.active = true;
-                employee.address = staff.data.user.address;
-                employee.birthdate = staff.data.user.birthdate;
-                employee.email = staff.data.user.email;
-                employee.fullname = staff.data.user.fullname;
-                employee.gender = staff.data.user.gender;
-                employee.id = staff.data.user.id;
-                employee.image = staff.data.user.image;
-                employee.password = staff.data.user.password;
-                employee.phone = staff.data.user.phone;
-
-                spa.city = staff.data.spa.city;
-                spa.createBy = staff.data.spa.createBy;
-                spa.createTime = staff.data.spa.createTime;
-                spa.district = staff.data.spa.district;
-                spa.id = staff.data.spa.id;
-                spa.image = staff.data.spa.image;
-                spa.latitude = staff.data.spa.latitude;
-                spa.longtitude = staff.data.spa.longtitude;
-                spa.name = staff.data.spa.name;
-                spa.status = staff.data.spa.status;
-                spa.street = staff.data.spa.street;
-              }),
-            });
-
-    print("Length: " + Body.dateOffList.length.toString());
-    for (int i = 0; i < Body.dateOffList.length; i++) {
-      DateTime dateTime = DateTime.parse(Body.dateOffList[i]);
-      dateOff.dateOff = dateTime;
-      dateOff.employee = employee;
-      dateOff.spa = spa;
-      dateOff.reasonDateOff = reasonTextController.text;
-      dateOff.statusDateOff = "WAITING";
-      dateOffToAdd.add(dateOff);
-    }
-
-    final res = await StaffScheduleService()
-        .sendDateOff(MyApp.storage.getItem("token"), dateOffToAdd);
-
+    final res = await StaffScheduleService().sendDateOff(
+        MyApp.storage.getItem("token"), Body.dateOff, reasonTextController.text);
     print("Status: ${res.body}");
-    //print(json.encode(dateOffToJson(dateOffToAdd)));
   }
 
   @override
@@ -84,8 +34,8 @@ class _BodyState extends State<Body> {
             children: [
               DatePickerWidget(),
               SizedBox(height: 24),
-              DateRangePickerWidget(),
-              SizedBox(height: 24),
+              //DateRangePickerWidget(),
+              //SizedBox(height: 24),
               Row(
                 children: [
                   Text(
@@ -115,8 +65,8 @@ class _BodyState extends State<Body> {
                   color: Colors.orangeAccent,
                   onPressed: () async {
                     await addDateOff();
-                    print("DateTime nè: " + Body.dateOffList.toString());
-                    Body.dateOffList.clear();
+                    print("DateTime nè: " + Body.dateOff.toString());
+                    Body.dateOff = "";
                   },
                   child: Text(
                     "Đăng ký",
