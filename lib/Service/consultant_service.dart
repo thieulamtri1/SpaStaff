@@ -21,6 +21,7 @@ class ConsultantService {
   static final String GET_AVAILABLE_TIME_FOR_NEXT_STEP = "https://swp490spa.herokuapp.com/api/consultant/getListTimeBookingForAStep?";
   static final String ADD_TREATMENT_FOR_BOOKING_DETAIL = "https://swp490spa.herokuapp.com/api/consultant/bookingdetailstep/addtreatment";
   static final String BOOKING_FOR_NEXT_STEP = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/addTimeNextStep";
+  static final String EDIT_CONSULTATION_CONTENT = "https://swp490spa.herokuapp.com/api/consultant/consultationcontent/edit";
   static Future<CustomerOfConsultant> getListCustomerOfConsultant(id, token) async {
     try {
       final response = await http.get(
@@ -158,14 +159,39 @@ class ConsultantService {
         body: jsonEncode(
             {
               "bookingDetailStepId": bookingDetailStepId,
-              "dateBooking": dateBooking,
               "timeBooking": timeBooking,
+              "dateBooking": dateBooking,
             }));
     if (res.statusCode == 200){
       jsonResponse = utf8.decode(res.bodyBytes);
       print(jsonResponse.toString());
     }
     print("LOI ROI" + "Status code = " + res.statusCode.toString());
+    return res.statusCode.toString();
+  }
+
+  static Future<String> editConsultationContent(int id, String description, String expectation, String note) async {
+    var jsonResponse;
+    final res = await http.put(EDIT_CONSULTATION_CONTENT,
+        headers: {
+          "accept" : "application/json",
+          "content-type" : "application/json",
+          "authorization" : "Bearer " + MyApp.storage.getItem("token"),
+        },
+        body: jsonEncode(
+            {
+              "id": id,
+              "description": description,
+              "expectation": expectation,
+              "note": note,
+            }));
+    if (res.statusCode == 200){
+      jsonResponse = utf8.decode(res.bodyBytes);
+      print(jsonResponse.toString());
+    }
+    else {
+      print("LOI ROI" + "Status code = " + res.statusCode.toString());
+    }
     return res.statusCode.toString();
   }
 
@@ -179,6 +205,7 @@ class ConsultantService {
             'Authorization': 'Bearer ${MyApp.storage.getItem("token")}',
           });
       print(response.body);
+      print("link: "+GET_AVAILABLE_TIME_FOR_NEXT_STEP + "bookingDetailStepId=$bookingDetailStepId&customerId=$customerId&dateBooking=$dateBooking&spaId=$spaId&spaServiceId=$spaServiceId");
       if (response.statusCode == 200) {
         AvailableTime availableTime = availableTimeFromJson(utf8.decode(response.bodyBytes));
         return availableTime;

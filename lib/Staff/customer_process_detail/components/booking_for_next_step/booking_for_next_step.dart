@@ -17,6 +17,9 @@ class _BookingForNextStepScreenState extends State<BookingForNextStepScreen> {
   @override
   Widget build(BuildContext context) {
     print ("spa service id: ${widget.spaServiceId}");
+    print ("customer id: ${widget.customerId}");
+    print ("spa id: ${widget.spaId}");
+    print ("booking detail step id: ${widget.bookingDetailStepId}");
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

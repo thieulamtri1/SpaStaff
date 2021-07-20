@@ -8,6 +8,7 @@ import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_first_step/booking_for_first_step_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_next_step/booking_for_next_step.dart';
 import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/choose_treatment.dart';
+import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/edit_consultation_content.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
 import 'package:spa_and_beauty_staff/size_config.dart';
@@ -250,6 +251,7 @@ class _ProcessSectionState extends State<ProcessSection> {
                 ...List.generate(
                   widget.bookingDetailSteps.data.length,
                   (index) => ProcessStepSection(
+                    bookingDetailStepInstance: widget.bookingDetailSteps.data[index],
                     notifyParent: widget.notifyParent,
                     spaId: widget.spaId,
                     customerId: widget.customerId,
@@ -391,6 +393,7 @@ class ProcessStepSection extends StatefulWidget {
   final Function() notifyParent;
   final String date, stepName, status;
   final int bookingDetailStepId, customerId, spaId, spaServiceId;
+  final BookingDetailStepInstance bookingDetailStepInstance;
 
   const ProcessStepSection({
     Key key,
@@ -400,7 +403,7 @@ class ProcessStepSection extends StatefulWidget {
     this.bookingDetailStepId,
     this.customerId,
     this.spaId,
-    this.spaServiceId, this.notifyParent,
+    this.spaServiceId, this.notifyParent, this.bookingDetailStepInstance,
   }) : super(key: key);
 
   @override
@@ -493,9 +496,18 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                     ),
                     Visibility(
                       visible: true,
-                      child: Icon(
-                        Icons.edit,
-                        color: kGreen,
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditConsultantContent(bookingDetailStepInstance: widget.bookingDetailStepInstance,)),
+                          ).then((value) => setState(widget.notifyParent));
+                        },
+                        child: Icon(
+                          Icons.edit,
+                          color: kGreen,
+                        ),
                       ),
                     )
                   ],
