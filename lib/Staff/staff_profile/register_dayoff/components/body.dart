@@ -1,7 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:spa_and_beauty_staff/Model/DateOff.dart';
-import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'date_picker.dart';
@@ -16,7 +14,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   TextEditingController reasonTextController = TextEditingController();
 
-  addDateOff() async {
+  sendDateOff() async {
     final res = await StaffService().sendDateOffStaff(
         MyApp.storage.getItem("token"), Body.dateOff, reasonTextController.text);
     print("Status: ${res.body}");
@@ -65,7 +63,7 @@ class _BodyState extends State<Body> {
                       borderRadius: BorderRadius.circular(20)),
                   color: Colors.orangeAccent,
                   onPressed: () async {
-                    await addDateOff();
+                    await sendDateOff();
                     print("DateTime nè: " + Body.dateOff.toString());
                     Body.dateOff = "";
                   },

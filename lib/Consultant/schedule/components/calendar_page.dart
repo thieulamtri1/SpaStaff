@@ -3,9 +3,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
-import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:http/http.dart' as http;
 
 class calendarPage extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _calendarPageState extends State<calendarPage> {
 
   getData(date) {
     ConsultantService.getConsultantSchedule(
-        MyApp.storage.getItem("staffId"),
+        MyApp.storage.getItem("consultantId"),
         date,
         MyApp.storage.getItem("token"))
         .then((value) => {
@@ -93,9 +93,7 @@ class _calendarPageState extends State<calendarPage> {
             SizedBox(
               height: 5,
             ),
-            MyApp.storage.getItem("role") == "STAFF"
-                ? ListToDoStaff(selectedDay.toString().substring(0, 10))
-                : ListToDoConsultant(selectedDay.toString().substring(0, 10)),
+            ListToDoConsultant(selectedDay.toString().substring(0, 10)),
           ],
         ),
       ),
@@ -107,9 +105,9 @@ class _calendarPageState extends State<calendarPage> {
     if (loading) {
       return Center(
           child: SpinKitWave(
-        color: Colors.white,
-        size: 50,
-      ));
+            color: Colors.white,
+            size: 50,
+          ));
     } else {
       if (ConsultantSchedule.data.length == 0) {
         return Expanded(
@@ -172,135 +170,35 @@ class _calendarPageState extends State<calendarPage> {
                       children: [
                         ...List.generate(
                             ConsultantSchedule.data.length,
-                            (index) => Column(
-                                  children: [
-                                    dayTask(
-                                        time: ConsultantSchedule
-                                            .data[index].startTime,
-                                        customerName: ConsultantSchedule
-                                            .data[index]
-                                            .bookingDetail
-                                            .booking
-                                            .customer
-                                            .user
-                                            .fullname,
-                                        phone: ConsultantSchedule
-                                            .data[index]
-                                            .bookingDetail
-                                            .booking
-                                            .customer
-                                            .user
-                                            .phone,
-                                        service: "Trị mụn")
-                                  ],
-                                ))
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-    }
-  }
-
-  ListToDoStaff(String date) {
-    getData(date);
-    if (loading) {
-      return Center(
-          child: SpinKitWave(
-        color: Colors.white,
-        size: 50,
-      ));
-    } else {
-      if (StaffSchedule.data.length == 0) {
-        return Expanded(
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40)),
-                color: Colors.white),
-            child: Container(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          date,
-                          style: TextStyle(color: Colors.grey),
+                                (index) =>
+                             ConsultantSchedule.data[index].isConsultation.toString() == "TRUE" ?
+                            Column(
+                              children: [
+                                dayTask(
+                                    time: ConsultantSchedule
+                                        .data[index].startTime.toString()
+                                        .substring(0, 5),
+                                    customerName: ConsultantSchedule
+                                        .data[index]
+                                        .bookingDetail
+                                        .booking
+                                        .customer
+                                        .user
+                                        .fullname,
+                                    phone: ConsultantSchedule
+                                        .data[index]
+                                        .bookingDetail
+                                        .booking
+                                        .customer
+                                        .user
+                                        .phone,
+                                    service:
+                                    ConsultantSchedule
+                                        .data[index].bookingDetail.spaPackage.name
+                                ),
+                              ],
+                            ): SizedBox()
                         )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      children: [],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      } else if (StaffSchedule.data.length != 0) {
-        return Expanded(
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40)),
-                color: Colors.white),
-            child: Container(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          date,
-                          style: TextStyle(color: Colors.grey),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      children: [
-                        ...List.generate(
-                            StaffSchedule.data.length,
-                            (index) => Column(
-                                  children: [
-                                    dayTask(
-                                        time: StaffSchedule
-                                            .data[index].startTime
-                                            .toString()
-                                            .substring(0, 5),
-                                        customerName: StaffSchedule
-                                            .data[index]
-                                            .bookingDetail
-                                            .booking
-                                            .customer
-                                            .user
-                                            .fullname,
-                                        phone: StaffSchedule
-                                            .data[index]
-                                            .bookingDetail
-                                            .booking
-                                            .customer
-                                            .user
-                                            .phone,
-                                        service: StaffSchedule.data[index]
-                                            .treatmentService.spaService.name)
-                                  ],
-                                ))
                       ],
                     )
                   ],
