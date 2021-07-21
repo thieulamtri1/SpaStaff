@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Staff/notification/components/body.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 
-class StaffNotification extends StatefulWidget {
+class StaffNotificationScreen extends StatefulWidget {
   static String routeName = "/notification_screen";
   @override
   _StaffNotificationState createState() => _StaffNotificationState();
 }
 
-class _StaffNotificationState extends State<StaffNotification> {
+class _StaffNotificationState extends State<StaffNotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(

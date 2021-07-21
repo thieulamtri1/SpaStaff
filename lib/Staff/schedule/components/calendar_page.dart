@@ -3,9 +3,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
+import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:http/http.dart' as http;
 
 class calendarPage extends StatefulWidget {
   @override
@@ -22,27 +22,14 @@ class _calendarPageState extends State<calendarPage> {
   bool loading = true;
 
   getData(date) {
-    if (MyApp.storage.getItem("role") == "STAFF") {
-      StaffScheduleService.getStaffSchedule(MyApp.storage.getItem("staffId"),
-              date, MyApp.storage.getItem("token"))
-          .then((value) => {
-                setState(() {
-                  StaffSchedule = value;
-                  loading = false;
-                })
-              });
-    } else {
-      StaffScheduleService.getConsultantSchedule(
-              MyApp.storage.getItem("staffId"),
-              date,
-              MyApp.storage.getItem("token"))
-          .then((value) => {
-                setState(() {
-                  ConsultantSchedule = value;
-                  loading = false;
-                })
-              });
-    }
+    StaffService.getStaffSchedule(MyApp.storage.getItem("staffId"),
+        date, MyApp.storage.getItem("token"))
+        .then((value) => {
+      setState(() {
+        StaffSchedule = value;
+        loading = false;
+      })
+    });
   }
 
   // @override

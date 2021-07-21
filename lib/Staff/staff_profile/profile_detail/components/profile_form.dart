@@ -41,30 +41,15 @@ class _ProfileFormState extends State<ProfileForm> {
 
   getData() async {
     await MyApp.storage.ready;
-    if(MyApp.storage.getItem('role') == "STAFF"){
-      int staffId = MyApp.storage.getItem("staffId");
-      String staffToken = MyApp.storage.getItem("token");
-      await StaffService.getStaffProfileById(staffId, staffToken)
-          .then((value) => {
-        setState(() {
-          staff = value;
-          loading = false;
-          print("IMAGE nè duma: " + staff.data.user.image);
-        }),
-      });
-    }
-    else{
-      print("lấy consultant");
-      int staffId = MyApp.storage.getItem("staffId");
-      String staffToken = MyApp.storage.getItem("token");
-      await StaffService.getConsultantProfileById(staffId, staffToken)
-          .then((value) => {
-        setState(() {
-          staff = value;
-          loading = false;
-        }),
-      });
-    }
+    int staffId = MyApp.storage.getItem("staffId");
+    String staffToken = MyApp.storage.getItem("token");
+    await StaffService.getStaffProfileById(staffId, staffToken)
+        .then((value) => {
+      setState(() {
+        staff = value;
+        loading = false;
+      }),
+    });
     
   }
   @override
@@ -108,46 +93,24 @@ class _ProfileFormState extends State<ProfileForm> {
     return DefaultButton(
       text: "Cập nhật",
       press: () async {
-        if(MyApp.storage.getItem("role") == "STAFF"){
-          final res = await StaffService().updateStaffProfile(
-            token: MyApp.storage.getItem('token'),
-            active: true,
-            address: streetTextController.text,
-            birthdate: dateOfBirthTextController.text,
-            email: staff.data.user.email,
-            fullname: fullnameTextController.text,
-            gender: genderTextController.text,
-            id: MyApp.storage.getItem("staffId"),
-            image: staff.data.user.image,
-            password: staff.data.user.password,
-            phone: staff.data.user.phone,
-          );
-          print("Status: ${res.body}");
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
-          );
-        }else{
-          final res = await StaffService().updateConsultantProfile(
-            token: MyApp.storage.getItem('token'),
-            active: true,
-            address: streetTextController.text,
-            birthdate: dateOfBirthTextController.text,
-            email: staff.data.user.email,
-            fullname: fullnameTextController.text,
-            gender: genderTextController.text,
-            id: MyApp.storage.getItem("staffId"),
-            image: staff.data.user.image,
-            password: staff.data.user.password,
-            phone: staff.data.user.phone,
-          );
-          print("Status: ${res.body}");
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
-          );
-        }
-
+        final res = await StaffService().updateStaffProfile(
+          token: MyApp.storage.getItem('token'),
+          active: true,
+          address: streetTextController.text,
+          birthdate: dateOfBirthTextController.text,
+          email: staff.data.user.email,
+          fullname: fullnameTextController.text,
+          gender: genderTextController.text,
+          id: MyApp.storage.getItem("staffId"),
+          image: staff.data.user.image,
+          password: staff.data.user.password,
+          phone: staff.data.user.phone,
+        );
+        print("Status: ${res.body}");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
+        );
       },
     );
   }

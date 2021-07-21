@@ -249,7 +249,7 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          BottomNavigation()),
+                                          BottomNavigationStaff()),
                                 );
                               },
                               title: "Thành Công !",

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:spa_and_beauty_staff/Consultant/bottom_navigation/bottom_navigation.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
 
 import 'package:spa_and_beauty_staff/Staff/bottom_navigation/bottom_navigation.dart';
@@ -15,7 +16,6 @@ import '../../../constants.dart';
 import '../../../default_button.dart';
 import '../../../form_error.dart';
 import '../../../main.dart';
-import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 
 class Body extends StatelessWidget {
   final bool isMainLogin;
@@ -103,7 +103,7 @@ class _SignFormState extends State<SignForm> {
           MyApp.storage.setItem("password", password);
 
           widget.isMainLogin
-              ? Navigator.pushNamed(context, BottomNavigation.routeName)
+              ? Navigator.pushNamed(context, BottomNavigationStaff.routeName)
               : Navigator.pop(
             context,
           );
@@ -154,12 +154,12 @@ class _SignFormState extends State<SignForm> {
         if (jsonResponse['errorMessage'] == null) {
           await MyApp.storage.ready;
           MyApp.storage.setItem("token", jsonResponse['jsonWebToken']);
-          MyApp.storage.setItem("staffId", jsonResponse['idAccount']);
+          MyApp.storage.setItem("consultantId", jsonResponse['idAccount']);
           MyApp.storage.setItem("role", "CONSULTANT");
           MyApp.storage.setItem("password", password);
 
           widget.isMainLogin
-              ? Navigator.pushNamed(context, BottomNavigation.routeName)
+              ? Navigator.pushNamed(context, BottomNavigationConsultant.routeName)
               : Navigator.pop(
                   context,
                 );

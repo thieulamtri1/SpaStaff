@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Model/DateOff.dart';
 import 'package:spa_and_beauty_staff/Service/staff_schedule_service.dart';
+import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'date_picker.dart';
 
@@ -16,7 +17,7 @@ class _BodyState extends State<Body> {
   TextEditingController reasonTextController = TextEditingController();
 
   addDateOff() async {
-    final res = await StaffScheduleService().sendDateOff(
+    final res = await StaffService().sendDateOffStaff(
         MyApp.storage.getItem("token"), Body.dateOff, reasonTextController.text);
     print("Status: ${res.body}");
   }

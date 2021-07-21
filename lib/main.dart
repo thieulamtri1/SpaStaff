@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:spa_and_beauty_staff/Staff/bottom_navigation/bottom_navigation.dart';
-import 'package:spa_and_beauty_staff/Staff/sign_in/sign_in_screen.dart';
+import 'package:spa_and_beauty_staff/sign_in/sign_in_screen.dart';
 import 'routs.dart';
 import 'package:spa_and_beauty_staff/theme.dart';
 

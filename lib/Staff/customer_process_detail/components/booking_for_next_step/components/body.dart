@@ -246,7 +246,7 @@ class _NextStepBookingBodyState extends State<NextStepBookingBody> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          BottomNavigation()),
+                                          BottomNavigationStaff()),
                                 );
                               },
                               title: "Thành Công !",

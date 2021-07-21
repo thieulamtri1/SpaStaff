@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import '../../../main.dart';
@@ -48,7 +49,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     );
   }
   getConsultantImage() async{
-    await StaffService.getConsultantProfileById(MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+    await ConsultantService.getConsultantProfileById(MyApp.storage.getItem("consultantId"), MyApp.storage.getItem("token"))
         .then((value) => {
       setState(() {
         consultantImage = value.data.user.image;

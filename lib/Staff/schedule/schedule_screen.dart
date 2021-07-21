@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'components/calendar_page.dart';
 
 
-class Schedule extends StatelessWidget {
+class StaffScheduleScreen extends StatelessWidget {
   static String routeName = "/schedule_screen";
 
   @override

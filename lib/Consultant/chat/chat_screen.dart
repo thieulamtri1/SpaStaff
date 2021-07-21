@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:spa_and_beauty_staff/Staff/chat/components/body.dart';
-import 'package:spa_and_beauty_staff/constants.dart';
 
-class ChatScreen extends StatefulWidget {
+import 'components/body.dart';
+
+class ConsultantChatScreen extends StatefulWidget {
   static String routeName = "/chat_screen";
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ConsultantChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(

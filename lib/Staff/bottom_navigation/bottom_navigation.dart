@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:spa_and_beauty_staff/Staff/chat/chat_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/following/following_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/notification/notification_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/schedule/schedule_screen.dart';
@@ -7,21 +6,20 @@ import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/profile_screen.
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/size_config.dart';
 
-class BottomNavigation extends StatefulWidget {
+class BottomNavigationStaff extends StatefulWidget {
   static String routeName = "/bottom_navigation";
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
 
-class _BottomNavigationState extends State<BottomNavigation> {
+class _BottomNavigationState extends State<BottomNavigationStaff> {
 
   int selectedIndex = 0;
   List<Widget> widgetOptions = <Widget>[
-    Schedule(),
-    ChatScreen(),
-    StaffNotification(),
-    FollowingScreen(),
-    ProfileScreen(),
+    StaffScheduleScreen(),
+    StaffNotificationScreen(),
+    StaffFollowingScreen(),
+    StaffProfileScreen(),
   ];
 
   void  onBottomNavigationItemSelect(int index){
@@ -34,7 +32,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
-
       body: Center(
         child: widgetOptions.elementAt(selectedIndex),
       ),
@@ -49,12 +46,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
               Icons.calendar_today_outlined,
             ),
             title: Text("Schedule"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.chat,
-            ),
-            title: Text("Chat"),
           ),
           BottomNavigationBarItem(
             icon: Icon(

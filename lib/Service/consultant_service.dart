@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:spa_and_beauty_staff/Model/AvailableTime.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
+import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/CustomerOfConsultant.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
@@ -22,6 +23,21 @@ class ConsultantService {
   static final String ADD_TREATMENT_FOR_BOOKING_DETAIL = "https://swp490spa.herokuapp.com/api/consultant/bookingdetailstep/addtreatment";
   static final String BOOKING_FOR_NEXT_STEP = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/addTimeNextStep";
   static final String EDIT_CONSULTATION_CONTENT = "https://swp490spa.herokuapp.com/api/consultant/consultationcontent/edit";
+
+  static const String urlGetProfileConsultant =
+      "https://swp490spa.herokuapp.com/api/consultant/findById/";
+  static const String urlUpdateProfileConsultant =
+      "https://swp490spa.herokuapp.com/api/consultant/editprofile";
+  static const String urlEditPasswordConsultant =
+      "https://swp490spa.herokuapp.com/api/consultant/editpassword";
+  static final String urlConsultantSchedule =
+      "https://swp490spa.herokuapp.com/api/consultant/workingofconsultant/findbydatechosen/";
+  static final String dateChosen =
+      "?dateChosen=";
+  static final String urlDateOff =
+      "https://swp490spa.herokuapp.com/api/staff/dateoff/create/";
+
+
   static Future<CustomerOfConsultant> getListCustomerOfConsultant(id, token) async {
     try {
       final response = await http.get(
@@ -214,6 +230,111 @@ class ConsultantService {
       }
     } catch (e) {
       return AvailableTime();
+    }
+  }
+
+  Future<http.Response> sendDateOffConsultant(token, dateOff, reasonDateOff) {
+    return http.post(
+      Uri.parse(urlDateOff + MyApp.storage.getItem('consultantId').toString()),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "id": MyApp.storage.getItem("staffId"),
+        "dateOff": dateOff,
+        "reasonDateOff": reasonDateOff,
+      }),
+    );
+  }
+
+  static Future<ScheduleConsultant> getConsultantSchedule(id, date, token) async {
+    try {
+      final response = await http.get(Uri.parse(urlConsultantSchedule + id.toString() + dateChosen + date), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        print("lấy lịch Thành công");
+        ScheduleConsultant consultantSchedule = scheduleConsultantFromJson(utf8.decode(response.bodyBytes));
+        return consultantSchedule;
+      } else {
+        throw Exception('Failed to load staffSchedule');
+      }
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to load staffSchedule');
+    }
+  }
+
+  Future<http.Response> editPasswordConsultant(token, password) {
+    return http.put(
+      Uri.parse(urlEditPasswordConsultant),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "id": MyApp.storage.getItem("consultantId"),
+        "password": password,
+      }),
+    );
+  }
+
+
+  Future<http.Response> updateConsultantProfile({
+    token,
+    active,
+    address,
+    birthdate,
+    email,
+    fullname,
+    gender,
+    id,
+    image,
+    password,
+    phone,
+  }) {
+    return http.put(
+      Uri.parse(urlUpdateProfileConsultant),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "active": true,
+        "address": address,
+        "birthdate": birthdate,
+        "email": email,
+        "fullname": fullname,
+        "gender": gender,
+        "id": id,
+        "image": image,
+        "password": password,
+        "phone": phone,
+      }),
+    );
+  }
+
+  static Future<Staff> getConsultantProfileById(id, token) async {
+    try {
+      final response = await http.get(Uri.parse(urlGetProfileConsultant + id.toString()), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      print(response.body);
+      if (response.statusCode == 200) {
+        return staffFromJson(utf8.decode(response.bodyBytes));
+      } else {
+        throw Exception('Failed to load staffProfile');
+      }
+    } catch (e) {
+      throw Exception('Failed to load staffProfile');
     }
   }
 }
