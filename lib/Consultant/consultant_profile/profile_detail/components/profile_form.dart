@@ -144,6 +144,8 @@ class _ProfileFormState extends State<ProfileFormConsultant> {
     return TextFormField(
       controller: streetTextController,
       enabled: false,
+      minLines: 1,
+      maxLines: 4,
       decoration: InputDecoration(
         labelText: "Địa chỉ",
         floatingLabelBehavior: FloatingLabelBehavior.always,
