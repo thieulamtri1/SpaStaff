@@ -18,7 +18,7 @@ class _BodyState extends State<Body> {
   TextEditingController searchInput = TextEditingController();
   QuerySnapshot searchResult;
   bool isSearch = false;
-  int staffId;
+  int consultantId;
   bool loading = true;
   CustomerOfConsultant customerOfConsultant = CustomerOfConsultant();
   String customerImage;
@@ -27,10 +27,10 @@ class _BodyState extends State<Body> {
 
   getData() async {
     await MyApp.storage.ready;
-    staffId = MyApp.storage.getItem("staffId");
+    consultantId = MyApp.storage.getItem("consultantId");
     await getListCustomerOfConsultant();
     await getChatRoom();
-    print("StaffID: $staffId");
+    print("StaffID: $consultantId");
   }
 
   initiateSearch() async {
@@ -55,7 +55,7 @@ class _BodyState extends State<Body> {
                 customerId: searchResult.docs[index]["id"],
                 chatRoomId: getChatRoomId(
                     int.parse(searchResult.docs[index]["id"]),
-                    MyApp.storage.getItem("staffId")),
+                    MyApp.storage.getItem("consultantId")),
               );
             },
           )
@@ -71,7 +71,7 @@ class _BodyState extends State<Body> {
   }
 
   getChatRoom() async {
-    await firebaseMethod.getChatRoomStream(staffId).then((value) {
+    await firebaseMethod.getChatRoomStream(consultantId).then((value) {
       setState(() {
         chatRoomStream = value;
         loading = false;
@@ -81,7 +81,7 @@ class _BodyState extends State<Body> {
 
   getListCustomerOfConsultant() async{
     await ConsultantService.getListCustomerOfConsultant(
-        MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+        MyApp.storage.getItem("consultantId"), MyApp.storage.getItem("token"))
         .then((value) => {
       setState(() {
         customerOfConsultant = value;
@@ -114,7 +114,7 @@ class _BodyState extends State<Body> {
                 .data.docs[index]["chatRoomId"]
                 .toString()
                 .replaceAll("_", "")
-                .replaceAll("$staffId", "");
+                .replaceAll("$consultantId", "");
             getCustomerInfo(customerId);
             return ChatCard(
                 customerId: customerId,

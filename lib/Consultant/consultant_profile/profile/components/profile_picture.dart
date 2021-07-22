@@ -2,16 +2,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
-import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'dart:convert';
+import 'package:async/async.dart';
 
 import '../../../../main.dart';
 
-class ProfilePic extends StatefulWidget {
+class ProfilePicConsultant extends StatefulWidget {
   @override
   _ProfilePicState createState() => _ProfilePicState();
 }
 
-class _ProfilePicState extends State<ProfilePic> {
+class _ProfilePicState extends State<ProfilePicConsultant> {
   File imageFile;
   ImagePicker imagePicker;
   final ImagePicker picker = ImagePicker();
@@ -35,6 +38,37 @@ class _ProfilePicState extends State<ProfilePic> {
       }),
     });
   }
+
+  uploadFile(File imageFile) async {
+    // open a bytestream
+    var stream =
+    new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    // get file length
+    var length = await imageFile.length();
+    // string to uri
+    var uri = Uri.parse(
+        "https://swp490spa.herokuapp.com/api/consultant/image/edit/" + MyApp.storage.getItem("consultantId").toString());
+    // create multipart request
+    var request = new http.MultipartRequest("PUT", uri);
+    request.headers.addAll({
+      "Content-type": "multipart/form-data",
+      "Authorization": "Bearer " + MyApp.storage.getItem("token"),
+    });
+    // multipart that takes file
+    var multipartFile = new http.MultipartFile('file', stream, length,
+        filename: basename(imageFile.path));
+    // add file to multipart
+    request.files.add(multipartFile);
+    // send
+    var response = await request.send();
+    print(response.statusCode);
+
+    // listen for response
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
+  }
+
 
   @override
   void initState() {
@@ -82,6 +116,17 @@ class _ProfilePicState extends State<ProfilePic> {
               ),
             ),
           ),
+          Positioned(
+            bottom: 0,
+            left: -10,
+            child: FloatingActionButton(
+              onPressed: () {
+                uploadFile(imageFile);
+                print("upload");
+              },
+              child: Text("press"),
+            ),
+          ),
         ],
       ),
     );
@@ -90,7 +135,7 @@ class _ProfilePicState extends State<ProfilePic> {
   Widget bottomSheet() {
     return Container(
       height: 100,
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.of(this.context).size.width,
       margin: EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 20,

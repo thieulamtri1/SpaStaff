@@ -19,7 +19,7 @@ class _BodyState extends State<Body> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            ProfilePic(),
+            ProfilePicStaff(),
             SizedBox(height: 20),
             Text(MyApp.storage.getItem("email"), textAlign: TextAlign.center),
             SizedBox(height: 40),

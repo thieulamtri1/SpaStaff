@@ -7,7 +7,7 @@ import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/size_config.dart';
 
 class BottomNavigationStaff extends StatefulWidget {
-  static String routeName = "/bottom_navigation";
+  static String routeName = "/bottom_navigation_staff";
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }

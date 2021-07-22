@@ -22,7 +22,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   FirebaseMethod firebaseMethod = FirebaseMethod();
   TextEditingController messageInput = TextEditingController();
   Stream chatMessageStream;
-  int staffId;
+  int consultantId;
   int prevUserId;
   String consultantImage;
 
@@ -36,7 +36,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
                   final bool isMe =
-                      snapshot.data.docs[index]["sendBy"] == staffId;
+                      snapshot.data.docs[index]["sendBy"] == consultantId;
                   final bool isSameUser =
                       prevUserId == snapshot.data.docs[index]["sendBy"];
                   prevUserId = snapshot.data.docs[index]["sendBy"];
@@ -61,7 +61,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     if (messageInput.text.isNotEmpty) {
       Map<String, dynamic> messageMap = {
         "message": messageInput.text,
-        "sendBy": staffId,
+        "sendBy": consultantId,
         "time": DateTime.now().millisecondsSinceEpoch
       };
       firebaseMethod.addConversationMessage(widget.chatRoomId, messageMap);
@@ -81,7 +81,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   getData() async {
     await MyApp.storage.ready;
-    staffId = MyApp.storage.getItem("staffId");
+    consultantId = MyApp.storage.getItem("consultantId");
   }
 
   @override

@@ -4,13 +4,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 
 import '../../../../main.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'dart:convert';
+import 'package:async/async.dart';
 
-class ProfilePic extends StatefulWidget {
+class ProfilePicStaff extends StatefulWidget {
   @override
   _ProfilePicState createState() => _ProfilePicState();
 }
 
-class _ProfilePicState extends State<ProfilePic> {
+class _ProfilePicState extends State<ProfilePicStaff> {
   File imageFile;
   ImagePicker imagePicker;
   final ImagePicker picker = ImagePicker();
@@ -26,14 +30,44 @@ class _ProfilePicState extends State<ProfilePic> {
     });
   }
 
-  getStaffProfile() async{
-    await StaffService.getStaffProfileById(MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
+  getStaffProfile() async {
+    await StaffService.getStaffProfileById(
+            MyApp.storage.getItem("staffId"), MyApp.storage.getItem("token"))
         .then((value) => {
-      setState(() {
-        image = value.data.user.image;
-      }),
-    });
+              setState(() {
+                image = value.data.user.image;
+              }),
+            });
+  }
 
+  uploadFile(File imageFile) async {
+    // open a bytestream
+    var stream =
+        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    // get file length
+    var length = await imageFile.length();
+    // string to uri
+    var uri = Uri.parse(
+        "https://swp490spa.herokuapp.com/api/staff/image/edit/" + MyApp.storage.getItem("staffId").toString());
+    // create multipart request
+    var request = new http.MultipartRequest("PUT", uri);
+    request.headers.addAll({
+      "Content-type": "multipart/form-data",
+      "Authorization": "Bearer " + MyApp.storage.getItem("token"),
+    });
+    // multipart that takes file
+    var multipartFile = new http.MultipartFile('file', stream, length,
+        filename: basename(imageFile.path));
+    // add file to multipart
+    request.files.add(multipartFile);
+    // send
+    var response = await request.send();
+    print(response.statusCode);
+
+    // listen for response
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
   }
 
   @override
@@ -53,7 +87,10 @@ class _ProfilePicState extends State<ProfilePic> {
         children: [
           CircleAvatar(
             backgroundImage: imageFile == null
-                ? NetworkImage(image == null ? "https://thinkingschool.vn/wp-content/uploads/avatars/753/753-bpfull.jpg" : image)
+                ? NetworkImage(image == null
+                    ? "https://thinkingschool.vn/wp-content/uploads/avatars/753/753-bpfull.jpg"
+                    : image)
+
                 : FileImage(File(imageFile.path)),
           ),
           Positioned(
@@ -82,6 +119,17 @@ class _ProfilePicState extends State<ProfilePic> {
               ),
             ),
           ),
+          Positioned(
+            bottom: 0,
+            left: -10,
+            child: FloatingActionButton(
+              onPressed: () {
+                uploadFile(imageFile);
+                print("upload");
+              },
+              child: Text("press"),
+            ),
+          ),
         ],
       ),
     );
@@ -90,7 +138,7 @@ class _ProfilePicState extends State<ProfilePic> {
   Widget bottomSheet() {
     return Container(
       height: 100,
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.of(this.context).size.width,
       margin: EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 20,

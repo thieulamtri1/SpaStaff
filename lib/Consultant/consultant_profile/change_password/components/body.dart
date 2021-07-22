@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spa_and_beauty_staff/Consultant/consultant_profile/profile/components/profile_picture.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/change_password/change_password.dart';
@@ -20,7 +21,7 @@ class _BodyState extends State<Body> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            ProfilePic(),
+            ProfilePicConsultant(),
             SizedBox(height: 20),
             Text(MyApp.storage.getItem("email"), textAlign: TextAlign.center),
             SizedBox(height: 40),

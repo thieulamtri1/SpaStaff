@@ -47,6 +47,8 @@ class Datum {
     this.statusBooking,
     this.reason,
     this.isConsultation,
+    this.consultationContent,
+    this.rating,
     this.treatmentService,
     this.staff,
     this.consultant,
@@ -57,12 +59,14 @@ class Datum {
   DateTime dateBooking;
   String startTime;
   String endTime;
-  dynamic bookingPrice;
+  double bookingPrice;
   String statusBooking;
   dynamic reason;
   String isConsultation;
-  dynamic treatmentService;
-  dynamic staff;
+  ConsultationContent consultationContent;
+  dynamic rating;
+  TreatmentService treatmentService;
+  Consultant staff;
   Consultant consultant;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -71,12 +75,14 @@ class Datum {
     dateBooking: DateTime.parse(json["date_booking"]),
     startTime: json["start_time"],
     endTime: json["end_time"],
-    bookingPrice: json["booking_price"],
+    bookingPrice: json["booking_price"] == null ? null : json["booking_price"],
     statusBooking: json["status_booking"],
     reason: json["reason"],
     isConsultation: json["is_consultation"],
-    treatmentService: json["treatment_service"],
-    staff: json["staff"],
+    consultationContent: json["consultation_content"] == null ? null : ConsultationContent.fromJson(json["consultation_content"]),
+    rating: json["rating"],
+    treatmentService: json["treatment_service"] == null ? null : TreatmentService.fromJson(json["treatment_service"]),
+    staff: json["staff"] == null ? null : Consultant.fromJson(json["staff"]),
     consultant: Consultant.fromJson(json["consultant"]),
   );
 
@@ -86,12 +92,14 @@ class Datum {
     "date_booking": "${dateBooking.year.toString().padLeft(4, '0')}-${dateBooking.month.toString().padLeft(2, '0')}-${dateBooking.day.toString().padLeft(2, '0')}",
     "start_time": startTime,
     "end_time": endTime,
-    "booking_price": bookingPrice,
+    "booking_price": bookingPrice == null ? null : bookingPrice,
     "status_booking": statusBooking,
     "reason": reason,
     "is_consultation": isConsultation,
-    "treatment_service": treatmentService,
-    "staff": staff,
+    "consultation_content": consultationContent == null ? null : consultationContent.toJson(),
+    "rating": rating,
+    "treatment_service": treatmentService == null ? null : treatmentService.toJson(),
+    "staff": staff == null ? null : staff.toJson(),
     "consultant": consultant.toJson(),
   };
 }
@@ -156,7 +164,7 @@ class Booking {
   int totalTime;
   String statusBooking;
   DateTime createTime;
-  Consultant customer;
+  Customer customer;
   Spa spa;
 
   factory Booking.fromJson(Map<String, dynamic> json) => Booking(
@@ -165,7 +173,7 @@ class Booking {
     totalTime: json["totalTime"],
     statusBooking: json["statusBooking"],
     createTime: DateTime.parse(json["createTime"]),
-    customer: Consultant.fromJson(json["customer"]),
+    customer: Customer.fromJson(json["customer"]),
     spa: Spa.fromJson(json["spa"]),
   );
 
@@ -180,35 +188,83 @@ class Booking {
   };
 }
 
-class Consultant {
-  Consultant({
+class Customer {
+  Customer({
     this.id,
     this.customType,
     this.user,
     this.tokenFcm,
-    this.spa,
   });
 
   int id;
   String customType;
   User user;
   String tokenFcm;
-  Spa spa;
 
-  factory Consultant.fromJson(Map<String, dynamic> json) => Consultant(
+  factory Customer.fromJson(Map<String, dynamic> json) => Customer(
     id: json["id"],
-    customType: json["customType"] == null ? null : json["customType"],
+    customType: json["customType"],
     user: User.fromJson(json["user"]),
     tokenFcm: json["tokenFCM"],
-    spa: json["spa"] == null ? null : Spa.fromJson(json["spa"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "customType": customType == null ? null : customType,
+    "customType": customType,
     "user": user.toJson(),
     "tokenFCM": tokenFcm,
-    "spa": spa == null ? null : spa.toJson(),
+  };
+}
+
+class User {
+  User({
+    this.id,
+    this.fullname,
+    this.phone,
+    this.password,
+    this.gender,
+    this.birthdate,
+    this.email,
+    this.image,
+    this.address,
+    this.active,
+  });
+
+  int id;
+  String fullname;
+  String phone;
+  String password;
+  String gender;
+  DateTime birthdate;
+  String email;
+  String image;
+  String address;
+  bool active;
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"],
+    fullname: json["fullname"],
+    phone: json["phone"],
+    password: json["password"],
+    gender: json["gender"],
+    birthdate: DateTime.parse(json["birthdate"]),
+    email: json["email"],
+    image: json["image"] == null ? null : json["image"],
+    address: json["address"],
+    active: json["active"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "fullname": fullname,
+    "phone": phone,
+    "password": password,
+    "gender": gender,
+    "birthdate": "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
+    "email": email,
+    "image": image == null ? null : image,
+    "address": address,
+    "active": active,
   };
 }
 
@@ -265,58 +321,6 @@ class Spa {
     "createBy": createBy,
     "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
     "status": status,
-  };
-}
-
-class User {
-  User({
-    this.id,
-    this.fullname,
-    this.phone,
-    this.password,
-    this.gender,
-    this.birthdate,
-    this.email,
-    this.image,
-    this.address,
-    this.active,
-  });
-
-  int id;
-  String fullname;
-  String phone;
-  String password;
-  String gender;
-  DateTime birthdate;
-  String email;
-  dynamic image;
-  String address;
-  bool active;
-
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"],
-    fullname: json["fullname"],
-    phone: json["phone"],
-    password: json["password"],
-    gender: json["gender"],
-    birthdate: DateTime.parse(json["birthdate"]),
-    email: json["email"],
-    image: json["image"],
-    address: json["address"],
-    active: json["active"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "fullname": fullname,
-    "phone": phone,
-    "password": password,
-    "gender": gender,
-    "birthdate": "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
-    "email": email,
-    "image": image,
-    "address": address,
-    "active": active,
   };
 }
 
@@ -449,6 +453,150 @@ class SpaTreatment {
     "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
     "createBy": createBy,
     "spaPackage": spaPackage.toJson(),
+  };
+}
+
+class Consultant {
+  Consultant({
+    this.id,
+    this.user,
+    this.spa,
+    this.tokenFcm,
+    this.status,
+  });
+
+  int id;
+  User user;
+  Spa spa;
+  String tokenFcm;
+  String status;
+
+  factory Consultant.fromJson(Map<String, dynamic> json) => Consultant(
+    id: json["id"],
+    user: User.fromJson(json["user"]),
+    spa: Spa.fromJson(json["spa"]),
+    tokenFcm: json["tokenFCM"] == null ? null : json["tokenFCM"],
+    status: json["status"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "user": user.toJson(),
+    "spa": spa.toJson(),
+    "tokenFCM": tokenFcm == null ? null : tokenFcm,
+    "status": status,
+  };
+}
+
+class ConsultationContent {
+  ConsultationContent({
+    this.id,
+    this.description,
+    this.expectation,
+    this.result,
+    this.note,
+  });
+
+  int id;
+  String description;
+  String expectation;
+  dynamic result;
+  String note;
+
+  factory ConsultationContent.fromJson(Map<String, dynamic> json) => ConsultationContent(
+    id: json["id"],
+    description: json["description"],
+    expectation: json["expectation"],
+    result: json["result"],
+    note: json["note"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "description": description,
+    "expectation": expectation,
+    "result": result,
+    "note": note,
+  };
+}
+
+class TreatmentService {
+  TreatmentService({
+    this.id,
+    this.ordinal,
+    this.spaService,
+  });
+
+  int id;
+  int ordinal;
+  SpaService spaService;
+
+  factory TreatmentService.fromJson(Map<String, dynamic> json) => TreatmentService(
+    id: json["id"],
+    ordinal: json["ordinal"],
+    spaService: SpaService.fromJson(json["spaService"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "ordinal": ordinal,
+    "spaService": spaService.toJson(),
+  };
+}
+
+class SpaService {
+  SpaService({
+    this.id,
+    this.name,
+    this.image,
+    this.description,
+    this.price,
+    this.status,
+    this.type,
+    this.durationMin,
+    this.createTime,
+    this.createBy,
+    this.spaPackages,
+  });
+
+  int id;
+  String name;
+  String image;
+  String description;
+  double price;
+  String status;
+  String type;
+  int durationMin;
+  DateTime createTime;
+  String createBy;
+  List<SpaPackage> spaPackages;
+
+  factory SpaService.fromJson(Map<String, dynamic> json) => SpaService(
+    id: json["id"],
+    name: json["name"],
+    image: json["image"],
+    description: json["description"],
+    price: json["price"],
+    status: json["status"],
+    type: json["type"],
+    durationMin: json["durationMin"],
+    createTime: DateTime.parse(json["createTime"]),
+    createBy: json["createBy"],
+    spaPackages: List<SpaPackage>.from(json["spaPackages"].map((x) => SpaPackage.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "image": image,
+    "description": description,
+    "price": price,
+    "status": status,
+    "type": type,
+    "durationMin": durationMin,
+    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "createBy": createBy,
+    "spaPackages": List<dynamic>.from(spaPackages.map((x) => x.toJson())),
   };
 }
 

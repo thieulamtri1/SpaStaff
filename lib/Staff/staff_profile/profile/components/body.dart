@@ -21,7 +21,7 @@ class _BodyState extends State<Body> {
       padding: const EdgeInsets.only(top: 30),
       child: Column(
         children: [
-          ProfilePic(),
+          ProfilePicStaff(),
           SizedBox(
             height: 30,
           ),

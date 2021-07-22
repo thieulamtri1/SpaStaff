@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spa_and_beauty_staff/Consultant/consultant_profile/profile/components/profile_picture.dart';
 import 'package:spa_and_beauty_staff/Consultant/notification/notification_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/change_password/change_password.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/components/profile_picture.dart';
@@ -21,7 +22,7 @@ class _BodyState extends State<Body> {
       padding: const EdgeInsets.only(top: 30),
       child: Column(
         children: [
-          ProfilePic(),
+          ProfilePicConsultant(),
           SizedBox(
             height: 30,
           ),

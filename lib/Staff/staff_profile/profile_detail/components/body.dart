@@ -18,7 +18,7 @@ class Body extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            ProfilePic(),
+            ProfilePicStaff(),
             SizedBox(height: 20),
             Text(MyApp.storage.getItem("email"),
                 textAlign: TextAlign.center),
