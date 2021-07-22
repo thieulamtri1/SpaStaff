@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_first_step/components/body.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/body.dart';
 
 class BookingForFirstStepScreen extends StatefulWidget {
   final int consultantId;

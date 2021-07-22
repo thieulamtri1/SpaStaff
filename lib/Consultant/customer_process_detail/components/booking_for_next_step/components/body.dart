@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Consultant/bottom_navigation/bottom_navigation.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/body.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/time_slot.dart';
 import 'package:spa_and_beauty_staff/Model/AvailableTime.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
-import 'package:spa_and_beauty_staff/Staff/bottom_navigation/bottom_navigation.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_first_step/components/time_slot.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/default_button.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
@@ -243,17 +243,13 @@ class _NextStepBookingBodyState extends State<NextStepBookingBody> {
                             return MyCustomDialog(
                               height: 250,
                               press: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          BottomNavigationConsultant()),
-                                );
+                                Navigator.pop(context);
+                                Navigator.pop(context);
                               },
                               title: "Thành Công !",
                               description:
-                              "Dịch vụ của bạn đã được đặt lịch thành công, vui lòng chờ xác nhận từ cửa hàng",
-                              buttonTitle: "Quay về trang chủ",
+                              "Đặt lịch thành công",
+                              buttonTitle: "Quay về",
                               lottie:
                               "assets/lottie/success.json",
                             );
@@ -288,65 +284,7 @@ class _NextStepBookingBodyState extends State<NextStepBookingBody> {
 
 
 
-class MyCustomDialog extends StatelessWidget {
-  const MyCustomDialog({
-    Key key,
-    @required this.title,
-    @required this.description,
-    @required this.buttonTitle,
-    @required this.lottie,
-    @required this.press,
-    @required this.height,
-  }) : super(key: key);
 
-  final String title, description, buttonTitle, lottie;
-  final double height;
-  final GestureTapCallback press;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Container(
-        height: height,
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: [
-              Container(
-                child: Lottie.asset(
-                  lottie,
-                  repeat: false,
-                ),
-                width: 100,
-                height: 100,
-              ),
-              Text(
-                title,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-              ),
-              TextButton(
-                  onPressed: press,
-                  child: Text(
-                    buttonTitle,
-                    style: TextStyle(fontSize: 20),
-                  ))
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class DateBox extends StatefulWidget {
   const DateBox({

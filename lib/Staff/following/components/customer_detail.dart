@@ -4,9 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Consultant/chat/components/conversation_appBar.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/process_detail.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
-import 'package:spa_and_beauty_staff/size_config.dart';
 
 import '../../../main.dart';
 
@@ -173,10 +171,10 @@ class _BookingDetailState extends State<CustomerDetail> {
                       return BookingdetailList(
                         bookingDetail: bookingDetail.data[index],
                         press: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => CustomerProcessDetailScreen(bookingDetail: bookingDetail.data[index],customerId: int.tryParse(widget.customerId),)),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => CustomerProcessDetailScreen(bookingDetail: bookingDetail.data[index],customerId: int.tryParse(widget.customerId),)),
+                          // );
                         },
                       );
                     },

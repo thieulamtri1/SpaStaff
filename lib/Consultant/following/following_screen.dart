@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spa_and_beauty_staff/Staff/following/components/body.dart';
+import 'package:spa_and_beauty_staff/Consultant/following/components/body.dart';
 
 class ConsultantFollowingScreen extends StatefulWidget {
   //static String routeName = "/following_screen";

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/body.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_first_step/components/body.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/default_button.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';

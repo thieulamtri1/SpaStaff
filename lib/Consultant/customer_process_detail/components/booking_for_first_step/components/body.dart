@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Consultant/bottom_navigation/bottom_navigation.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/time_slot.dart';
 import 'package:spa_and_beauty_staff/Model/AvailableTime.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
-import 'package:spa_and_beauty_staff/Staff/bottom_navigation/bottom_navigation.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_first_step/components/time_slot.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/default_button.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
@@ -246,17 +245,13 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
                             return MyCustomDialog(
                               height: 250,
                               press: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          BottomNavigationConsultant()),
-                                );
+                                Navigator.pop(context);
+                                Navigator.pop(context);
                               },
                               title: "Thành Công !",
                               description:
-                              "Dịch vụ của bạn đã được đặt lịch thành công, vui lòng chờ xác nhận từ cửa hàng",
-                              buttonTitle: "Quay về trang chủ",
+                              "Đặt lịch thành công",
+                              buttonTitle: "Quay về",
                               lottie:
                               "assets/lottie/success.json",
                             );

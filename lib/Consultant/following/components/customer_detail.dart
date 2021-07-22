@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Consultant/chat/components/conversation_appBar.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/process_detail.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/process_detail.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 
 import '../../../main.dart';

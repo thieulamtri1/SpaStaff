@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/booking_for_first_step_screen.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_next_step/booking_for_next_step.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/choose_treatment.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/edit_consultation_content.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_first_step/booking_for_first_step_screen.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/booking_for_next_step/booking_for_next_step.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/choose_treatment.dart';
-import 'package:spa_and_beauty_staff/Staff/customer_process_detail/components/edit_consultation_content.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
 import 'package:spa_and_beauty_staff/size_config.dart';
@@ -276,6 +276,7 @@ class _ProcessSectionState extends State<ProcessSection> {
                 ),
                 _treatmentInstance != null
                     ? ProcessStepSectionForConsultant(
+                        notifyParent: widget.notifyParent,
                         treatmentInstance: _treatmentInstance,
                         consultantId: widget.consultantId,
                         spaId: widget.spaId,
@@ -293,12 +294,13 @@ class _ProcessSectionState extends State<ProcessSection> {
   }
 }
 
-class ProcessStepSectionForConsultant extends StatelessWidget {
+class ProcessStepSectionForConsultant extends StatefulWidget {
   final int consultantId;
   final int customerId;
   final int spaId;
   final int bookingDetailId;
   final TreatmentInstance treatmentInstance;
+  final Function() notifyParent;
 
   const ProcessStepSectionForConsultant(
       {Key key,
@@ -306,15 +308,20 @@ class ProcessStepSectionForConsultant extends StatelessWidget {
       this.consultantId,
       this.customerId,
       this.spaId,
-      this.bookingDetailId})
+      this.bookingDetailId, this.notifyParent})
       : super(key: key);
 
+  @override
+  _ProcessStepSectionForConsultantState createState() => _ProcessStepSectionForConsultantState();
+}
+
+class _ProcessStepSectionForConsultantState extends State<ProcessStepSectionForConsultant> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ...List.generate(
-            treatmentInstance.treatmentservices.length,
+            widget.treatmentInstance.treatmentservices.length,
             (index) => Container(
                   margin: EdgeInsets.symmetric(vertical: 5),
                   padding:
@@ -340,11 +347,11 @@ class ProcessStepSectionForConsultant extends StatelessWidget {
                         children: [
                           Text(
                             "bước ${index + 1}: " +
-                                treatmentInstance
+                                widget.treatmentInstance
                                     .treatmentservices[index].spaService.name,
                             style: TextStyle(fontSize: 18),
                           ),
-                          Text(treatmentInstance
+                          Text(widget.treatmentInstance
                               .treatmentservices[index].spaService.description)
                         ],
                       ),
@@ -356,14 +363,14 @@ class ProcessStepSectionForConsultant extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           BookingForFirstStepScreen(
-                                            consultantId: consultantId,
-                                            customerId: customerId,
-                                            spaId: spaId,
+                                            consultantId: widget.consultantId,
+                                            customerId: widget.customerId,
+                                            spaId: widget.spaId,
                                             spaTreatmentId:
-                                                treatmentInstance.id,
-                                            bookingDetailId: bookingDetailId,
+                                                widget.treatmentInstance.id,
+                                            bookingDetailId: widget.bookingDetailId,
                                           )),
-                                );
+                                ).then((value) => setState(widget.notifyParent));
                               },
                               child: Container(
                                 width: 32,

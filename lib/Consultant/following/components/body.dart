@@ -21,6 +21,7 @@ class _BodyState extends State<Body> {
             MyApp.storage.getItem("consultantId"), MyApp.storage.getItem("token"))
         .then((value) => {
               setState(() {
+                print("day ne");
                 customerOfConsultant = value;
                 loading = false;
               })
