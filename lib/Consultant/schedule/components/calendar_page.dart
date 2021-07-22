@@ -15,7 +15,6 @@ class calendarPage extends StatefulWidget {
 class _calendarPageState extends State<calendarPage> {
   CalendarController _calendarController;
   DateTime selectedDay = DateTime.now();
-  ScheduleStaff StaffSchedule;
   ScheduleConsultant ConsultantSchedule;
   int staffId;
   String value;
@@ -23,15 +22,15 @@ class _calendarPageState extends State<calendarPage> {
 
   getData(date) {
     ConsultantService.getConsultantSchedule(
-        MyApp.storage.getItem("consultantId"),
-        date,
-        MyApp.storage.getItem("token"))
+            MyApp.storage.getItem("consultantId"),
+            date,
+            MyApp.storage.getItem("token"))
         .then((value) => {
-      setState(() {
-        ConsultantSchedule = value;
-        loading = false;
-      })
-    });
+              setState(() {
+                ConsultantSchedule = value;
+                loading = false;
+              })
+            });
   }
 
   // @override
@@ -105,9 +104,9 @@ class _calendarPageState extends State<calendarPage> {
     if (loading) {
       return Center(
           child: SpinKitWave(
-            color: Colors.white,
-            size: 50,
-          ));
+        color: Colors.white,
+        size: 50,
+      ));
     } else {
       if (ConsultantSchedule.data.length == 0) {
         return Expanded(
@@ -170,35 +169,51 @@ class _calendarPageState extends State<calendarPage> {
                       children: [
                         ...List.generate(
                             ConsultantSchedule.data.length,
-                                (index) =>
-                             ConsultantSchedule.data[index].isConsultation.toString() == "TRUE" ?
-                            Column(
-                              children: [
-                                dayTask(
-                                    time: ConsultantSchedule
-                                        .data[index].startTime.toString()
-                                        .substring(0, 5),
-                                    customerName: ConsultantSchedule
-                                        .data[index]
-                                        .bookingDetail
-                                        .booking
-                                        .customer
-                                        .user
-                                        .fullname,
-                                    phone: ConsultantSchedule
-                                        .data[index]
-                                        .bookingDetail
-                                        .booking
-                                        .customer
-                                        .user
-                                        .phone,
-                                    service:
-                                    ConsultantSchedule
-                                        .data[index].bookingDetail.spaPackage.name
-                                ),
-                              ],
-                            ): SizedBox()
-                        )
+                            (index) => ConsultantSchedule
+                                        .data[index].isConsultation
+                                        .toString() ==
+                                    "TRUE"
+                                ? Column(
+                                    children: [
+                                      dayTask(
+                                        startTime: ConsultantSchedule
+                                            .data[index].startTime
+                                            .toString()
+                                            .substring(0, 5),
+                                        customerName: ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .fullname,
+                                        phone: ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .phone,
+                                        package: ConsultantSchedule.data[index]
+                                            .bookingDetail.spaPackage.name,
+                                        customerGender: ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .gender,
+                                        customerMail: ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .email,
+                                      ),
+                                    ],
+                                  )
+                                : SizedBox())
                       ],
                     )
                   ],
@@ -212,7 +227,12 @@ class _calendarPageState extends State<calendarPage> {
   }
 
   Row dayTask(
-      {String time, String customerName, String service, String phone}) {
+      {String startTime,
+      String customerName,
+      String package,
+      String phone,
+      customerMail,
+      customerGender}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -220,7 +240,7 @@ class _calendarPageState extends State<calendarPage> {
           padding: EdgeInsets.all(10),
           width: MediaQuery.of(context).size.width * 0.2,
           child: Text(
-            time,
+            startTime,
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w700,
@@ -245,18 +265,43 @@ class _calendarPageState extends State<calendarPage> {
                   height: 10,
                 ),
                 Text(
-                  service,
+                  package,
                   style: TextStyle(
-                      color: Colors.grey, fontWeight: FontWeight.w500),
+                      color: Colors.black, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(
-                  height: 5,
+                  height: 10,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.wc_sharp, color: Colors.grey),
+                    SizedBox(width: 5),
+                    Text(
+                      customerGender,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500),
+                    )
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.mail, color: Colors.grey),
+                    SizedBox(width: 5),
+                    Text(
+                      customerMail,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500),
+                    )
+                  ],
                 ),
                 SizedBox(
-                  height: 5,
-                ),
-                SizedBox(
-                  height: 5,
+                  height: 15,
                 ),
                 Container(
                   height: 0.5,
@@ -269,14 +314,14 @@ class _calendarPageState extends State<calendarPage> {
                   children: [
                     Icon(
                       Icons.call,
-                      color: Colors.orange,
+                      color: Colors.green,
                     ),
                     SizedBox(
                       width: 10,
                     ),
                     Text(
                       phone,
-                      style: TextStyle(color: Colors.orange),
+                      style: TextStyle(color: Colors.green),
                     ),
                     Expanded(
                       child: Container(),

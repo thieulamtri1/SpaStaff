@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/components/body.dart';
 
-class ProfileDetailScreen extends StatefulWidget {
+class ProfileDetailScreenStaff extends StatefulWidget {
   @override
   _ProfileDetailScreenState createState() => _ProfileDetailScreenState();
 }
 
-class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
+class _ProfileDetailScreenState extends State<ProfileDetailScreenStaff> {
   bool edit = false;
   bool enableDropDown = false;
 
@@ -38,7 +38,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
           ),
         ],
       ),
-      body: Body(edit, enableDropDown),
+      body: BodyProfileDetail(edit, enableDropDown),
     );
   }
 }

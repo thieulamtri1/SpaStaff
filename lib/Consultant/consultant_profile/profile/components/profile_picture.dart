@@ -28,13 +28,15 @@ class _ProfilePicState extends State<ProfilePicConsultant> {
       imageFile = pickedFile;
       print("imageFilePath: " + imageFile.path);
     });
+    uploadFile(imageFile);
   }
 
-  getStaffProfile() async{
+  getConsultantProfile() async{
     await ConsultantService.getConsultantProfileById(MyApp.storage.getItem("consultantId"), MyApp.storage.getItem("token"))
         .then((value) => {
       setState(() {
         image = value.data.user.image;
+        MyApp.storage.setItem("mail", value.data.user.email);
       }),
     });
   }
@@ -73,7 +75,7 @@ class _ProfilePicState extends State<ProfilePicConsultant> {
   @override
   void initState() {
     super.initState();
-    getStaffProfile();
+    getConsultantProfile();
   }
 
   @override
@@ -114,17 +116,6 @@ class _ProfilePicState extends State<ProfilePicConsultant> {
                   size: 24,
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: -10,
-            child: FloatingActionButton(
-              onPressed: () {
-                uploadFile(imageFile);
-                print("upload");
-              },
-              child: Text("press"),
             ),
           ),
         ],
