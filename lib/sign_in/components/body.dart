@@ -11,11 +11,12 @@ import 'package:spa_and_beauty_staff/Consultant/bottom_navigation/bottom_navigat
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
 
 import 'package:spa_and_beauty_staff/Staff/bottom_navigation/bottom_navigation.dart';
+import 'package:spa_and_beauty_staff/constants.dart';
+import 'package:spa_and_beauty_staff/default_button.dart';
+import 'package:spa_and_beauty_staff/form_error.dart';
+import 'package:spa_and_beauty_staff/main.dart';
 
-import '../../../constants.dart';
-import '../../../default_button.dart';
-import '../../../form_error.dart';
-import '../../../main.dart';
+
 
 class Body extends StatelessWidget {
   final bool isMainLogin;
