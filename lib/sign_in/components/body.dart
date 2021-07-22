@@ -101,7 +101,6 @@ class _SignFormState extends State<SignForm> {
           MyApp.storage.setItem("token", jsonResponse['jsonWebToken']);
           MyApp.storage.setItem("staffId", jsonResponse['idAccount']);
           MyApp.storage.setItem("role", "STAFF");
-          MyApp.storage.setItem("password", password);
 
           widget.isMainLogin
               ? Navigator.pushNamed(context, BottomNavigationStaff.routeName)
@@ -157,7 +156,6 @@ class _SignFormState extends State<SignForm> {
           MyApp.storage.setItem("token", jsonResponse['jsonWebToken']);
           MyApp.storage.setItem("consultantId", jsonResponse['idAccount']);
           MyApp.storage.setItem("role", "CONSULTANT");
-          MyApp.storage.setItem("password", password);
 
           widget.isMainLogin
               ? Navigator.pushNamed(context, BottomNavigationConsultant.routeName)
