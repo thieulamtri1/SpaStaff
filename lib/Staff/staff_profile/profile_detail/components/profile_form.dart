@@ -53,6 +53,22 @@ class _ProfileFormState extends State<ProfileFormStaff> {
     });
   }
 
+  validate(name){
+    if(name.toString().trim() == ""){
+      final snackBar = SnackBar(
+        content: Text('Vui lòng nhập tên'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return false;
+    }
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -94,24 +110,27 @@ class _ProfileFormState extends State<ProfileFormStaff> {
     return DefaultButton(
       text: "Cập nhật",
       press: () async {
-        final res = await StaffService().updateStaffProfile(
-          token: MyApp.storage.getItem('token'),
-          active: true,
-          address: streetTextController.text,
-          birthdate: dateOfBirthTextController.text,
-          email: staff.data.user.email,
-          fullname: fullnameTextController.text,
-          gender: genderTextController.text,
-          id: MyApp.storage.getItem("staffId"),
-          image: staff.data.user.image,
-          password: staff.data.user.password,
-          phone: staff.data.user.phone,
-        );
-        print("Status: ${res.body}");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ProfileDetailScreenStaff()),
-        );
+        if(validate(fullnameTextController.text)){
+          final res = await StaffService().updateStaffProfile(
+            token: MyApp.storage.getItem('token'),
+            active: true,
+            address: streetTextController.text,
+            birthdate: dateOfBirthTextController.text,
+            email: staff.data.user.email,
+            fullname: fullnameTextController.text,
+            gender: genderTextController.text,
+            id: MyApp.storage.getItem("staffId"),
+            image: staff.data.user.image,
+            password: staff.data.user.password,
+            phone: staff.data.user.phone,
+          );
+          print("Status: ${res.body}");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileDetailScreenStaff()),
+          );
+        }
+
       },
     );
   }
