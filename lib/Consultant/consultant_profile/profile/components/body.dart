@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:spa_and_beauty_staff/Consultant/consultant_profile/change_password/change_password.dart';
 import 'package:spa_and_beauty_staff/Consultant/consultant_profile/profile/components/profile_picture.dart';
+import 'package:spa_and_beauty_staff/Consultant/consultant_profile/profile_detail/profile_detail_screen.dart';
+import 'package:spa_and_beauty_staff/Consultant/consultant_profile/register_dayoff/register_dayoff_screen.dart';
 import 'package:spa_and_beauty_staff/Consultant/notification/notification_screen.dart';
-import 'package:spa_and_beauty_staff/Staff/staff_profile/change_password/change_password.dart';
-import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/components/profile_picture.dart';
-import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/profile_detail_screen.dart';
-import 'package:spa_and_beauty_staff/Staff/staff_profile/register_dayoff/register_dayoff_screen.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:spa_and_beauty_staff/sign_in/sign_in_screen.dart';
 
@@ -36,7 +35,7 @@ class _BodyState extends State<Body> {
             press: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
+                MaterialPageRoute(builder: (context) => ProfileDetailScreenConsultant()),
               );
             },
           ),
@@ -90,6 +89,9 @@ class _BodyState extends State<Body> {
             press: () {
               MyApp.storage.deleteItem("token");
               MyApp.storage.deleteItem("staffId");
+              MyApp.storage.deleteItem("consultantId");
+              MyApp.storage.deleteItem("role");
+              MyApp.storage.deleteItem("mail");
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SignIn()),

@@ -8,17 +8,17 @@ import 'package:spa_and_beauty_staff/main.dart';
 
 import '../profile_detail_screen.dart';
 
-class ProfileForm extends StatefulWidget {
+class ProfileFormConsultant extends StatefulWidget {
   bool edit;
   bool enableDropDown;
 
-  ProfileForm(this.edit, this.enableDropDown);
+  ProfileFormConsultant(this.edit, this.enableDropDown);
 
   @override
   _ProfileFormState createState() => _ProfileFormState();
 }
 
-class _ProfileFormState extends State<ProfileForm> {
+class _ProfileFormState extends State<ProfileFormConsultant> {
   Staff staff;
   String genderChoose;
   DateTime selectedDate;
@@ -41,33 +41,33 @@ class _ProfileFormState extends State<ProfileForm> {
   }
 
   getData() async {
-    await MyApp.storage.ready;
-    if(MyApp.storage.getItem('role') == "STAFF"){
-      int staffId = MyApp.storage.getItem("staffId");
-      String staffToken = MyApp.storage.getItem("token");
-      await StaffService.getStaffProfileById(staffId, staffToken)
-          .then((value) => {
-        setState(() {
-          staff = value;
-          loading = false;
-          print("IMAGE nè duma: " + staff.data.user.image);
-        }),
-      });
-    }
-    else{
-      print("lấy consultant");
-      int consultantId = MyApp.storage.getItem("consultantId");
-      String staffToken = MyApp.storage.getItem("token");
-      await ConsultantService.getConsultantProfileById(consultantId, staffToken)
-          .then((value) => {
-        setState(() {
-          staff = value;
-          loading = false;
-        }),
-      });
-    }
-    
+    int consultantId = MyApp.storage.getItem("consultantId");
+    String token = MyApp.storage.getItem("token");
+    await ConsultantService.getConsultantProfileById(consultantId, token)
+        .then((value) => {
+      setState(() {
+        staff = value;
+        loading = false;
+      }),
+    });
   }
+
+  validate(name){
+    if(name.toString().trim() == ""){
+      final snackBar = SnackBar(
+        content: Text('Vui lòng nhập tên'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return false;
+    }
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -109,25 +109,26 @@ class _ProfileFormState extends State<ProfileForm> {
     return DefaultButton(
       text: "Cập nhật",
       press: () async {
-        final res = await ConsultantService().updateConsultantProfile(
-          token: MyApp.storage.getItem('token'),
-          active: true,
-          address: streetTextController.text,
-          birthdate: dateOfBirthTextController.text,
-          email: staff.data.user.email,
-          fullname: fullnameTextController.text,
-          gender: genderTextController.text,
-          id: MyApp.storage.getItem("staffId"),
-          image: staff.data.user.image,
-          password: staff.data.user.password,
-          phone: staff.data.user.phone,
-        );
-        print("Status: ${res.body}");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
-        );
-
+        if(validate(fullnameTextController.text)){
+          final res = await ConsultantService().updateConsultantProfile(
+            token: MyApp.storage.getItem('token'),
+            active: true,
+            address: streetTextController.text,
+            birthdate: dateOfBirthTextController.text,
+            email: staff.data.user.email,
+            fullname: fullnameTextController.text,
+            gender: genderTextController.text,
+            id: MyApp.storage.getItem("consultantId"),
+            image: staff.data.user.image,
+            password: staff.data.user.password,
+            phone: staff.data.user.phone,
+          );
+          print("Status: ${res.body}");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileDetailScreenConsultant()),
+          );
+        }
       },
     );
   }
@@ -160,6 +161,8 @@ class _ProfileFormState extends State<ProfileForm> {
     return TextFormField(
       controller: streetTextController,
       enabled: false,
+      minLines: 1,
+      maxLines: 4,
       decoration: InputDecoration(
         labelText: "Địa chỉ",
         floatingLabelBehavior: FloatingLabelBehavior.always,

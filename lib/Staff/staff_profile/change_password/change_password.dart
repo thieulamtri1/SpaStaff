@@ -17,7 +17,6 @@ class _ChangePasswordState extends State<ChangePassword> {
         title: Text(
           "Profile",
         ),
-
       ),
       body: Body(),
     );

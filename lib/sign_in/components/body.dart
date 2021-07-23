@@ -77,7 +77,7 @@ class _SignFormState extends State<SignForm> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   loginAsStaff(phone, password, tokenFCM) async{
-    print("Login as STaff");
+    print("Login as Staff");
     String url = "https://swp490spa.herokuapp.com/api/public/login";
     final res = await http.post(Uri.parse(url),
         headers: {
@@ -101,6 +101,8 @@ class _SignFormState extends State<SignForm> {
           MyApp.storage.setItem("token", jsonResponse['jsonWebToken']);
           MyApp.storage.setItem("staffId", jsonResponse['idAccount']);
           MyApp.storage.setItem("role", "STAFF");
+          MyApp.storage.setItem("password", password);
+          MyApp.storage.setItem("mail", "");
 
           widget.isMainLogin
               ? Navigator.pushNamed(context, BottomNavigationStaff.routeName)
@@ -156,6 +158,8 @@ class _SignFormState extends State<SignForm> {
           MyApp.storage.setItem("token", jsonResponse['jsonWebToken']);
           MyApp.storage.setItem("consultantId", jsonResponse['idAccount']);
           MyApp.storage.setItem("role", "CONSULTANT");
+          MyApp.storage.setItem("password", password);
+          MyApp.storage.setItem("mail", "");
 
           widget.isMainLogin
               ? Navigator.pushNamed(context, BottomNavigationConsultant.routeName)

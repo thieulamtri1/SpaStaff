@@ -3,13 +3,13 @@ import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/components/prof
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/components/profile_form.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 
-class Body extends StatelessWidget {
+class BodyProfileDetail extends StatelessWidget {
 
   bool edit;
   bool enableDropDown;
 
 
-  Body(this.edit, this.enableDropDown);
+  BodyProfileDetail(this.edit, this.enableDropDown);
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +20,10 @@ class Body extends StatelessWidget {
           children: [
             ProfilePicStaff(),
             SizedBox(height: 20),
-            Text(MyApp.storage.getItem("email"),
+            Text(MyApp.storage.getItem("mail"),
                 textAlign: TextAlign.center),
             SizedBox(height: 40),
-            ProfileForm(edit, enableDropDown),
+            ProfileFormStaff(edit, enableDropDown),
           ],
         ),
       ),

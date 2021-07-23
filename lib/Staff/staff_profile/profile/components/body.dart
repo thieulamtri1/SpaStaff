@@ -35,7 +35,7 @@ class _BodyState extends State<Body> {
             press: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
+                MaterialPageRoute(builder: (context) => ProfileDetailScreenStaff()),
               );
             },
           ),
@@ -89,6 +89,9 @@ class _BodyState extends State<Body> {
             press: () {
               MyApp.storage.deleteItem("token");
               MyApp.storage.deleteItem("staffId");
+              MyApp.storage.deleteItem("consultantId");
+              MyApp.storage.deleteItem("role");
+              MyApp.storage.deleteItem("mail");
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SignIn()),

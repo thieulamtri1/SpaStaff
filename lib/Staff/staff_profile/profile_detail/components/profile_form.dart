@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/components/body.dart';
 import 'package:spa_and_beauty_staff/default_button.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 
 import '../profile_detail_screen.dart';
 
-class ProfileForm extends StatefulWidget {
+class ProfileFormStaff extends StatefulWidget {
   bool edit;
   bool enableDropDown;
 
-  ProfileForm(this.edit, this.enableDropDown);
+  ProfileFormStaff(this.edit, this.enableDropDown);
 
   @override
   _ProfileFormState createState() => _ProfileFormState();
 }
 
-class _ProfileFormState extends State<ProfileForm> {
+class _ProfileFormState extends State<ProfileFormStaff> {
   Staff staff;
   String genderChoose;
   DateTime selectedDate;
@@ -50,8 +51,24 @@ class _ProfileFormState extends State<ProfileForm> {
         loading = false;
       }),
     });
-    
   }
+
+  validate(name){
+    if(name.toString().trim() == ""){
+      final snackBar = SnackBar(
+        content: Text('Vui lòng nhập tên'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return false;
+    }
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -93,24 +110,27 @@ class _ProfileFormState extends State<ProfileForm> {
     return DefaultButton(
       text: "Cập nhật",
       press: () async {
-        final res = await StaffService().updateStaffProfile(
-          token: MyApp.storage.getItem('token'),
-          active: true,
-          address: streetTextController.text,
-          birthdate: dateOfBirthTextController.text,
-          email: staff.data.user.email,
-          fullname: fullnameTextController.text,
-          gender: genderTextController.text,
-          id: MyApp.storage.getItem("staffId"),
-          image: staff.data.user.image,
-          password: staff.data.user.password,
-          phone: staff.data.user.phone,
-        );
-        print("Status: ${res.body}");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ProfileDetailScreen()),
-        );
+        if(validate(fullnameTextController.text)){
+          final res = await StaffService().updateStaffProfile(
+            token: MyApp.storage.getItem('token'),
+            active: true,
+            address: streetTextController.text,
+            birthdate: dateOfBirthTextController.text,
+            email: staff.data.user.email,
+            fullname: fullnameTextController.text,
+            gender: genderTextController.text,
+            id: MyApp.storage.getItem("staffId"),
+            image: staff.data.user.image,
+            password: staff.data.user.password,
+            phone: staff.data.user.phone,
+          );
+          print("Status: ${res.body}");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileDetailScreenStaff()),
+          );
+        }
+
       },
     );
   }
@@ -143,6 +163,8 @@ class _ProfileFormState extends State<ProfileForm> {
     return TextFormField(
       controller: streetTextController,
       enabled: false,
+      minLines: 1,
+      maxLines: 4,
       decoration: InputDecoration(
         labelText: "Địa chỉ",
         floatingLabelBehavior: FloatingLabelBehavior.always,

@@ -116,12 +116,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
       color: Colors.grey[300],
       child: Row(
         children: <Widget>[
-          IconButton(
-            icon: Icon(Icons.photo),
-            iconSize: 25,
-            color: Colors.blue,
-            onPressed: () {},
-          ),
           Expanded(
             child: TextField(
               controller: messageInput,

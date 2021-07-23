@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/components/body.dart';
 
 import '../../../../main.dart';
 import 'package:http/http.dart' as http;
@@ -28,6 +29,7 @@ class _ProfilePicState extends State<ProfilePicStaff> {
       imageFile = pickedFile;
       print("imageFilePath: " + imageFile.path);
     });
+    uploadFile(imageFile);
   }
 
   getStaffProfile() async {
@@ -36,6 +38,7 @@ class _ProfilePicState extends State<ProfilePicStaff> {
         .then((value) => {
               setState(() {
                 image = value.data.user.image;
+                MyApp.storage.setItem("mail", value.data.user.email);
               }),
             });
   }
@@ -48,7 +51,8 @@ class _ProfilePicState extends State<ProfilePicStaff> {
     var length = await imageFile.length();
     // string to uri
     var uri = Uri.parse(
-        "https://swp490spa.herokuapp.com/api/staff/image/edit/" + MyApp.storage.getItem("staffId").toString());
+        "https://swp490spa.herokuapp.com/api/staff/image/edit/" +
+            MyApp.storage.getItem("staffId").toString());
     // create multipart request
     var request = new http.MultipartRequest("PUT", uri);
     request.headers.addAll({
@@ -90,7 +94,6 @@ class _ProfilePicState extends State<ProfilePicStaff> {
                 ? NetworkImage(image == null
                     ? "https://thinkingschool.vn/wp-content/uploads/avatars/753/753-bpfull.jpg"
                     : image)
-
                 : FileImage(File(imageFile.path)),
           ),
           Positioned(
@@ -117,17 +120,6 @@ class _ProfilePicState extends State<ProfilePicStaff> {
                   size: 24,
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: -10,
-            child: FloatingActionButton(
-              onPressed: () {
-                uploadFile(imageFile);
-                print("upload");
-              },
-              child: Text("press"),
             ),
           ),
         ],

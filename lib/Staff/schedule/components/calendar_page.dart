@@ -15,20 +15,19 @@ class _calendarPageState extends State<calendarPage> {
   CalendarController _calendarController;
   DateTime selectedDay = DateTime.now();
   ScheduleStaff StaffSchedule;
-  ScheduleConsultant ConsultantSchedule;
   int staffId;
   String value;
   bool loading = true;
 
   getData(date) {
-    StaffService.getStaffSchedule(MyApp.storage.getItem("staffId"),
-        date, MyApp.storage.getItem("token"))
+    StaffService.getStaffSchedule(MyApp.storage.getItem("staffId"), date,
+            MyApp.storage.getItem("token"))
         .then((value) => {
-      setState(() {
-        StaffSchedule = value;
-        loading = false;
-      })
-    });
+              setState(() {
+                StaffSchedule = value;
+                loading = false;
+              })
+            });
   }
 
   // @override
@@ -48,6 +47,7 @@ class _calendarPageState extends State<calendarPage> {
   void initState() {
     super.initState();
     _calendarController = CalendarController();
+
   }
 
   @override
@@ -90,117 +90,11 @@ class _calendarPageState extends State<calendarPage> {
             SizedBox(
               height: 5,
             ),
-            MyApp.storage.getItem("role") == "STAFF"
-                ? ListToDoStaff(selectedDay.toString().substring(0, 10))
-                : ListToDoConsultant(selectedDay.toString().substring(0, 10)),
+            ListToDoStaff(selectedDay.toString().substring(0, 10))
           ],
         ),
       ),
     );
-  }
-
-  ListToDoConsultant(String date) {
-    getData(date);
-    if (loading) {
-      return Center(
-          child: SpinKitWave(
-        color: Colors.white,
-        size: 50,
-      ));
-    } else {
-      if (ConsultantSchedule.data.length == 0) {
-        return Expanded(
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40)),
-                color: Colors.white),
-            child: Container(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          date,
-                          style: TextStyle(color: Colors.grey),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      children: [],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      } else if (ConsultantSchedule.data.length != 0) {
-        return Expanded(
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40)),
-                color: Colors.white),
-            child: Container(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          date,
-                          style: TextStyle(color: Colors.grey),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      children: [
-                        ...List.generate(
-                            ConsultantSchedule.data.length,
-                            (index) => Column(
-                                  children: [
-                                    dayTask(
-                                        time: ConsultantSchedule
-                                            .data[index].startTime,
-                                        customerName: ConsultantSchedule
-                                            .data[index]
-                                            .bookingDetail
-                                            .booking
-                                            .customer
-                                            .user
-                                            .fullname,
-                                        phone: ConsultantSchedule
-                                            .data[index]
-                                            .bookingDetail
-                                            .booking
-                                            .customer
-                                            .user
-                                            .phone,
-                                        service: "Trị mụn")
-                                  ],
-                                ))
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-    }
   }
 
   ListToDoStaff(String date) {
@@ -276,26 +170,39 @@ class _calendarPageState extends State<calendarPage> {
                             (index) => Column(
                                   children: [
                                     dayTask(
-                                        time: StaffSchedule
-                                            .data[index].startTime
-                                            .toString()
-                                            .substring(0, 5),
-                                        customerName: StaffSchedule
-                                            .data[index]
-                                            .bookingDetail
-                                            .booking
-                                            .customer
-                                            .user
-                                            .fullname,
-                                        phone: StaffSchedule
-                                            .data[index]
-                                            .bookingDetail
-                                            .booking
-                                            .customer
-                                            .user
-                                            .phone,
-                                        service: StaffSchedule.data[index]
-                                            .treatmentService.spaService.name)
+                                      startTime: StaffSchedule
+                                          .data[index].startTime
+                                          .toString()
+                                          .substring(0, 5)
+                                      ,
+                                      customerName: StaffSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .fullname,
+                                      phone: StaffSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .phone,
+                                      service: StaffSchedule.data[index]
+                                          .treatmentService.spaService.name,
+                                      durationMin: StaffSchedule
+                                          .data[index]
+                                          .treatmentService
+                                          .spaService
+                                          .durationMin
+                                          .toString(),
+                                      description: StaffSchedule
+                                          .data[index]
+                                          .treatmentService
+                                          .spaService
+                                          .description,
+                                    )
                                   ],
                                 ))
                       ],
@@ -311,7 +218,12 @@ class _calendarPageState extends State<calendarPage> {
   }
 
   Row dayTask(
-      {String time, String customerName, String service, String phone}) {
+      {String startTime,
+      String customerName,
+      String service,
+      String phone,
+      String durationMin,
+      String description}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -319,10 +231,11 @@ class _calendarPageState extends State<calendarPage> {
           padding: EdgeInsets.all(10),
           width: MediaQuery.of(context).size.width * 0.2,
           child: Text(
-            time,
+            startTime,
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w700,
+              fontSize: 15,
             ),
             textAlign: TextAlign.right,
           ),
@@ -346,16 +259,40 @@ class _calendarPageState extends State<calendarPage> {
                 Text(
                   service,
                   style: TextStyle(
-                      color: Colors.grey, fontWeight: FontWeight.w500),
+                      color: Colors.black, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(
-                  height: 5,
+                  height: 10,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.timer, color: Colors.grey),
+                    SizedBox(width: 5),
+                    Text("$durationMin min", style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500
+                    ),)
+                  ],
                 ),
                 SizedBox(
-                  height: 5,
+                  height: 10,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.description, color: Colors.grey),
+                    SizedBox(width: 5),
+                    Text(description, style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500
+                    ),)
+                  ],
                 ),
                 SizedBox(
-                  height: 5,
+                  height: 10,
                 ),
                 Container(
                   height: 0.5,
@@ -368,14 +305,14 @@ class _calendarPageState extends State<calendarPage> {
                   children: [
                     Icon(
                       Icons.call,
-                      color: Colors.orange,
+                      color: Colors.green,
                     ),
                     SizedBox(
                       width: 10,
                     ),
                     Text(
                       phone,
-                      style: TextStyle(color: Colors.orange),
+                      style: TextStyle(color: Colors.green),
                     ),
                     Expanded(
                       child: Container(),
