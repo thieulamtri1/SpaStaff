@@ -101,7 +101,7 @@ class Spa {
     this.id,
     this.image,
     this.latitude,
-    this.longtitude,
+    this.longitude,
     this.name,
     this.status,
     this.street,
@@ -114,7 +114,7 @@ class Spa {
   int id;
   String image;
   String latitude;
-  String longtitude;
+  String longitude;
   String name;
   String status;
   String street;
@@ -127,7 +127,7 @@ class Spa {
     id: json["id"],
     image: json["image"],
     latitude: json["latitude"],
-    longtitude: json["longtitude"],
+    longitude: json["longitude"],
     name: json["name"],
     status: json["status"],
     street: json["street"],
@@ -141,7 +141,7 @@ class Spa {
     "id": id,
     "image": image,
     "latitude": latitude,
-    "longtitude": longtitude,
+    "longitude": longitude,
     "name": name,
     "status": status,
     "street": street,

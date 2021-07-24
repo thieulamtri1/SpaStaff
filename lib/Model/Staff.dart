@@ -65,7 +65,7 @@ class Spa {
     this.district,
     this.city,
     this.latitude,
-    this.longtitude,
+    this.longitude,
     this.createBy,
     this.createTime,
     this.status,
@@ -78,7 +78,7 @@ class Spa {
   String district;
   String city;
   String latitude;
-  String longtitude;
+  String longitude;
   String createBy;
   DateTime createTime;
   String status;
@@ -91,7 +91,7 @@ class Spa {
     district: json["district"],
     city: json["city"],
     latitude: json["latitude"],
-    longtitude: json["longtitude"],
+    longitude: json["longitude"],
     createBy: json["createBy"],
     createTime: DateTime.parse(json["createTime"]),
     status: json["status"],
@@ -105,7 +105,7 @@ class Spa {
     "district": district,
     "city": city,
     "latitude": latitude,
-    "longtitude": longtitude,
+    "longitude": longitude,
     "createBy": createBy,
     "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
     "status": status,
