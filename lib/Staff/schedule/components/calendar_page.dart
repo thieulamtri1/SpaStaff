@@ -3,12 +3,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:spa_and_beauty_staff/helper/Helper.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class calendarPage extends StatefulWidget {
   @override
   _calendarPageState createState() => _calendarPageState();
+
 }
 
 class _calendarPageState extends State<calendarPage> {
@@ -17,18 +19,9 @@ class _calendarPageState extends State<calendarPage> {
   ScheduleStaff StaffSchedule;
   int staffId;
   String value;
-  bool loading = true;
+  bool loading;
 
-  getData(date) {
-    StaffService.getStaffSchedule(MyApp.storage.getItem("staffId"), date,
-            MyApp.storage.getItem("token"))
-        .then((value) => {
-              setState(() {
-                StaffSchedule = value;
-                loading = false;
-              })
-            });
-  }
+
 
   // @override
   // void dispose() {
@@ -40,6 +33,17 @@ class _calendarPageState extends State<calendarPage> {
   void _onDaySelected(DateTime dateNow, List events, List holidays) {
     setState(() {
       selectedDay = dateNow;
+      setState(() {
+        loading = true;
+        StaffService.getStaffSchedule(MyApp.storage.getItem("staffId"), MyHelper.getMachineDate(selectedDay),
+            MyApp.storage.getItem("token"))
+            .then((value) => {
+          setState(() {
+            StaffSchedule = value;
+            loading = false;
+          })
+        });
+      });
     });
   }
 
@@ -47,7 +51,17 @@ class _calendarPageState extends State<calendarPage> {
   void initState() {
     super.initState();
     _calendarController = CalendarController();
-
+    setState(() {
+      loading = true;
+      StaffService.getStaffSchedule(MyApp.storage.getItem("staffId"), MyHelper.getMachineDate(DateTime.now()),
+          MyApp.storage.getItem("token"))
+          .then((value) => {
+        setState(() {
+          StaffSchedule = value;
+          loading = false;
+        })
+      });
+    });
   }
 
   @override
@@ -90,23 +104,41 @@ class _calendarPageState extends State<calendarPage> {
             SizedBox(
               height: 5,
             ),
-            ListToDoStaff(selectedDay.toString().substring(0, 10))
+            ListToDoStaff(staffId: staffId,loading: loading,selectedDay: selectedDay,StaffSchedule: StaffSchedule,)
           ],
         ),
       ),
     );
   }
 
-  ListToDoStaff(String date) {
-    getData(date);
-    if (loading) {
+
+
+
+}
+class ListToDoStaff extends StatefulWidget {
+  const ListToDoStaff({Key key, this.StaffSchedule, this.staffId, this.value, this.loading, this.selectedDay}) : super(key: key);
+  final ScheduleStaff StaffSchedule;
+  final int staffId;
+  final String value;
+  final bool loading;
+  final DateTime selectedDay;
+
+
+  @override
+  _ListToDoStaffState createState() => _ListToDoStaffState();
+}
+
+class _ListToDoStaffState extends State<ListToDoStaff> {
+  @override
+  Widget build(BuildContext context) {
+    if (widget.loading) {
       return Center(
           child: SpinKitWave(
-        color: Colors.white,
-        size: 50,
-      ));
+            color: Colors.white,
+            size: 50,
+          ));
     } else {
-      if (StaffSchedule.data.length == 0) {
+      if (widget.StaffSchedule.data.length == 0) {
         return Expanded(
           child: Container(
             padding: EdgeInsets.all(20),
@@ -122,7 +154,7 @@ class _calendarPageState extends State<calendarPage> {
                     Row(
                       children: [
                         Text(
-                          date,
+                          MyHelper.getUserDate(widget.selectedDay),
                           style: TextStyle(color: Colors.grey),
                         )
                       ],
@@ -139,7 +171,7 @@ class _calendarPageState extends State<calendarPage> {
             ),
           ),
         );
-      } else if (StaffSchedule.data.length != 0) {
+      } else if (widget.StaffSchedule.data.length != 0) {
         return Expanded(
           child: Container(
             padding: EdgeInsets.all(20),
@@ -155,7 +187,7 @@ class _calendarPageState extends State<calendarPage> {
                     Row(
                       children: [
                         Text(
-                          date,
+                          MyHelper.getUserDate(widget.selectedDay),
                           style: TextStyle(color: Colors.grey),
                         )
                       ],
@@ -166,45 +198,45 @@ class _calendarPageState extends State<calendarPage> {
                     Column(
                       children: [
                         ...List.generate(
-                            StaffSchedule.data.length,
-                            (index) => Column(
-                                  children: [
-                                    dayTask(
-                                      startTime: StaffSchedule
-                                          .data[index].startTime
-                                          .toString()
-                                          .substring(0, 5)
-                                      ,
-                                      customerName: StaffSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .fullname,
-                                      phone: StaffSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .phone,
-                                      service: StaffSchedule.data[index]
-                                          .treatmentService.spaService.name,
-                                      durationMin: StaffSchedule
-                                          .data[index]
-                                          .treatmentService
-                                          .spaService
-                                          .durationMin
-                                          .toString(),
-                                      description: StaffSchedule
-                                          .data[index]
-                                          .treatmentService
-                                          .spaService
-                                          .description,
-                                    )
-                                  ],
-                                ))
+                            widget.StaffSchedule.data.length,
+                                (index) => Column(
+                              children: [
+                                dayTask(
+                                  startTime: widget.StaffSchedule
+                                      .data[index].startTime
+                                      .toString()
+                                      .substring(0, 5)
+                                  ,
+                                  customerName: widget.StaffSchedule
+                                      .data[index]
+                                      .bookingDetail
+                                      .booking
+                                      .customer
+                                      .user
+                                      .fullname,
+                                  phone: widget.StaffSchedule
+                                      .data[index]
+                                      .bookingDetail
+                                      .booking
+                                      .customer
+                                      .user
+                                      .phone,
+                                  service: widget.StaffSchedule.data[index]
+                                      .treatmentService.spaService.name,
+                                  durationMin: widget.StaffSchedule
+                                      .data[index]
+                                      .treatmentService
+                                      .spaService
+                                      .durationMin
+                                      .toString(),
+                                  description: widget.StaffSchedule
+                                      .data[index]
+                                      .treatmentService
+                                      .spaService
+                                      .description,
+                                )
+                              ],
+                            ))
                       ],
                     )
                   ],
@@ -215,15 +247,15 @@ class _calendarPageState extends State<calendarPage> {
         );
       }
     }
-  }
 
+  }
   Row dayTask(
       {String startTime,
-      String customerName,
-      String service,
-      String phone,
-      String durationMin,
-      String description}) {
+        String customerName,
+        String service,
+        String phone,
+        String durationMin,
+        String description}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -327,3 +359,4 @@ class _calendarPageState extends State<calendarPage> {
     );
   }
 }
+
