@@ -115,8 +115,11 @@ class _calendarPageState extends State<calendarPage> {
 
 
 }
+
 class ListToDoStaff extends StatefulWidget {
+
   const ListToDoStaff({Key key, this.StaffSchedule, this.staffId, this.value, this.loading, this.selectedDay}) : super(key: key);
+
   final ScheduleStaff StaffSchedule;
   final int staffId;
   final String value;
@@ -137,7 +140,8 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
             color: Colors.white,
             size: 50,
           ));
-    } else {
+    }
+    else {
       if (widget.StaffSchedule.data.length == 0) {
         return Expanded(
           child: Container(
@@ -171,7 +175,8 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
             ),
           ),
         );
-      } else if (widget.StaffSchedule.data.length != 0) {
+      }
+      else if (widget.StaffSchedule.data.length != 0) {
         return Expanded(
           child: Container(
             padding: EdgeInsets.all(20),
@@ -247,8 +252,8 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
         );
       }
     }
-
   }
+
   Row dayTask(
       {String startTime,
         String customerName,
