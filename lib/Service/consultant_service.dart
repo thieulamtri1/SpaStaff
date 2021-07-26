@@ -93,10 +93,10 @@ class ConsultantService {
         BookingDetailSteps bookingDetailSteps = bookingDetailStepsFromJson(utf8.decode(response.bodyBytes));
         return bookingDetailSteps;
       } else {
-        return BookingDetailSteps();
+        print("error code: "+ response.statusCode.toString());
       }
     } catch (e) {
-      return BookingDetailSteps();
+      print("error code: loi khac");
     }
   }
 

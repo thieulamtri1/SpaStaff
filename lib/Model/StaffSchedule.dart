@@ -52,7 +52,7 @@ class Datum {
     this.consultant,
   });
 
-  BookingDetail bookingDetail;
+  StaffBookingDetailInstance bookingDetail;
   int id;
   DateTime dateBooking;
   String startTime;
@@ -66,7 +66,7 @@ class Datum {
   Consultant consultant;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    bookingDetail: BookingDetail.fromJson(json["bookingDetail"]),
+    bookingDetail: StaffBookingDetailInstance.fromJson(json["bookingDetail"]),
     id: json["id"],
     dateBooking: DateTime.parse(json["date_booking"]),
     startTime: json["start_time"],
@@ -96,8 +96,8 @@ class Datum {
   };
 }
 
-class BookingDetail {
-  BookingDetail({
+class StaffBookingDetailInstance {
+  StaffBookingDetailInstance({
     this.id,
     this.totalTime,
     this.type,
@@ -117,7 +117,7 @@ class BookingDetail {
   SpaTreatment spaTreatment;
   SpaPackage spaPackage;
 
-  factory BookingDetail.fromJson(Map<String, dynamic> json) => BookingDetail(
+  factory StaffBookingDetailInstance.fromJson(Map<String, dynamic> json) => StaffBookingDetailInstance(
     id: json["id"],
     totalTime: json["totalTime"],
     type: json["type"],

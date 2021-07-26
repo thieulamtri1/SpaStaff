@@ -2,28 +2,20 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 
 class StaffService {
-  static const String urlGetProfileStaff =
-      "https://swp490spa.herokuapp.com/api/staff/findbyId?userId=";
-
-  static const String urlUpdateProfileStaff =
-      "https://swp490spa.herokuapp.com/api/staff/editprofile";
-
-  static const String urlEditPasswordStaff =
-      "https://swp490spa.herokuapp.com/api/staff/editpassword";
-
-
-  static final String urlStaffSchedule =
-      "https://swp490spa.herokuapp.com/api/staff/workingofstaff/findbydatechosen/";
-  static final String dateChosen =
-      "?dateChosen=";
-  static final String urlDateOff =
-      "https://swp490spa.herokuapp.com/api/staff/dateoff/create/";
+  static const String urlGetProfileStaff = "https://swp490spa.herokuapp.com/api/staff/findbyId?userId=";
+  static const String urlUpdateProfileStaff = "https://swp490spa.herokuapp.com/api/staff/editprofile";
+  static const String urlEditPasswordStaff = "https://swp490spa.herokuapp.com/api/staff/editpassword";
+  static final String urlStaffSchedule = "https://swp490spa.herokuapp.com/api/staff/workingofstaff/findbydatechosen/";
+  static final String dateChosen = "?dateChosen=";
+  static final String urlDateOff = "https://swp490spa.herokuapp.com/api/staff/dateoff/create/";
+  static final String GET_BOOKING_DETAIL_STEP_BY_BOOKING_DETAIL_ID = "https://swp490spa.herokuapp.com/api/staff/bookingDetailStep/findByBookingDetail/";
 
   static Future<Staff> getStaffProfileById(id, token) async {
     try {
@@ -127,6 +119,27 @@ class StaffService {
         "reasonDateOff": reasonDateOff,
       }),
     );
+  }
+
+  static Future<BookingDetailSteps> getBookingDetailStepsByBookingDetailId(int bookingId) async {
+    try {
+      final response = await http.get(
+          Uri.parse(GET_BOOKING_DETAIL_STEP_BY_BOOKING_DETAIL_ID + bookingId.toString()),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${MyApp.storage.getItem("token")}',
+          });
+      print(response.body);
+      if (response.statusCode == 200) {
+        BookingDetailSteps bookingDetailSteps = bookingDetailStepsFromJson(utf8.decode(response.bodyBytes));
+        return bookingDetailSteps;
+      } else {
+        print("error code: "+ response.statusCode.toString());
+      }
+    } catch (e) {
+      print("error code: loi khac");
+    }
   }
 
 }

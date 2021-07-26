@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:spa_and_beauty_staff/Staff/process_detail/process_detail_screen.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -206,39 +206,47 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                             widget.StaffSchedule.data.length,
                                 (index) => Column(
                               children: [
-                                dayTask(
-                                  startTime: widget.StaffSchedule
-                                      .data[index].startTime
-                                      .toString()
-                                      .substring(0, 5)
-                                  ,
-                                  customerName: widget.StaffSchedule
-                                      .data[index]
-                                      .bookingDetail
-                                      .booking
-                                      .customer
-                                      .user
-                                      .fullname,
-                                  phone: widget.StaffSchedule
-                                      .data[index]
-                                      .bookingDetail
-                                      .booking
-                                      .customer
-                                      .user
-                                      .phone,
-                                  service: widget.StaffSchedule.data[index]
-                                      .treatmentService.spaService.name,
-                                  durationMin: widget.StaffSchedule
-                                      .data[index]
-                                      .treatmentService
-                                      .spaService
-                                      .durationMin
-                                      .toString(),
-                                  description: widget.StaffSchedule
-                                      .data[index]
-                                      .treatmentService
-                                      .spaService
-                                      .description,
+                                GestureDetector(
+                                  onTap: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => StaffProcessDetail(bookingDetail: widget.StaffSchedule.data[index].bookingDetail,)),
+                                    );
+                                  },
+                                  child: dayTask(
+                                    startTime: widget.StaffSchedule
+                                        .data[index].startTime
+                                        .toString()
+                                        .substring(0, 5)
+                                    ,
+                                    customerName: widget.StaffSchedule
+                                        .data[index]
+                                        .bookingDetail
+                                        .booking
+                                        .customer
+                                        .user
+                                        .fullname,
+                                    phone: widget.StaffSchedule
+                                        .data[index]
+                                        .bookingDetail
+                                        .booking
+                                        .customer
+                                        .user
+                                        .phone,
+                                    service: widget.StaffSchedule.data[index]
+                                        .treatmentService.spaService.name,
+                                    durationMin: widget.StaffSchedule
+                                        .data[index]
+                                        .treatmentService
+                                        .spaService
+                                        .durationMin
+                                        .toString(),
+                                    description: widget.StaffSchedule
+                                        .data[index]
+                                        .treatmentService
+                                        .spaService
+                                        .description,
+                                  ),
                                 )
                               ],
                             ))
