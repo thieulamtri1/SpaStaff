@@ -16,6 +16,31 @@ class StaffService {
   static final String dateChosen = "?dateChosen=";
   static final String urlDateOff = "https://swp490spa.herokuapp.com/api/staff/dateoff/create/";
   static final String GET_BOOKING_DETAIL_STEP_BY_BOOKING_DETAIL_ID = "https://swp490spa.herokuapp.com/api/staff/bookingDetailStep/findByBookingDetail/";
+  static final String UPDATE_PROCESS_STEP = "https://swp490spa.herokuapp.com/api/staff/bookingDetailStep/confirmFinishAStep";
+
+
+  static Future<String> editProcessStep(int bookingDetailStepId, String result) async {
+    var jsonResponse;
+    final res = await http.put(UPDATE_PROCESS_STEP,
+        headers: {
+          "accept" : "application/json",
+          "content-type" : "application/json",
+          "authorization" : "Bearer " + MyApp.storage.getItem("token"),
+        },
+        body: jsonEncode(
+            {
+              "bookingDetailStepId": bookingDetailStepId,
+              "result": result,
+            }));
+    if (res.statusCode == 200){
+      jsonResponse = utf8.decode(res.bodyBytes);
+      print(jsonResponse.toString());
+    }
+    else {
+      print("LOI ROI" + "Status code = " + res.statusCode.toString());
+    }
+    return res.statusCode.toString();
+  }
 
   static Future<Staff> getStaffProfileById(id, token) async {
     try {

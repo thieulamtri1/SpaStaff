@@ -8,6 +8,7 @@ import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:spa_and_beauty_staff/Staff/process_detail/components/edit_process_step.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
 import 'package:spa_and_beauty_staff/size_config.dart';
@@ -174,62 +175,7 @@ class _ProcessSectionState extends State<ProcessSection> {
                         "Liệu trình: " + _treatmentName,
                         style: TextStyle(fontSize: 15, color: Colors.black),
                       ),
-                      widget.treatment == "Chưa có liệu trình"
-                          ? GestureDetector(
-                        onTap: () async {
-                          TreatmentInstance choosenTreatment =
-                          await showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext buildContext) {
-                                return Container(
-                                  height: SizeConfig
-                                      .getProportionateScreenHeight(
-                                      800),
-                                  child: ListView(
-                                    children: [
-                                      IconButton(
-                                        alignment: Alignment.topRight,
-                                        icon: Icon(
-                                          Icons.close,
-                                          color: kPrimaryColor,
-                                          size: 25,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      ChooseTreatmentScreen(
-                                        packageId: widget.packageId,
-                                      )
-                                    ],
-                                  ),
-                                );
-                              });
-                          print("treatment đã chọn: " +
-                              choosenTreatment.id.toString() +
-                              choosenTreatment.name);
-                          setState(() {
-                            _treatmentName = choosenTreatment.name;
-                            print(_treatmentName);
-                            _treatmentInstance = choosenTreatment;
-                          });
-                        },
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                              color: kGreen,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Center(
-                            child: Text(
-                              "+",
-                              style: TextStyle(
-                                  fontSize: 25, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      )
-                          : SizedBox()
+
                     ],
                   ),
                 ),
@@ -355,13 +301,13 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                 child: Row(
                   children: [
                     Visibility(
-                      visible: true,
+                      visible: widget.status == "BOOKING" && widget.date != "Chưa đặt lịch",
                       child: GestureDetector(
                         onTap: (){
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EditConsultantContent(bookingDetailStepInstance: widget.bookingDetailStepInstance,)),
+                                builder: (context) => EditProcessStep(bookingDetailStepInstance: widget.bookingDetailStepInstance,)),
                           ).then((value) => setState(widget.notifyParent));
                         },
                         child: Icon(
