@@ -67,7 +67,7 @@ class _StaffProcessDetailBodyState extends State<StaffProcessDetailBody> {
             notifyParent: (){setState(() {
               print("dang reload ne");
               _loading = true;
-              ConsultantService.getBookingDetailStepsByBookingDetailId(
+              StaffService.getBookingDetailStepsByBookingDetailId(
                   widget.bookingDetail.id)
                   .then((value) => {
                 setState(() {
