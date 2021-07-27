@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:spa_and_beauty_staff/Consultant/chat/components/search_widget.dart';
 import 'package:spa_and_beauty_staff/Model/CustomerOfConsultant.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
@@ -15,17 +16,38 @@ class _BodyState extends State<Body> {
   TextEditingController searchInput = TextEditingController();
   CustomerOfConsultant customerOfConsultant = CustomerOfConsultant();
   bool loading = true;
+  String query = '';
+  List<Datum> customerDefault;
+  List<Datum> customerSearch;
 
-  getListCustomerOfConsultant() {
-    ConsultantService.getListCustomerOfConsultant(
-            MyApp.storage.getItem("consultantId"), MyApp.storage.getItem("token"))
+  getListCustomerOfConsultant() async {
+    await ConsultantService.getListCustomerOfConsultant(
+            MyApp.storage.getItem("consultantId"),
+            MyApp.storage.getItem("token"))
         .then((value) => {
               setState(() {
                 print("day ne");
                 customerOfConsultant = value;
+                customerDefault = value.data;
+                customerSearch = value.data;
                 loading = false;
               })
             });
+  }
+
+  Widget buildSearch() => SearchWidget(query, searchCustomer, false);
+
+  void searchCustomer(String query) {
+    final customerSearch = customerDefault.where((customer) {
+      final nameLower = customer.fullname.toLowerCase();
+      final searchLower = query.toLowerCase();
+      return nameLower.contains(searchLower);
+    }).toList();
+
+    setState(() {
+      this.query = query;
+      this.customerSearch = customerSearch;
+    });
   }
 
   @override
@@ -39,11 +61,10 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     if (loading) {
       return Center(
-        child: SpinKitWave(
-          color: Colors.orange,
-          size: 50,
-        )
-      );
+          child: SpinKitWave(
+        color: Colors.orange,
+        size: 50,
+      ));
     } else {
       return Scaffold(
         body: SingleChildScrollView(
@@ -69,41 +90,24 @@ class _BodyState extends State<Body> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-                child: TextField(
-                  controller: searchInput,
-                  decoration: InputDecoration(
-                    hintText: "Search...",
-                    hintStyle: TextStyle(color: Colors.grey.shade400),
-                    prefixIcon: IconButton(
-                      icon: Icon(Icons.search),
-                      color: Colors.grey.shade400,
-                      iconSize: 25,
-                      onPressed: () {},
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
-                    contentPadding: EdgeInsets.all(8),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Colors.grey.shade100)),
-                  ),
-                ),
-              ),
+              SizedBox(height: 10),
+              buildSearch(),
               ListView.builder(
-                shrinkWrap: true,
-                itemCount: customerOfConsultant.data.length,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) => CustomerCard(
-                  customerId: customerOfConsultant.data[index].id.toString(),
-                  customerName: customerOfConsultant.data[index].fullname,
-                  customerImage: customerOfConsultant.data[index].image,
-                  customerPhone: customerOfConsultant.data[index].phone,
-                  customerEmail: customerOfConsultant.data[index].email,
-                  customerGender: customerOfConsultant.data[index].gender,
-                ),
-              )
+                  shrinkWrap: true,
+                  itemCount: customerSearch.length,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final customer = customerSearch[index];
+                    return CustomerCard(
+                      customerId:
+                      customer.id.toString(),
+                      customerName: customer.fullname,
+                      customerImage: customer.image,
+                      customerPhone: customer.phone,
+                      customerEmail: customer.email,
+                      customerGender: customer.gender,
+                    );
+                  })
             ],
           ),
         ),
