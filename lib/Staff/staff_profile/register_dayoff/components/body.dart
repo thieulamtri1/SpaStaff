@@ -1,7 +1,10 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
+import '../register_dayoff_screen.dart';
 import 'date_picker.dart';
 
 class Body extends StatefulWidget {
@@ -18,6 +21,27 @@ class _BodyState extends State<Body> {
     final res = await StaffService().sendDateOffStaff(
         MyApp.storage.getItem("token"), Body.dateOff, reasonTextController.text);
     print("Status: ${res.body}");
+    var jsonResponse = json.decode(res.body);
+    if (jsonResponse['code'] == 200){
+      final snackBar = SnackBar(
+        content: Text('Đăng ký ngày nghỉ thành công'),
+        action: SnackBarAction(
+          label: 'Bỏ qua',
+          onPressed: () {},
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+    else{
+      final snackBar = SnackBar(
+        content: Text('Đăng ký ngày nghỉ không thành công'),
+        action: SnackBarAction(
+          label: 'Thử lại',
+          onPressed: () {},
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
@@ -66,6 +90,10 @@ class _BodyState extends State<Body> {
                     await sendDateOff();
                     print("DateTime nè: " + Body.dateOff.toString());
                     Body.dateOff = "";
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterDayOffScreen()),
+                    );
                   },
                   child: Text(
                     "Đăng ký",

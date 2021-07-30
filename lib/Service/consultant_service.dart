@@ -35,7 +35,7 @@ class ConsultantService {
   static final String dateChosen =
       "?dateChosen=";
   static final String urlDateOff =
-      "https://swp490spa.herokuapp.com/api/staff/dateoff/create/";
+      "https://swp490spa.herokuapp.com/api/consultant/dateoff/create/";
 
 
   static Future<CustomerOfConsultant> getListCustomerOfConsultant(id, token) async {
@@ -242,7 +242,7 @@ class ConsultantService {
         'Authorization': 'Bearer $token',
       },
       body: jsonEncode(<String, dynamic>{
-        "id": MyApp.storage.getItem("staffId"),
+        "id": MyApp.storage.getItem("consultantId"),
         "dateOff": dateOff,
         "reasonDateOff": reasonDateOff,
       }),
