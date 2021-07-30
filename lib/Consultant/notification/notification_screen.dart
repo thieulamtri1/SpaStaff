@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:spa_and_beauty_staff/Staff/notification/components/body.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 
+import 'components/body.dart';
+
 class ConsultantNotificationScreen extends StatefulWidget {
-  static String routeName = "/notification_screen";
+  static String routeName = "/notification_screenConsultant";
   @override
   _StaffNotificationState createState() => _StaffNotificationState();
 }

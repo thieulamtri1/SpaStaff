@@ -3,7 +3,7 @@ import 'package:spa_and_beauty_staff/Staff/notification/components/body.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 
 class StaffNotificationScreen extends StatefulWidget {
-  static String routeName = "/notification_screen";
+  static String routeName = "/notification_screenStaff";
   @override
   _StaffNotificationState createState() => _StaffNotificationState();
 }

@@ -7,6 +7,7 @@ import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/CustomerOfConsultant.dart';
+import 'package:spa_and_beauty_staff/Model/NotificationConsultant.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/main.dart';
@@ -36,6 +37,8 @@ class ConsultantService {
       "?dateChosen=";
   static final String urlDateOff =
       "https://swp490spa.herokuapp.com/api/consultant/dateoff/create/";
+  static final String urlGetNotificationConsultant =
+      "https://swp490spa.herokuapp.com/api/consultant/getAllNotification/";
 
 
   static Future<CustomerOfConsultant> getListCustomerOfConsultant(id, token) async {
@@ -335,6 +338,25 @@ class ConsultantService {
       }
     } catch (e) {
       throw Exception('Failed to load staffProfile');
+    }
+  }
+
+  static Future<NotificationEmployee> getNotificationConsultant() async {
+    try{
+      final response = await http.get(urlGetNotificationConsultant + MyApp.storage.getItem("consultantId").toString(),
+          headers: {
+            "authorization": "Bearer " + MyApp.storage.getItem("token"),
+          });
+      print(response.body);
+      if(200 == response.statusCode){
+        final NotificationEmployee notification = notificationEmployeeFromJson(utf8.decode(response.bodyBytes));
+        return notification;
+      }else{
+        return NotificationEmployee();
+      }
+    }catch(e){
+      print(e);
+      return NotificationEmployee();
     }
   }
 }

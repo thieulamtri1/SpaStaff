@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
+import 'package:spa_and_beauty_staff/Model/NotificationConsultant.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/main.dart';
@@ -17,6 +18,7 @@ class StaffService {
   static final String urlDateOff = "https://swp490spa.herokuapp.com/api/staff/dateoff/create/";
   static final String GET_BOOKING_DETAIL_STEP_BY_BOOKING_DETAIL_ID = "https://swp490spa.herokuapp.com/api/staff/bookingDetailStep/findByBookingDetail/";
   static final String UPDATE_PROCESS_STEP = "https://swp490spa.herokuapp.com/api/staff/bookingDetailStep/confirmFinishAStep";
+  static final String urlGetNotificationStaff = "https://swp490spa.herokuapp.com/api/staff/getAllNotification/";
 
 
   static Future<String> editProcessStep(int bookingDetailStepId, String result) async {
@@ -164,6 +166,25 @@ class StaffService {
       }
     } catch (e) {
       print("error code: loi khac");
+    }
+  }
+
+  static Future<NotificationEmployee> getNotificationStaff() async {
+    try{
+      final response = await http.get(urlGetNotificationStaff + MyApp.storage.getItem("staffId").toString(),
+          headers: {
+            "authorization": "Bearer " + MyApp.storage.getItem("token"),
+          });
+      print(response.body);
+      if(200 == response.statusCode){
+        final NotificationEmployee notification = notificationEmployeeFromJson(utf8.decode(response.bodyBytes));
+        return notification;
+      }else{
+        return NotificationEmployee();
+      }
+    }catch(e){
+      print(e);
+      return NotificationEmployee();
     }
   }
 

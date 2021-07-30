@@ -32,9 +32,19 @@ class _BodyState extends State<Body> {
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-    else{
+    else if(jsonResponse['code'] == 204){
       final snackBar = SnackBar(
-        content: Text('Đăng ký ngày nghỉ không thành công'),
+        content: Text('Ngày đã được đăng ký'),
+        action: SnackBarAction(
+          label: 'Thử lại',
+          onPressed: () {},
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+    else {
+      final snackBar = SnackBar(
+        content: Text('Đăng ký không thành công'),
         action: SnackBarAction(
           label: 'Thử lại',
           onPressed: () {},
@@ -87,13 +97,24 @@ class _BodyState extends State<Body> {
                       borderRadius: BorderRadius.circular(20)),
                   color: Colors.orangeAccent,
                   onPressed: () async {
-                    await addDateOff();
-                    print("DateTime nè: " + Body.dateOff.toString());
-                    Body.dateOff = "";
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterDayOffScreen()),
-                    );
+                    if(reasonTextController.text.trim() == ""){
+                      final snackBar = SnackBar(
+                        content: Text('Vui lòng ghi rõ lý do'),
+                        action: SnackBarAction(
+                          label: 'Thử lại',
+                          onPressed: () {},
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }else{
+                      await addDateOff();
+                      print("DateTime nè: " + Body.dateOff.toString());
+                      Body.dateOff = "";
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterDayOffScreen()),
+                      );
+                    }
                   },
                   child: Text(
                     "Đăng ký",

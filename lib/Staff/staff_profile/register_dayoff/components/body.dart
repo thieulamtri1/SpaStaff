@@ -87,13 +87,24 @@ class _BodyState extends State<Body> {
                       borderRadius: BorderRadius.circular(20)),
                   color: Colors.orangeAccent,
                   onPressed: () async {
-                    await sendDateOff();
-                    print("DateTime nè: " + Body.dateOff.toString());
-                    Body.dateOff = "";
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterDayOffScreen()),
-                    );
+                    if(reasonTextController.text.trim() == ""){
+                      final snackBar = SnackBar(
+                        content: Text('Vui lòng ghi rõ lý do'),
+                        action: SnackBarAction(
+                          label: 'Thử lại',
+                          onPressed: () {},
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }else{
+                      await sendDateOff();
+                      print("DateTime nè: " + Body.dateOff.toString());
+                      Body.dateOff = "";
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterDayOffScreen()),
+                      );
+                    }
                   },
                   child: Text(
                     "Đăng ký",

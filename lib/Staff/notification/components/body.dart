@@ -2,6 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:spa_and_beauty_staff/Model/NotificationConsultant.dart';
+import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -9,117 +12,82 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  bool hasData = false;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  NotificationEmployee notification = NotificationEmployee();
+  bool loading = true;
+  String image = "";
 
-  // getToken() async {
-  //   await Firebase.initializeApp();
-  //   _firebaseMessaging.getToken().then((value) {
-  //     print("Device Token: $value");
-  //   });
-  // }
-  //
-  // Future showNotification(NotiTitle, NotiBody) async {
-  //   var androidDetails = new AndroidNotificationDetails(
-  //       "channelId", "Local Notification", "channelDescription",
-  //       importance: Importance.high);
-  //   var iosDetails = new IOSNotificationDetails();
-  //   var generalNotification =
-  //       new NotificationDetails(android: androidDetails, iOS: iosDetails);
-  //   await flutterLocalNotificationsPlugin.show(
-  //       0, NotiTitle, NotiBody, generalNotification);
-  // }
-  //
-  // getNotification(){
-  //   getToken();
-  //
-  //   var initialzationSettingsAndroid =
-  //   AndroidInitializationSettings('@mipmap/ic_launcher');
-  //   var initializationSettings =
-  //   InitializationSettings(android: initialzationSettingsAndroid);
-  //   flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  //
-  //   _firebaseMessaging.configure(
-  //     onMessage: (Map<String, dynamic> message) async {
-  //       print("onMessage: $message");
-  //       setState(() {
-  //         hasData = true;
-  //       });
-  //       showNotification(
-  //           message['notification']['title'], message['notification']['body']);
-  //       showNotification("123", "123");
-  //     },
-  //     onLaunch: (Map<String, dynamic> message) async {
-  //       print("onLaunch: $message");
-  //       final data = message['data'];
-  //       String mMessage = data['message'];
-  //       setState(() {
-  //         hasData = true;
-  //       });
-  //     },
-  //     onResume: (Map<String, dynamic> message) async {
-  //       print("onResume: $message");
-  //       final data = message['data']['message'];
-  //       String mMessage = data['message'];
-  //       setState(() {
-  //         hasData = true;
-  //       });
-  //     },
-  //   );
-  //   _firebaseMessaging.requestNotificationPermissions(
-  //       const IosNotificationSettings(sound: true, badge: true, alert: true));
-  // }
+  getNotificationConsultant() async {
+    await StaffService.getNotificationStaff().then((value) => {
+          setState(() {
+            notification = value;
+            loading = false;
+          })
+        });
+  }
 
   @override
   void initState() {
     super.initState();
-    // getToken();
-    // getNotification();
+    getNotificationConsultant();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: 3,
-          itemBuilder: (context, index) {
-            return NotificationServiceAssignedItem(
-                image: "https://bizweb.dktcdn.net/100/110/917/files/ms-da-nong.jpg?v=1568863806870",
-                companyName: "test",
-                date: index.toString(),
-                serviceName: "test");
-          },
-        ),
-
-      ],
-    );
+    if (loading) {
+      return Center(
+          child: SpinKitWave(
+        color: Colors.orange,
+        size: 50,
+      ));
+    } else {
+      return notification.data.length == 0
+          ? Center(
+              child: Text(
+                "Chưa có thông báo nào",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            )
+          : Column(
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: notification.data.length,
+                  itemBuilder: (context, index) {
+                    if (notification.data[index].type == "ASSIGN") {
+                      image = 'assets/notificationStaff/assign.jpg';
+                    }
+                    return NotificationBookingSuccessItem(
+                      image: image,
+                      title: notification.data[index].title,
+                      message: notification.data[index].message,
+                    );
+                  },
+                )
+              ],
+            );
+    }
   }
 }
 
-class NotificationServiceAssignedItem extends StatelessWidget {
-  const NotificationServiceAssignedItem({
+class NotificationBookingSuccessItem extends StatelessWidget {
+  const NotificationBookingSuccessItem({
     Key key,
     @required this.image,
-    @required this.companyName,
-    @required this.serviceName,
-    @required this.date,
+    @required this.title,
+    @required this.message,
   }) : super(key: key);
 
-  final String image, companyName, serviceName, date;
+  final String image, title, message;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(
-              color: Colors.white,
-              width: 5
-          ),
+          bottom: BorderSide(color: Colors.white, width: 5),
         ),
         color: Colors.grey.withOpacity(0.1),
       ),
@@ -128,9 +96,7 @@ class NotificationServiceAssignedItem extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              child: Image.network(
-                image,
-              ),
+              child: Image.asset(image),
               width: 80,
               height: 80,
             ),
@@ -142,41 +108,25 @@ class NotificationServiceAssignedItem extends StatelessWidget {
                 children: [
                   Container(
                     height: 60,
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Dịch vụ ",
-                          ),
-                          TextSpan(
-                            text: serviceName,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          TextSpan(
-                            text: " tại ",
-                          ),
-                          TextSpan(
-                            text: companyName,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          TextSpan(
-                            text:
-                                " đã được đặt thành công, vui lòng đợi xác nhận từ phía cửa hàng",
-                          ),
-                        ],
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              title,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          message,
+                        ),
+                      ],
                     ),
                   ),
-                  Container(
-                    height: 20,
-                    width: double.infinity,
-                    child: Text(
-                      date,
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  )
                 ],
               ),
             ),
