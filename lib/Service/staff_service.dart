@@ -10,15 +10,15 @@ import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 
 class StaffService {
-  static const String urlGetProfileStaff = "https://swp490spa.herokuapp.com/api/staff/findbyId?userId=";
-  static const String urlUpdateProfileStaff = "https://swp490spa.herokuapp.com/api/staff/editprofile";
-  static const String urlEditPasswordStaff = "https://swp490spa.herokuapp.com/api/staff/editpassword";
-  static final String urlStaffSchedule = "https://swp490spa.herokuapp.com/api/staff/workingofstaff/findbydatechosen/";
+  static const String GET_PROFILE_STAFF = "https://swp490spa.herokuapp.com/api/staff/findbyId?userId=";
+  static const String UPDATE_PROFILE_STAFF = "https://swp490spa.herokuapp.com/api/staff/editprofile";
+  static const String EDIT_PASSWORD_STAFF = "https://swp490spa.herokuapp.com/api/staff/editpassword";
+  static final String GET_STAFF_SCHEDULE = "https://swp490spa.herokuapp.com/api/staff/workingofstaff/findbydatechosen/";
   static final String dateChosen = "?dateChosen=";
-  static final String urlDateOff = "https://swp490spa.herokuapp.com/api/staff/dateoff/create/";
+  static final String CREATE_DATEOFF = "https://swp490spa.herokuapp.com/api/staff/dateoff/create/";
   static final String GET_BOOKING_DETAIL_STEP_BY_BOOKING_DETAIL_ID = "https://swp490spa.herokuapp.com/api/staff/bookingDetailStep/findByBookingDetail/";
   static final String UPDATE_PROCESS_STEP = "https://swp490spa.herokuapp.com/api/staff/bookingDetailStep/confirmFinishAStep";
-  static final String urlGetNotificationStaff = "https://swp490spa.herokuapp.com/api/staff/getAllNotification/";
+  static final String GET_NOTIFICATION_STAFF = "https://swp490spa.herokuapp.com/api/staff/getAllNotification/";
 
 
   static Future<String> editProcessStep(int bookingDetailStepId, String result) async {
@@ -46,7 +46,7 @@ class StaffService {
 
   static Future<Staff> getStaffProfileById(id, token) async {
     try {
-      final response = await http.get(Uri.parse(urlGetProfileStaff + id.toString()), headers: {
+      final response = await http.get(Uri.parse(GET_PROFILE_STAFF + id.toString()), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
@@ -76,7 +76,7 @@ class StaffService {
     phone,
   }) {
     return http.put(
-      Uri.parse(urlUpdateProfileStaff),
+      Uri.parse(UPDATE_PROFILE_STAFF),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -99,7 +99,7 @@ class StaffService {
 
   Future<http.Response> editPasswordStaff(token, password) {
     return http.put(
-      Uri.parse(urlEditPasswordStaff),
+      Uri.parse(EDIT_PASSWORD_STAFF),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -114,12 +114,12 @@ class StaffService {
 
   static Future<ScheduleStaff> getStaffSchedule(id, date, token) async {
     try {
-      final response = await http.get(Uri.parse(urlStaffSchedule + id.toString() + dateChosen + date), headers: {
+      final response = await http.get(Uri.parse(GET_STAFF_SCHEDULE + id.toString() + dateChosen + date), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
       });
-      print("URL: " + urlStaffSchedule + id.toString() + dateChosen + date);
+      print("URL: " + GET_STAFF_SCHEDULE + id.toString() + dateChosen + date);
       print("status code: " + response.statusCode.toString());
       if (response.statusCode == 200) {
         ScheduleStaff staffSchedule = scheduleStaffFromJson(utf8.decode(response.bodyBytes));
@@ -134,7 +134,7 @@ class StaffService {
 
   Future<http.Response> sendDateOffStaff(token, dateOff, reasonDateOff) {
     return http.post(
-      Uri.parse(urlDateOff + MyApp.storage.getItem('staffId').toString()),
+      Uri.parse(CREATE_DATEOFF + MyApp.storage.getItem('staffId').toString()),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -171,7 +171,7 @@ class StaffService {
 
   static Future<NotificationEmployee> getNotificationStaff() async {
     try{
-      final response = await http.get(urlGetNotificationStaff + MyApp.storage.getItem("staffId").toString(),
+      final response = await http.get(GET_NOTIFICATION_STAFF + MyApp.storage.getItem("staffId").toString(),
           headers: {
             "authorization": "Bearer " + MyApp.storage.getItem("token"),
           });

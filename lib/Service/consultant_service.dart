@@ -13,9 +13,9 @@ import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 
 class ConsultantService {
-  static final String urlListCustomerOfConsultant =
+  static final String GET_LIST_CUSTOMER_OF_CONSULTANT =
       "https://swp490spa.herokuapp.com/api/consultant/getListCustomerOfConsultant/";
-  static final String urlfindByCustomerAndConsultant =
+  static final String FIND_BOOKINGDETAIL_BY_CUSTOMER_AND_CONSULTANT =
       "https://swp490spa.herokuapp.com/api/consultant/bookingDetail/findByCustomerAndConsultant/";
   static final String GET_BOOKING_DETAIL_STEP_BY_BOOKING_DETAIL_ID = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/findByBookingDetail/";
   static final String GET_TREATMENTS_BY_PACKAGE_ID = "https://swp490spa.herokuapp.com/api/consultant/spatreatment/findbyspapackage?spaPackageId=";
@@ -25,26 +25,26 @@ class ConsultantService {
   static final String BOOKING_FOR_NEXT_STEP = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/addTimeNextStep";
   static final String EDIT_CONSULTATION_CONTENT = "https://swp490spa.herokuapp.com/api/consultant/consultationcontent/edit";
 
-  static const String urlGetProfileConsultant =
+  static const String GET_PROFILE_CONSULTANT =
       "https://swp490spa.herokuapp.com/api/consultant/findById/";
-  static const String urlUpdateProfileConsultant =
+  static const String UPDATE_PROFILE_CONSULTANT =
       "https://swp490spa.herokuapp.com/api/consultant/editprofile";
-  static const String urlEditPasswordConsultant =
+  static const String EDIT_PASSWORD_CONSULTANT =
       "https://swp490spa.herokuapp.com/api/consultant/editpassword";
-  static final String urlConsultantSchedule =
+  static final String GET_CONSULTANT_SCHEDULE =
       "https://swp490spa.herokuapp.com/api/consultant/workingofconsultant/findbydatechosen/";
   static final String dateChosen =
       "?dateChosen=";
-  static final String urlDateOff =
+  static final String CREATE_DATEOFF =
       "https://swp490spa.herokuapp.com/api/consultant/dateoff/create/";
-  static final String urlGetNotificationConsultant =
+  static final String GET_NOTIFICATION_CONSULTANT =
       "https://swp490spa.herokuapp.com/api/consultant/getAllNotification/";
 
 
   static Future<CustomerOfConsultant> getListCustomerOfConsultant(id, token) async {
     try {
       final response = await http.get(
-          Uri.parse(urlListCustomerOfConsultant + id.toString()),
+          Uri.parse(GET_LIST_CUSTOMER_OF_CONSULTANT + id.toString()),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -65,7 +65,7 @@ class ConsultantService {
       idCustomer, idConsultant, token) async {
     try {
       final response = await http.get(
-          Uri.parse(urlfindByCustomerAndConsultant + idCustomer.toString() + "/" + idConsultant.toString()),
+          Uri.parse(FIND_BOOKINGDETAIL_BY_CUSTOMER_AND_CONSULTANT + idCustomer.toString() + "/" + idConsultant.toString()),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -238,7 +238,7 @@ class ConsultantService {
 
   Future<http.Response> sendDateOffConsultant(token, dateOff, reasonDateOff) {
     return http.post(
-      Uri.parse(urlDateOff + MyApp.storage.getItem('consultantId').toString()),
+      Uri.parse(CREATE_DATEOFF + MyApp.storage.getItem('consultantId').toString()),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -254,7 +254,7 @@ class ConsultantService {
 
   static Future<ScheduleConsultant> getConsultantSchedule(id, date, token) async {
     try {
-      final response = await http.get(Uri.parse(urlConsultantSchedule + id.toString() + dateChosen + date), headers: {
+      final response = await http.get(Uri.parse(GET_CONSULTANT_SCHEDULE + id.toString() + dateChosen + date), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
@@ -274,7 +274,7 @@ class ConsultantService {
 
   Future<http.Response> editPasswordConsultant(token, password) {
     return http.put(
-      Uri.parse(urlEditPasswordConsultant),
+      Uri.parse(EDIT_PASSWORD_CONSULTANT),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -302,7 +302,7 @@ class ConsultantService {
     phone,
   }) {
     return http.put(
-      Uri.parse(urlUpdateProfileConsultant),
+      Uri.parse(UPDATE_PROFILE_CONSULTANT),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -325,7 +325,7 @@ class ConsultantService {
 
   static Future<Staff> getConsultantProfileById(id, token) async {
     try {
-      final response = await http.get(Uri.parse(urlGetProfileConsultant + id.toString()), headers: {
+      final response = await http.get(Uri.parse(GET_PROFILE_CONSULTANT + id.toString()), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
@@ -343,7 +343,7 @@ class ConsultantService {
 
   static Future<NotificationEmployee> getNotificationConsultant() async {
     try{
-      final response = await http.get(urlGetNotificationConsultant + MyApp.storage.getItem("consultantId").toString(),
+      final response = await http.get(GET_NOTIFICATION_CONSULTANT + MyApp.storage.getItem("consultantId").toString(),
           headers: {
             "authorization": "Bearer " + MyApp.storage.getItem("token"),
           });
