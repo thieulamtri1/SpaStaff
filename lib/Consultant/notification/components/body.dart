@@ -57,6 +57,8 @@ class _BodyState extends State<Body> {
                   itemBuilder: (context, index) {
                     if (notification.data[index].type == "ASSIGN") {
                       image = 'assets/notificationConsultant/assign.jpg';
+                    }else{
+                      image = 'assets/notificationConsultant/spa.jpg';
                     }
                     return NotificationBookingSuccessItem(
                       image: image,
