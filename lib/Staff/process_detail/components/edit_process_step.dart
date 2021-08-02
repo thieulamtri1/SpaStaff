@@ -164,7 +164,7 @@ class _EditProcessStepState extends State<EditProcessStep> {
                       },
                     );
 
-                    StaffService.editProcessStep(widget.bookingDetailStepInstance.id, _resultController.text,)
+                    StaffService.editProcessStep(widget.bookingDetailStepInstance.id, _resultController.text, widget.bookingDetailStepInstance.staff.id)
                         .then((value) {
                       Navigator.pop(context);
                       value.compareTo("200") == 0

@@ -21,7 +21,7 @@ class StaffService {
   static final String GET_NOTIFICATION_STAFF = "https://swp490spa.herokuapp.com/api/staff/getAllNotification/";
 
 
-  static Future<String> editProcessStep(int bookingDetailStepId, String result) async {
+  static Future<String> editProcessStep(int bookingDetailStepId, String result, int staffId) async {
     var jsonResponse;
     final res = await http.put(UPDATE_PROCESS_STEP,
         headers: {
@@ -33,6 +33,7 @@ class StaffService {
             {
               "bookingDetailStepId": bookingDetailStepId,
               "result": result,
+              "staffId": staffId
             }));
     if (res.statusCode == 200){
       jsonResponse = utf8.decode(res.bodyBytes);
