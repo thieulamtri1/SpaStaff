@@ -73,9 +73,11 @@ class _ChooseTreatmentScreenState extends State<ChooseTreatmentScreen> {
                                         ),
                                       ),
                                     ),
-                                    Text(
-                                      "Treatment: " + _treatment.data[index].name,
-                                      style: TextStyle(fontSize: 17, color: kTextColor),
+                                    Expanded(
+                                      child: Text(
+                                        "Treatment: " + _treatment.data[index].name,
+                                        style: TextStyle(fontSize: 17, color: kTextColor),
+                                      ),
                                     ),
                                   ],
                                 ),

@@ -273,27 +273,7 @@ class _SignFormState extends State<SignForm> {
             },
           ),
           SizedBox(height: 50),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Chưa có tài khoản?",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: Text(
-                  "Đăng ký ngay.",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: kPrimaryColor,
-                  ),
-                ),
-              )
-            ],
-          )
+
         ],
       ),
     );

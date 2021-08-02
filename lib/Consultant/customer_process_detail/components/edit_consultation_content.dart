@@ -74,7 +74,10 @@ class _EditConsultantContentState extends State<EditConsultantContent> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Ngày đặt lịch: ", style: TextStyle(fontSize: 20)),
-                    Text(
+                    widget.bookingDetailStepInstance.dateBooking == null
+                    ?Text("Chưa đặt lịch",
+                        style: TextStyle(fontSize: 20, color: Colors.red))
+                    :Text(
                         MyHelper.getUserDate(
                             widget.bookingDetailStepInstance.dateBooking),
                         style: TextStyle(fontSize: 20))
@@ -83,7 +86,9 @@ class _EditConsultantContentState extends State<EditConsultantContent> {
                 SizedBox(
                   height: 5,
                 ),
-                Row(
+                widget.bookingDetailStepInstance.startTime == null
+                ?SizedBox()
+                :Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Thời gian: ", style: TextStyle(fontSize: 20)),
@@ -98,7 +103,10 @@ class _EditConsultantContentState extends State<EditConsultantContent> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Chuyên viên: ", style: TextStyle(fontSize: 20)),
-                    Text(widget.bookingDetailStepInstance.staff.user.fullname,
+                    widget.bookingDetailStepInstance.staff == null
+                    ?Text("Chưa có chuyên viên",
+                        style: TextStyle(fontSize: 20, color: Colors.red))
+                    :Text(widget.bookingDetailStepInstance.staff.user.fullname,
                         style: TextStyle(fontSize: 20))
                   ],
                 ),

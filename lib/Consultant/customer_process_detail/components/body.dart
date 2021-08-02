@@ -55,22 +55,7 @@ class _BodyState extends State<Body> {
                 SizedBox(
                   height: 10,
                 ),
-                CompanySection(
-                  address: widget.bookingDetail.booking.spa.street +
-                      " " +
-                      widget.bookingDetail.booking.spa.district +
-                      " " +
-                      widget.bookingDetail.booking.spa.city,
-                  name: widget.bookingDetail.booking.spa.name,
-                ),
-                Divider(
-                  thickness: 1,
-                  height: 20,
-                ),
-                StaffSection(
-                  name: _bookingDetailSteps.data[0].consultant.user.fullname,
-                  phone: _bookingDetailSteps.data[0].consultant.user.phone,
-                ),
+                CustomerSection(name: widget.bookingDetail.booking.customer.user.fullname, phone: widget.bookingDetail.booking.customer.user.phone),
                 Divider(
                   thickness: 1,
                   height: 20,
@@ -251,6 +236,7 @@ class _ProcessSectionState extends State<ProcessSection> {
                 ...List.generate(
                   widget.bookingDetailSteps.data.length,
                   (index) => ProcessStepSection(
+                    staffName:  widget.bookingDetailSteps.data[index].staff == null ? null :widget.bookingDetailSteps.data[index].staff.user.fullname,
                     bookingDetailStepInstance: widget.bookingDetailSteps.data[index],
                     notifyParent: widget.notifyParent,
                     spaId: widget.spaId,
@@ -398,7 +384,7 @@ class _ProcessStepSectionForConsultantState extends State<ProcessStepSectionForC
 
 class ProcessStepSection extends StatefulWidget {
   final Function() notifyParent;
-  final String date, stepName, status;
+  final String date, stepName, status, staffName;
   final int bookingDetailStepId, customerId, spaId, spaServiceId;
   final BookingDetailStepInstance bookingDetailStepInstance;
 
@@ -410,7 +396,7 @@ class ProcessStepSection extends StatefulWidget {
     this.bookingDetailStepId,
     this.customerId,
     this.spaId,
-    this.spaServiceId, this.notifyParent, this.bookingDetailStepInstance,
+    this.spaServiceId, this.notifyParent, this.bookingDetailStepInstance, this.staffName,
   }) : super(key: key);
 
   @override
@@ -478,7 +464,7 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                 child: Row(
                   children: [
                     Visibility(
-                      visible: widget.date == "Chưa đặt lịch" ? true : false,
+                      visible: widget.date == "Chưa đặt lịch" && widget.staffName!=null,
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -502,7 +488,7 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                       width: 15,
                     ),
                     Visibility(
-                      visible: true,
+                      visible: widget.stepName!="Tư Vấn",
                       child: GestureDetector(
                         onTap: (){
                           Navigator.push(
@@ -528,10 +514,10 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
   }
 }
 
-class StaffSection extends StatelessWidget {
+class CustomerSection extends StatelessWidget {
   final String name, phone;
 
-  const StaffSection({
+  const CustomerSection({
     Key key,
     @required this.name,
     @required this.phone,
@@ -559,7 +545,7 @@ class StaffSection extends StatelessWidget {
                     width: 5,
                   ),
                   Text(
-                    "Thông tin nhân viên",
+                    "Thông tin khách hàng",
                     style: TextStyle(fontSize: 15, color: Colors.black),
                   ),
                 ],
@@ -579,69 +565,69 @@ class StaffSection extends StatelessWidget {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: Icon(
-            Icons.chat,
-            color: kPrimaryColor,
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(right: 20),
+        //   child: Icon(
+        //     Icons.chat,
+        //     color: kPrimaryColor,
+        //   ),
+        // ),
       ],
     );
   }
 }
 
-class CompanySection extends StatelessWidget {
-  final String name, address;
-
-  const CompanySection({
-    Key key,
-    @required this.name,
-    @required this.address,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                child: SvgPicture.asset("assets/icons/company.svg"),
-                width: 18,
-                height: 18,
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                "Thông tin Spa",
-                style: TextStyle(fontSize: 15, color: Colors.black),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name),
-                Text(address),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
+// class CompanySection extends StatelessWidget {
+//   final String name, address;
+//
+//   const CompanySection({
+//     Key key,
+//     @required this.name,
+//     @required this.address,
+//   }) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 10),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: [
+//               Container(
+//                 child: SvgPicture.asset("assets/icons/company.svg"),
+//                 width: 18,
+//                 height: 18,
+//               ),
+//               SizedBox(
+//                 width: 5,
+//               ),
+//               Text(
+//                 "Thông tin Spa",
+//                 style: TextStyle(fontSize: 15, color: Colors.black),
+//               ),
+//             ],
+//           ),
+//           SizedBox(
+//             height: 5,
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.only(left: 24),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(name),
+//                 Text(address),
+//               ],
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class StatusSection extends StatelessWidget {
   const StatusSection({
@@ -673,7 +659,7 @@ class StatusSection extends StatelessWidget {
                           fontSize: 15),
                     ),
                     Text(
-                      "Theo dõi liệu trình thường xuyên để không bị lỡ hẹn với spa của bạn",
+                      "Theo dõi liệu trình thường xuyên để không bị lỡ hẹn với khách hàng",
                       style: TextStyle(
                         color: Colors.white,
                       ),
