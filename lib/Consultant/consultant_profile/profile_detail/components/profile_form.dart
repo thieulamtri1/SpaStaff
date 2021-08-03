@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/default_button.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 
@@ -79,7 +80,7 @@ class _ProfileFormState extends State<ProfileFormConsultant> {
     if(loading){
       return Center(
           child: SpinKitWave(
-            color: Colors.orange,
+            color: kPrimaryColor,
             size: 50,
           )
       );

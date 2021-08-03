@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/Staff/process_detail/process_detail_screen.dart';
+import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -67,7 +68,7 @@ class _calendarPageState extends State<calendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange,
+      backgroundColor: kPrimaryColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -296,7 +297,7 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                 Text(
                   customerName,
                   style: TextStyle(
-                      color: Colors.orange, fontWeight: FontWeight.w700),
+                      color: kPrimaryColor, fontWeight: FontWeight.w700),
                 ),
                 SizedBox(
                   height: 10,
@@ -329,11 +330,13 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                   children: [
                     Icon(Icons.description, color: Colors.grey),
                     SizedBox(width: 5),
-                    Text(description, style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500
-                    ),)
+                    Expanded(
+                      child: Text(description, style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500
+                      ),),
+                    )
                   ],
                 ),
                 SizedBox(

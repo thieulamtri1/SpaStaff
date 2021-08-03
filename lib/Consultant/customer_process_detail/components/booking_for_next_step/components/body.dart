@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Consultant/bottom_navigation/bottom_navigation.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/body.dart';
@@ -62,7 +63,10 @@ class _NextStepBookingBodyState extends State<NextStepBookingBody> {
   Widget build(BuildContext context) {
     return _loading
         ? Container(
-      child: Lottie.asset("assets/lottie/loading.json"),
+      child: SpinKitWave(
+        color: kPrimaryColor,
+        size: 50,
+      ),
     )
         : SingleChildScrollView(
       child: SafeArea(
@@ -166,7 +170,10 @@ class _NextStepBookingBodyState extends State<NextStepBookingBody> {
                     height: 200,
                     width: double.infinity,
                     child:
-                    Lottie.asset("assets/lottie/loading.json"),
+                    SpinKitWave(
+                      color: kPrimaryColor,
+                      size: 50,
+                    ),
                   )
                       : WrapToggleIconButtons(
                     iconList: List.generate(
@@ -226,8 +233,10 @@ class _NextStepBookingBodyState extends State<NextStepBookingBody> {
                             child: Dialog(
                               child: Container(
                                 height: 150,
-                                child: Lottie.asset(
-                                    "assets/lottie/circle_loading.json"),
+                                child: SpinKitWave(
+                                  color: kPrimaryColor,
+                                  size: 50,
+                                ),
                               ),
                             ),
                           );

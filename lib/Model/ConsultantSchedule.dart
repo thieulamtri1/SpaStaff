@@ -22,17 +22,17 @@ class ScheduleConsultant {
   Paging paging;
 
   factory ScheduleConsultant.fromJson(Map<String, dynamic> json) => ScheduleConsultant(
-    code: json["code"],
-    status: json["status"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
-    paging: Paging.fromJson(json["paging"]),
+    code: json["code"] == null ? null : json["code"],
+    status: json["status"] == null ? null : json["status"],
+    data: json["data"] == null ? null : List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    paging: json["paging"] == null ? null : Paging.fromJson(json["paging"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "code": code,
-    "status": status,
-    "data": List<dynamic>.from(data.map((x) => x.toJson())),
-    "paging": paging.toJson(),
+    "code": code == null ? null : code,
+    "status": status == null ? null : status,
+    "data": data == null ? null : List<dynamic>.from(data.map((x) => x.toJson())),
+    "paging": paging == null ? null : paging.toJson(),
   };
 }
 
@@ -59,48 +59,48 @@ class Datum {
   DateTime dateBooking;
   String startTime;
   String endTime;
-  double bookingPrice;
+  dynamic bookingPrice;
   String statusBooking;
   dynamic reason;
   String isConsultation;
-  ConsultationContent consultationContent;
+  dynamic consultationContent;
   dynamic rating;
-  TreatmentService treatmentService;
-  Consultant staff;
+  dynamic treatmentService;
+  dynamic staff;
   Consultant consultant;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    bookingDetail: BookingDetail.fromJson(json["bookingDetail"]),
-    id: json["id"],
-    dateBooking: DateTime.parse(json["date_booking"]),
-    startTime: json["start_time"],
-    endTime: json["end_time"],
-    bookingPrice: json["booking_price"] == null ? null : json["booking_price"],
-    statusBooking: json["status_booking"],
+    bookingDetail: json["bookingDetail"] == null ? null : BookingDetail.fromJson(json["bookingDetail"]),
+    id: json["id"] == null ? null : json["id"],
+    dateBooking: json["date_booking"] == null ? null : DateTime.parse(json["date_booking"]),
+    startTime: json["start_time"] == null ? null : json["start_time"],
+    endTime: json["end_time"] == null ? null : json["end_time"],
+    bookingPrice: json["booking_price"],
+    statusBooking: json["status_booking"] == null ? null : json["status_booking"],
     reason: json["reason"],
-    isConsultation: json["is_consultation"],
-    consultationContent: json["consultation_content"] == null ? null : ConsultationContent.fromJson(json["consultation_content"]),
+    isConsultation: json["is_consultation"] == null ? null : json["is_consultation"],
+    consultationContent: json["consultation_content"],
     rating: json["rating"],
-    treatmentService: json["treatment_service"] == null ? null : TreatmentService.fromJson(json["treatment_service"]),
-    staff: json["staff"] == null ? null : Consultant.fromJson(json["staff"]),
-    consultant: Consultant.fromJson(json["consultant"]),
+    treatmentService: json["treatment_service"],
+    staff: json["staff"],
+    consultant: json["consultant"] == null ? null : Consultant.fromJson(json["consultant"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "bookingDetail": bookingDetail.toJson(),
-    "id": id,
-    "date_booking": "${dateBooking.year.toString().padLeft(4, '0')}-${dateBooking.month.toString().padLeft(2, '0')}-${dateBooking.day.toString().padLeft(2, '0')}",
-    "start_time": startTime,
-    "end_time": endTime,
-    "booking_price": bookingPrice == null ? null : bookingPrice,
-    "status_booking": statusBooking,
+    "bookingDetail": bookingDetail == null ? null : bookingDetail.toJson(),
+    "id": id == null ? null : id,
+    "date_booking": dateBooking == null ? null : "${dateBooking.year.toString().padLeft(4, '0')}-${dateBooking.month.toString().padLeft(2, '0')}-${dateBooking.day.toString().padLeft(2, '0')}",
+    "start_time": startTime == null ? null : startTime,
+    "end_time": endTime == null ? null : endTime,
+    "booking_price": bookingPrice,
+    "status_booking": statusBooking == null ? null : statusBooking,
     "reason": reason,
-    "is_consultation": isConsultation,
-    "consultation_content": consultationContent == null ? null : consultationContent.toJson(),
+    "is_consultation": isConsultation == null ? null : isConsultation,
+    "consultation_content": consultationContent,
     "rating": rating,
-    "treatment_service": treatmentService == null ? null : treatmentService.toJson(),
-    "staff": staff == null ? null : staff.toJson(),
-    "consultant": consultant.toJson(),
+    "treatment_service": treatmentService,
+    "staff": staff,
+    "consultant": consultant == null ? null : consultant.toJson(),
   };
 }
 
@@ -126,25 +126,25 @@ class BookingDetail {
   SpaPackage spaPackage;
 
   factory BookingDetail.fromJson(Map<String, dynamic> json) => BookingDetail(
-    id: json["id"],
-    totalTime: json["totalTime"],
-    type: json["type"],
-    totalPrice: json["totalPrice"],
-    statusBooking: json["statusBooking"],
-    booking: Booking.fromJson(json["booking"]),
-    spaTreatment: SpaTreatment.fromJson(json["spaTreatment"]),
-    spaPackage: SpaPackage.fromJson(json["spaPackage"]),
+    id: json["id"] == null ? null : json["id"],
+    totalTime: json["totalTime"] == null ? null : json["totalTime"],
+    type: json["type"] == null ? null : json["type"],
+    totalPrice: json["totalPrice"] == null ? null : json["totalPrice"],
+    statusBooking: json["statusBooking"] == null ? null : json["statusBooking"],
+    booking: json["booking"] == null ? null : Booking.fromJson(json["booking"]),
+    spaTreatment: json["spaTreatment"] == null ? null : SpaTreatment.fromJson(json["spaTreatment"]),
+    spaPackage: json["spaPackage"] == null ? null : SpaPackage.fromJson(json["spaPackage"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "totalTime": totalTime,
-    "type": type,
-    "totalPrice": totalPrice,
-    "statusBooking": statusBooking,
-    "booking": booking.toJson(),
-    "spaTreatment": spaTreatment.toJson(),
-    "spaPackage": spaPackage.toJson(),
+    "id": id == null ? null : id,
+    "totalTime": totalTime == null ? null : totalTime,
+    "type": type == null ? null : type,
+    "totalPrice": totalPrice == null ? null : totalPrice,
+    "statusBooking": statusBooking == null ? null : statusBooking,
+    "booking": booking == null ? null : booking.toJson(),
+    "spaTreatment": spaTreatment == null ? null : spaTreatment.toJson(),
+    "spaPackage": spaPackage == null ? null : spaPackage.toJson(),
   };
 }
 
@@ -168,23 +168,23 @@ class Booking {
   Spa spa;
 
   factory Booking.fromJson(Map<String, dynamic> json) => Booking(
-    id: json["id"],
-    totalPrice: json["totalPrice"],
-    totalTime: json["totalTime"],
-    statusBooking: json["statusBooking"],
-    createTime: DateTime.parse(json["createTime"]),
-    customer: Customer.fromJson(json["customer"]),
-    spa: Spa.fromJson(json["spa"]),
+    id: json["id"] == null ? null : json["id"],
+    totalPrice: json["totalPrice"] == null ? null : json["totalPrice"],
+    totalTime: json["totalTime"] == null ? null : json["totalTime"],
+    statusBooking: json["statusBooking"] == null ? null : json["statusBooking"],
+    createTime: json["createTime"] == null ? null : DateTime.parse(json["createTime"]),
+    customer: json["customer"] == null ? null : Customer.fromJson(json["customer"]),
+    spa: json["spa"] == null ? null : Spa.fromJson(json["spa"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "totalPrice": totalPrice,
-    "totalTime": totalTime,
-    "statusBooking": statusBooking,
-    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
-    "customer": customer.toJson(),
-    "spa": spa.toJson(),
+    "id": id == null ? null : id,
+    "totalPrice": totalPrice == null ? null : totalPrice,
+    "totalTime": totalTime == null ? null : totalTime,
+    "statusBooking": statusBooking == null ? null : statusBooking,
+    "createTime": createTime == null ? null : "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "customer": customer == null ? null : customer.toJson(),
+    "spa": spa == null ? null : spa.toJson(),
   };
 }
 
@@ -202,17 +202,17 @@ class Customer {
   String tokenFcm;
 
   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
-    id: json["id"],
-    customType: json["customType"],
-    user: User.fromJson(json["user"]),
-    tokenFcm: json["tokenFCM"],
+    id: json["id"] == null ? null : json["id"],
+    customType: json["customType"] == null ? null : json["customType"],
+    user: json["user"] == null ? null : User.fromJson(json["user"]),
+    tokenFcm: json["tokenFCM"] == null ? null : json["tokenFCM"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "customType": customType,
-    "user": user.toJson(),
-    "tokenFCM": tokenFcm,
+    "id": id == null ? null : id,
+    "customType": customType == null ? null : customType,
+    "user": user == null ? null : user.toJson(),
+    "tokenFCM": tokenFcm == null ? null : tokenFcm,
   };
 }
 
@@ -242,29 +242,29 @@ class User {
   bool active;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"],
-    fullname: json["fullname"],
-    phone: json["phone"],
-    password: json["password"],
-    gender: json["gender"],
-    birthdate: DateTime.parse(json["birthdate"]),
-    email: json["email"],
+    id: json["id"] == null ? null : json["id"],
+    fullname: json["fullname"] == null ? null : json["fullname"],
+    phone: json["phone"] == null ? null : json["phone"],
+    password: json["password"] == null ? null : json["password"],
+    gender: json["gender"] == null ? null : json["gender"],
+    birthdate: json["birthdate"] == null ? null : DateTime.parse(json["birthdate"]),
+    email: json["email"] == null ? null : json["email"],
     image: json["image"] == null ? null : json["image"],
-    address: json["address"],
-    active: json["active"],
+    address: json["address"] == null ? null : json["address"],
+    active: json["active"] == null ? null : json["active"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "fullname": fullname,
-    "phone": phone,
-    "password": password,
-    "gender": gender,
-    "birthdate": "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
-    "email": email,
+    "id": id == null ? null : id,
+    "fullname": fullname == null ? null : fullname,
+    "phone": phone == null ? null : phone,
+    "password": password == null ? null : password,
+    "gender": gender == null ? null : gender,
+    "birthdate": birthdate == null ? null : "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
+    "email": email == null ? null : email,
     "image": image == null ? null : image,
-    "address": address,
-    "active": active,
+    "address": address == null ? null : address,
+    "active": active == null ? null : active,
   };
 }
 
@@ -276,6 +276,7 @@ class Spa {
     this.street,
     this.district,
     this.city,
+    this.phone,
     this.latitude,
     this.longitude,
     this.createBy,
@@ -285,10 +286,11 @@ class Spa {
 
   int id;
   String name;
-  dynamic image;
+  String image;
   String street;
   String district;
   String city;
+  String phone;
   String latitude;
   String longitude;
   String createBy;
@@ -296,31 +298,33 @@ class Spa {
   String status;
 
   factory Spa.fromJson(Map<String, dynamic> json) => Spa(
-    id: json["id"],
-    name: json["name"],
-    image: json["image"],
-    street: json["street"],
-    district: json["district"],
-    city: json["city"],
-    latitude: json["latitude"],
-    longitude: json["longitude"],
-    createBy: json["createBy"],
-    createTime: DateTime.parse(json["createTime"]),
-    status: json["status"],
+    id: json["id"] == null ? null : json["id"],
+    name: json["name"] == null ? null : json["name"],
+    image: json["image"] == null ? null : json["image"],
+    street: json["street"] == null ? null : json["street"],
+    district: json["district"] == null ? null : json["district"],
+    city: json["city"] == null ? null : json["city"],
+    phone: json["phone"] == null ? null : json["phone"],
+    latitude: json["latitude"] == null ? null : json["latitude"],
+    longitude: json["longitude"] == null ? null : json["longitude"],
+    createBy: json["createBy"] == null ? null : json["createBy"],
+    createTime: json["createTime"] == null ? null : DateTime.parse(json["createTime"]),
+    status: json["status"] == null ? null : json["status"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "image": image,
-    "street": street,
-    "district": district,
-    "city": city,
-    "latitude": latitude,
-    "longitude": longitude,
-    "createBy": createBy,
-    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
-    "status": status,
+    "id": id == null ? null : id,
+    "name": name == null ? null : name,
+    "image": image == null ? null : image,
+    "street": street == null ? null : street,
+    "district": district == null ? null : district,
+    "city": city == null ? null : city,
+    "phone": phone == null ? null : phone,
+    "latitude": latitude == null ? null : latitude,
+    "longitude": longitude == null ? null : longitude,
+    "createBy": createBy == null ? null : createBy,
+    "createTime": createTime == null ? null : "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "status": status == null ? null : status,
   };
 }
 
@@ -348,27 +352,27 @@ class SpaPackage {
   Category category;
 
   factory SpaPackage.fromJson(Map<String, dynamic> json) => SpaPackage(
-    id: json["id"],
-    name: json["name"],
-    description: json["description"],
-    image: json["image"],
-    type: json["type"],
-    status: json["status"],
-    createTime: DateTime.parse(json["createTime"]),
-    createBy: json["create_by"],
-    category: Category.fromJson(json["category"]),
+    id: json["id"] == null ? null : json["id"],
+    name: json["name"] == null ? null : json["name"],
+    description: json["description"] == null ? null : json["description"],
+    image: json["image"] == null ? null : json["image"],
+    type: json["type"] == null ? null : json["type"],
+    status: json["status"] == null ? null : json["status"],
+    createTime: json["createTime"] == null ? null : DateTime.parse(json["createTime"]),
+    createBy: json["create_by"] == null ? null : json["create_by"],
+    category: json["category"] == null ? null : Category.fromJson(json["category"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "description": description,
-    "image": image,
-    "type": type,
-    "status": status,
-    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
-    "create_by": createBy,
-    "category": category.toJson(),
+    "id": id == null ? null : id,
+    "name": name == null ? null : name,
+    "description": description == null ? null : description,
+    "image": image == null ? null : image,
+    "type": type == null ? null : type,
+    "status": status == null ? null : status,
+    "createTime": createTime == null ? null : "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "create_by": createBy == null ? null : createBy,
+    "category": category == null ? null : category.toJson(),
   };
 }
 
@@ -392,23 +396,23 @@ class Category {
   String status;
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-    id: json["id"],
-    name: json["name"],
-    icon: json["icon"],
-    description: json["description"],
-    createTime: DateTime.parse(json["createTime"]),
-    createBy: json["createBy"],
-    status: json["status"],
+    id: json["id"] == null ? null : json["id"],
+    name: json["name"] == null ? null : json["name"],
+    icon: json["icon"] == null ? null : json["icon"],
+    description: json["description"] == null ? null : json["description"],
+    createTime: json["createTime"] == null ? null : DateTime.parse(json["createTime"]),
+    createBy: json["createBy"] == null ? null : json["createBy"],
+    status: json["status"] == null ? null : json["status"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "icon": icon,
-    "description": description,
-    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
-    "createBy": createBy,
-    "status": status,
+    "id": id == null ? null : id,
+    "name": name == null ? null : name,
+    "icon": icon == null ? null : icon,
+    "description": description == null ? null : description,
+    "createTime": createTime == null ? null : "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "createBy": createBy == null ? null : createBy,
+    "status": status == null ? null : status,
   };
 }
 
@@ -434,25 +438,25 @@ class SpaTreatment {
   SpaPackage spaPackage;
 
   factory SpaTreatment.fromJson(Map<String, dynamic> json) => SpaTreatment(
-    id: json["id"],
-    name: json["name"],
-    description: json["description"],
-    totalPrice: json["totalPrice"],
-    totalTime: json["totalTime"],
-    createTime: DateTime.parse(json["createTime"]),
-    createBy: json["createBy"],
-    spaPackage: SpaPackage.fromJson(json["spaPackage"]),
+    id: json["id"] == null ? null : json["id"],
+    name: json["name"] == null ? null : json["name"],
+    description: json["description"] == null ? null : json["description"],
+    totalPrice: json["totalPrice"] == null ? null : json["totalPrice"],
+    totalTime: json["totalTime"] == null ? null : json["totalTime"],
+    createTime: json["createTime"] == null ? null : DateTime.parse(json["createTime"]),
+    createBy: json["createBy"] == null ? null : json["createBy"],
+    spaPackage: json["spaPackage"] == null ? null : SpaPackage.fromJson(json["spaPackage"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "description": description,
-    "totalPrice": totalPrice,
-    "totalTime": totalTime,
-    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
-    "createBy": createBy,
-    "spaPackage": spaPackage.toJson(),
+    "id": id == null ? null : id,
+    "name": name == null ? null : name,
+    "description": description == null ? null : description,
+    "totalPrice": totalPrice == null ? null : totalPrice,
+    "totalTime": totalTime == null ? null : totalTime,
+    "createTime": createTime == null ? null : "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
+    "createBy": createBy == null ? null : createBy,
+    "spaPackage": spaPackage == null ? null : spaPackage.toJson(),
   };
 }
 
@@ -472,131 +476,19 @@ class Consultant {
   String status;
 
   factory Consultant.fromJson(Map<String, dynamic> json) => Consultant(
-    id: json["id"],
-    user: User.fromJson(json["user"]),
-    spa: Spa.fromJson(json["spa"]),
+    id: json["id"] == null ? null : json["id"],
+    user: json["user"] == null ? null : User.fromJson(json["user"]),
+    spa: json["spa"] == null ? null : Spa.fromJson(json["spa"]),
     tokenFcm: json["tokenFCM"] == null ? null : json["tokenFCM"],
-    status: json["status"],
+    status: json["status"] == null ? null : json["status"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "user": user.toJson(),
-    "spa": spa.toJson(),
+    "id": id == null ? null : id,
+    "user": user == null ? null : user.toJson(),
+    "spa": spa == null ? null : spa.toJson(),
     "tokenFCM": tokenFcm == null ? null : tokenFcm,
-    "status": status,
-  };
-}
-
-class ConsultationContent {
-  ConsultationContent({
-    this.id,
-    this.description,
-    this.expectation,
-    this.result,
-    this.note,
-  });
-
-  int id;
-  String description;
-  String expectation;
-  dynamic result;
-  String note;
-
-  factory ConsultationContent.fromJson(Map<String, dynamic> json) => ConsultationContent(
-    id: json["id"],
-    description: json["description"],
-    expectation: json["expectation"],
-    result: json["result"],
-    note: json["note"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "description": description,
-    "expectation": expectation,
-    "result": result,
-    "note": note,
-  };
-}
-
-class TreatmentService {
-  TreatmentService({
-    this.id,
-    this.ordinal,
-    this.spaService,
-  });
-
-  int id;
-  int ordinal;
-  SpaService spaService;
-
-  factory TreatmentService.fromJson(Map<String, dynamic> json) => TreatmentService(
-    id: json["id"],
-    ordinal: json["ordinal"],
-    spaService: SpaService.fromJson(json["spaService"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "ordinal": ordinal,
-    "spaService": spaService.toJson(),
-  };
-}
-
-class SpaService {
-  SpaService({
-    this.id,
-    this.name,
-    this.image,
-    this.description,
-    this.price,
-    this.status,
-    this.type,
-    this.durationMin,
-    this.createTime,
-    this.createBy,
-    this.spaPackages,
-  });
-
-  int id;
-  String name;
-  String image;
-  String description;
-  double price;
-  String status;
-  String type;
-  int durationMin;
-  DateTime createTime;
-  String createBy;
-  List<SpaPackage> spaPackages;
-
-  factory SpaService.fromJson(Map<String, dynamic> json) => SpaService(
-    id: json["id"],
-    name: json["name"],
-    image: json["image"],
-    description: json["description"],
-    price: json["price"],
-    status: json["status"],
-    type: json["type"],
-    durationMin: json["durationMin"],
-    createTime: DateTime.parse(json["createTime"]),
-    createBy: json["createBy"],
-    spaPackages: List<SpaPackage>.from(json["spaPackages"].map((x) => SpaPackage.fromJson(x))),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "image": image,
-    "description": description,
-    "price": price,
-    "status": status,
-    "type": type,
-    "durationMin": durationMin,
-    "createTime": "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
-    "createBy": createBy,
-    "spaPackages": List<dynamic>.from(spaPackages.map((x) => x.toJson())),
+    "status": status == null ? null : status,
   };
 }
 
@@ -614,16 +506,16 @@ class Paging {
   int totalItem;
 
   factory Paging.fromJson(Map<String, dynamic> json) => Paging(
-    page: json["page"],
-    totalPage: json["totalPage"],
-    itemPerPage: json["itemPerPage"],
-    totalItem: json["totalItem"],
+    page: json["page"] == null ? null : json["page"],
+    totalPage: json["totalPage"] == null ? null : json["totalPage"],
+    itemPerPage: json["itemPerPage"] == null ? null : json["itemPerPage"],
+    totalItem: json["totalItem"] == null ? null : json["totalItem"],
   );
 
   Map<String, dynamic> toJson() => {
-    "page": page,
-    "totalPage": totalPage,
-    "itemPerPage": itemPerPage,
-    "totalItem": totalItem,
+    "page": page == null ? null : page,
+    "totalPage": totalPage == null ? null : totalPage,
+    "itemPerPage": itemPerPage == null ? null : itemPerPage,
+    "totalItem": totalItem == null ? null : totalItem,
   };
 }

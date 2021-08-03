@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
@@ -37,7 +38,10 @@ class _ChooseTreatmentScreenState extends State<ChooseTreatmentScreen> {
   Widget build(BuildContext context) {
     return _loading
         ? Container(
-            child: Lottie.asset("assets/lottie/loading.json"),
+            child: SpinKitWave(
+              color: kPrimaryColor,
+              size: 50,
+            ),
           )
         : SingleChildScrollView(
             child: SafeArea(

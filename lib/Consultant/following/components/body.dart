@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Consultant/chat/components/search_widget.dart';
 import 'package:spa_and_beauty_staff/Model/CustomerOfConsultant.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
+import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 
 import 'customer_card.dart';
@@ -62,7 +63,7 @@ class _BodyState extends State<Body> {
     if (loading) {
       return Center(
           child: SpinKitWave(
-        color: Colors.orange,
+        color: kPrimaryColor,
         size: 50,
       ));
     } else {

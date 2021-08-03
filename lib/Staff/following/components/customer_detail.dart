@@ -53,7 +53,7 @@ class _BookingDetailState extends State<CustomerDetail> {
         backgroundColor: Colors.white,
         body: Center(
             child: SpinKitWave(
-          color: Colors.orange,
+          color: kPrimaryColor,
           size: 50,
         )),
       );

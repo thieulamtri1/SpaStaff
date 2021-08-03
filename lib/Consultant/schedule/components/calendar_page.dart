@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
+import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -84,7 +85,7 @@ class _calendarPageState extends State<calendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange,
+      backgroundColor: kPrimaryColor,
       body: SafeArea(
         child: Column(
           children: [

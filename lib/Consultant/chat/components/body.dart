@@ -5,6 +5,7 @@ import 'package:spa_and_beauty_staff/Consultant/chat/components/search_widget.da
 import 'package:spa_and_beauty_staff/Model/CustomerOfConsultant.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/Service/firebase.dart';
+import 'package:spa_and_beauty_staff/constants.dart';
 import '../../../main.dart';
 import 'chat_card.dart';
 
@@ -20,7 +21,8 @@ class _BodyState extends State<Body> {
   QuerySnapshot searchResult;
   bool isSearch = false;
   int consultantId;
-  bool loading = true;
+  bool loading;
+
   CustomerOfConsultant customerOfConsultant = CustomerOfConsultant();
   String customerImage;
   String customerName;
@@ -30,6 +32,7 @@ class _BodyState extends State<Body> {
   List<Datum> customerSearch;
 
   getChatRoom() async {
+    loading = true;
     await MyApp.storage.ready;
     consultantId = MyApp.storage.getItem("consultantId");
     await getListCustomerOfConsultant();
@@ -50,7 +53,6 @@ class _BodyState extends State<Body> {
               setState(() {
                 customerOfConsultant = value;
                 customerDefault = value.data;
-                print("customerDefault: " + customerDefault[0].fullname);
                 loading = false;
               })
             });
@@ -139,9 +141,22 @@ class _BodyState extends State<Body> {
     if (loading) {
       return Center(
           child: SpinKitWave(
-        color: Colors.orange,
+        color: kPrimaryColor,
         size: 50,
       ));
+    } else if (customerOfConsultant.data.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Chat", style: TextStyle(fontSize: 24, color: Colors.white),),
+          automaticallyImplyLeading: false,
+          backgroundColor: kPrimaryColor,
+        ),
+        body: Center(
+          child: Container(
+            child: Text("Chưa có khách hàng", style: TextStyle(fontSize: 18),),
+          ),
+        ),
+      );
     } else {
       return Scaffold(
         body: SingleChildScrollView(
@@ -156,7 +171,7 @@ class _BodyState extends State<Body> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        "Chats",
+                        "Chat",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -172,21 +187,21 @@ class _BodyState extends State<Body> {
               query == ""
                   ? showChatRoomList()
                   : ListView.builder(
-                    itemCount: customerSearch.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      final customer = customerSearch[index];
+                      itemCount: customerSearch.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final customer = customerSearch[index];
 
-                      return ChatCard(
-                        customerId: customer.id.toString(),
-                        chatRoomId:
-                            "${customer.id.toString()}_${MyApp.storage.getItem("consultantId")}",
-                        customerImage: customer.image,
-                        customerName: customer.fullname,
-                        customerPhone: customer.phone,
-                      );
-                    },
-                  ),
+                        return ChatCard(
+                          customerId: customer.id.toString(),
+                          chatRoomId:
+                              "${customer.id.toString()}_${MyApp.storage.getItem("consultantId")}",
+                          customerImage: customer.image,
+                          customerName: customer.fullname,
+                          customerPhone: customer.phone,
+                        );
+                      },
+                    ),
             ],
           ),
         ),

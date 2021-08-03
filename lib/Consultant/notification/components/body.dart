@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/NotificationConsultant.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
+import 'package:spa_and_beauty_staff/constants.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -13,10 +14,11 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   NotificationEmployee notification = NotificationEmployee();
-  bool loading = true;
+  bool loading ;
   String image = "";
 
   getNotificationConsultant() async {
+    loading = true;
     await ConsultantService.getNotificationConsultant().then((value) => {
           setState(() {
             notification = value;
@@ -36,7 +38,7 @@ class _BodyState extends State<Body> {
     if (loading) {
       return Center(
           child: SpinKitWave(
-        color: Colors.orange,
+        color: kPrimaryColor,
         size: 50,
       ));
     } else {

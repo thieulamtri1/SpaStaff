@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spa_and_beauty_staff/Model/NotificationConsultant.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:spa_and_beauty_staff/constants.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -36,7 +37,7 @@ class _BodyState extends State<Body> {
     if (loading) {
       return Center(
           child: SpinKitWave(
-        color: Colors.orange,
+        color: kPrimaryColor,
         size: 50,
       ));
     } else {

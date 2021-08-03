@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/booking_for_first_step_screen.dart';
@@ -45,7 +46,10 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return _loading
         ? Container(
-            child: Lottie.asset("assets/lottie/loading.json"),
+            child: SpinKitWave(
+              color: kPrimaryColor,
+              size: 50,
+            ),
           )
         : SingleChildScrollView(
             child: Column(
@@ -312,7 +316,7 @@ class _ProcessStepSectionForConsultantState extends State<ProcessStepSectionForC
                   margin: EdgeInsets.symmetric(vertical: 5),
                   padding:
                       EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 20),
-                  height: 80,
+                  height: 100,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -328,18 +332,22 @@ class _ProcessStepSectionForConsultantState extends State<ProcessStepSectionForC
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "bước ${index + 1}: " +
-                                widget.treatmentInstance
-                                    .treatmentservices[index].spaService.name,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          Text(widget.treatmentInstance
-                              .treatmentservices[index].spaService.description)
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "bước ${index + 1}: " +
+                                  widget.treatmentInstance
+                                      .treatmentservices[index].spaService.name,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Expanded(
+                              child: Text(widget.treatmentInstance
+                                  .treatmentservices[index].spaService.description),
+                            )
+                          ],
+                        ),
                       ),
                       index == 0
                           ? GestureDetector(
