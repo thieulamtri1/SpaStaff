@@ -265,8 +265,8 @@ class _BookingdetailListState extends State<BookingdetailList> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    "Giá: " + widget.bookingDetail.totalPrice.toString(),
+                  Text(widget.bookingDetail.spaTreatment==null?"Chưa có liệu trình":
+                  "Liệu trình: "+widget.bookingDetail.spaTreatment.name,
                     style: TextStyle(
                       fontSize: 15,
                     ),
