@@ -265,10 +265,13 @@ class _BookingdetailListState extends State<BookingdetailList> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Text(widget.bookingDetail.spaTreatment==null?"Chưa có liệu trình":
-                  "Liệu trình: "+widget.bookingDetail.spaTreatment.name,
-                    style: TextStyle(
-                      fontSize: 15,
+                  Expanded(
+                    child: Text(widget.bookingDetail.spaTreatment==null?"Chưa có liệu trình":
+                    "Liệu trình: "+widget.bookingDetail.spaTreatment.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 15,
+                      ),
                     ),
                   ),
                   SizedBox(height: 10),
