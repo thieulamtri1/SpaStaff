@@ -326,7 +326,7 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                   height: 10,
                 ),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(Icons.description, color: Colors.grey),
                     SizedBox(width: 5),

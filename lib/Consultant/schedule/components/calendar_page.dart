@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
@@ -53,14 +54,16 @@ class _calendarPageState extends State<calendarPage> {
       selectedDay = dateNow;
       setState(() {
         loading = true;
-        ConsultantService.getConsultantSchedule(MyApp.storage.getItem("consultantId"), MyHelper.getMachineDate(selectedDay),
-            MyApp.storage.getItem("token"))
+        ConsultantService.getConsultantSchedule(
+                MyApp.storage.getItem("consultantId"),
+                MyHelper.getMachineDate(selectedDay),
+                MyApp.storage.getItem("token"))
             .then((value) => {
-          setState(() {
-            ConsultantSchedule = value;
-            loading = false;
-          })
-        });
+                  setState(() {
+                    ConsultantSchedule = value;
+                    loading = false;
+                  })
+                });
       });
     });
   }
@@ -71,14 +74,16 @@ class _calendarPageState extends State<calendarPage> {
     _calendarController = CalendarController();
     setState(() {
       loading = true;
-      ConsultantService.getConsultantSchedule(MyApp.storage.getItem("consultantId"), MyHelper.getMachineDate(DateTime.now()),
-          MyApp.storage.getItem("token"))
+      ConsultantService.getConsultantSchedule(
+              MyApp.storage.getItem("consultantId"),
+              MyHelper.getMachineDate(DateTime.now()),
+              MyApp.storage.getItem("token"))
           .then((value) => {
-        setState(() {
-          ConsultantSchedule = value;
-          loading = false;
-        })
-      });
+                setState(() {
+                  ConsultantSchedule = value;
+                  loading = false;
+                })
+              });
     });
   }
 
@@ -122,257 +127,28 @@ class _calendarPageState extends State<calendarPage> {
             SizedBox(
               height: 5,
             ),
-            ListToDoConsultant(consultantId: consultantId,loading: loading,selectedDay: selectedDay,ConsultantSchedule: ConsultantSchedule,)
+            ListToDoConsultant(
+              consultantId: consultantId,
+              loading: loading,
+              selectedDay: selectedDay,
+              ConsultantSchedule: ConsultantSchedule,
+            )
           ],
         ),
       ),
     );
   }
-
-
-  // ListToDoConsultant(String date) {
-  //   getData(date);
-  //   if (loading) {
-  //     return Center(
-  //         child: SpinKitWave(
-  //       color: Colors.white,
-  //       size: 50,
-  //     ));
-  //   } else {
-  //     if (ConsultantSchedule.data.length == 0) {
-  //       return Expanded(
-  //         child: Container(
-  //           padding: EdgeInsets.all(20),
-  //           decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.only(
-  //                   topLeft: Radius.circular(40),
-  //                   topRight: Radius.circular(40)),
-  //               color: Colors.white),
-  //           child: Container(
-  //             child: SingleChildScrollView(
-  //               child: Column(
-  //                 children: [
-  //                   Row(
-  //                     children: [
-  //                       Text(
-  //                         date,
-  //                         style: TextStyle(color: Colors.grey),
-  //                       )
-  //                     ],
-  //                   ),
-  //                   SizedBox(
-  //                     height: 15,
-  //                   ),
-  //                   Column(
-  //                     children: [],
-  //                   )
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     } else if (ConsultantSchedule.data.length != 0) {
-  //       return Expanded(
-  //         child: Container(
-  //           padding: EdgeInsets.all(20),
-  //           decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.only(
-  //                   topLeft: Radius.circular(40),
-  //                   topRight: Radius.circular(40)),
-  //               color: Colors.white),
-  //           child: Container(
-  //             child: SingleChildScrollView(
-  //               child: Column(
-  //                 children: [
-  //                   Row(
-  //                     children: [
-  //                       Text(
-  //                         date,
-  //                         style: TextStyle(color: Colors.grey),
-  //                       )
-  //                     ],
-  //                   ),
-  //                   SizedBox(
-  //                     height: 15,
-  //                   ),
-  //                   Column(
-  //                     children: [
-  //                       ...List.generate(
-  //                           ConsultantSchedule.data.length,
-  //                           (index) => ConsultantSchedule
-  //                                       .data[index].isConsultation
-  //                                       .toString() ==
-  //                                   "TRUE"
-  //                               ? Column(
-  //                                   children: [
-  //                                     dayTask(
-  //                                       startTime: ConsultantSchedule
-  //                                           .data[index].startTime
-  //                                           .toString()
-  //                                           .substring(0, 5),
-  //                                       customerName: ConsultantSchedule
-  //                                           .data[index]
-  //                                           .bookingDetail
-  //                                           .booking
-  //                                           .customer
-  //                                           .user
-  //                                           .fullname,
-  //                                       phone: ConsultantSchedule
-  //                                           .data[index]
-  //                                           .bookingDetail
-  //                                           .booking
-  //                                           .customer
-  //                                           .user
-  //                                           .phone,
-  //                                       package: ConsultantSchedule.data[index]
-  //                                           .bookingDetail.spaPackage.name,
-  //                                       customerGender: ConsultantSchedule
-  //                                           .data[index]
-  //                                           .bookingDetail
-  //                                           .booking
-  //                                           .customer
-  //                                           .user
-  //                                           .gender,
-  //                                       customerMail: ConsultantSchedule
-  //                                           .data[index]
-  //                                           .bookingDetail
-  //                                           .booking
-  //                                           .customer
-  //                                           .user
-  //                                           .email,
-  //                                     ),
-  //                                   ],
-  //                                 )
-  //                               : SizedBox())
-  //                     ],
-  //                   )
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //   }
-  // }
-  //
-  // Row dayTask(
-  //     {String startTime,
-  //     String customerName,
-  //     String package,
-  //     String phone,
-  //     customerMail,
-  //     customerGender}) {
-  //   return Row(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Container(
-  //         padding: EdgeInsets.all(10),
-  //         width: MediaQuery.of(context).size.width * 0.2,
-  //         child: Text(
-  //           startTime,
-  //           style: TextStyle(
-  //             color: Colors.black,
-  //             fontWeight: FontWeight.w700,
-  //           ),
-  //           textAlign: TextAlign.right,
-  //         ),
-  //       ),
-  //       Expanded(
-  //         child: Container(
-  //           margin: EdgeInsets.only(bottom: 20),
-  //           padding: EdgeInsets.all(20),
-  //           color: Colors.grey[100],
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text(
-  //                 customerName,
-  //                 style: TextStyle(
-  //                     color: Colors.orange, fontWeight: FontWeight.w700),
-  //               ),
-  //               SizedBox(
-  //                 height: 10,
-  //               ),
-  //               Text(
-  //                 package,
-  //                 style: TextStyle(
-  //                     color: Colors.black, fontWeight: FontWeight.w600),
-  //               ),
-  //               SizedBox(
-  //                 height: 10,
-  //               ),
-  //               Row(
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 children: [
-  //                   Icon(Icons.wc_sharp, color: Colors.grey),
-  //                   SizedBox(width: 5),
-  //                   Text(
-  //                     customerGender,
-  //                     style: TextStyle(
-  //                         color: Colors.black,
-  //                         fontSize: 13,
-  //                         fontWeight: FontWeight.w500),
-  //                   )
-  //                 ],
-  //               ),
-  //               Row(
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 children: [
-  //                   Icon(Icons.mail, color: Colors.grey),
-  //                   SizedBox(width: 5),
-  //                   Text(
-  //                     customerMail,
-  //                     style: TextStyle(
-  //                         color: Colors.black,
-  //                         fontSize: 13,
-  //                         fontWeight: FontWeight.w500),
-  //                   )
-  //                 ],
-  //               ),
-  //               SizedBox(
-  //                 height: 15,
-  //               ),
-  //               Container(
-  //                 height: 0.5,
-  //                 color: Colors.grey,
-  //               ),
-  //               SizedBox(
-  //                 height: 15,
-  //               ),
-  //               Row(
-  //                 children: [
-  //                   Icon(
-  //                     Icons.call,
-  //                     color: Colors.green,
-  //                   ),
-  //                   SizedBox(
-  //                     width: 10,
-  //                   ),
-  //                   Text(
-  //                     phone,
-  //                     style: TextStyle(color: Colors.green),
-  //                   ),
-  //                   Expanded(
-  //                     child: Container(),
-  //                   ),
-  //                 ],
-  //               )
-  //             ],
-  //           ),
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
-
 }
 
-
 class ListToDoConsultant extends StatefulWidget {
-
-  const ListToDoConsultant({Key key, this.ConsultantSchedule, this.consultantId, this.value, this.loading, this.selectedDay}) : super(key: key);
+  const ListToDoConsultant(
+      {Key key,
+      this.ConsultantSchedule,
+      this.consultantId,
+      this.value,
+      this.loading,
+      this.selectedDay})
+      : super(key: key);
 
   final ScheduleConsultant ConsultantSchedule;
   final int consultantId;
@@ -388,238 +164,322 @@ class _ListToDoConsultantState extends State<ListToDoConsultant> {
   @override
   Widget build(BuildContext context) {
     if (widget.loading) {
-          return Center(
-              child: SpinKitWave(
-            color: Colors.white,
-            size: 50,
-          ));
-        } else {
-          if (widget.ConsultantSchedule.data.length == 0) {
-            return Expanded(
-              child: Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40)),
-                    color: Colors.white),
-                child: Container(
-                  child: SingleChildScrollView(
-                    child: Column(
+      return Center(
+          child: SpinKitWave(
+        color: Colors.white,
+        size: 50,
+      ));
+    } else {
+      return Expanded(
+        child: Container(
+          decoration: BoxDecoration(color: Colors.grey[100]),
+          child: Container(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              MyHelper.getUserDate(widget.selectedDay),
-                              style: TextStyle(color: Colors.grey),
-                            )
-                          ],
+                        SvgPicture.asset(
+                          "assets/icons/schedule.svg",
+                          width: 24,
+                          height: 24,
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Column(
-                          children: [],
+                        Text(
+                          MyHelper.getUserDate(widget.selectedDay),
+                          style: TextStyle(color: kTextColor, fontSize: 24),
                         )
                       ],
                     ),
                   ),
-                ),
+                  Column(
+                    children: [
+                      ...List.generate(
+                          widget.ConsultantSchedule.data.length,
+                          (index) => widget.ConsultantSchedule.data[index]
+                                      .isConsultation
+                                      .toString() ==
+                                  "TRUE"
+                              ? Column(
+                                  children: [
+                                    dayTask(
+                                      startTime: widget.ConsultantSchedule
+                                          .data[index].startTime
+                                          .toString()
+                                          .substring(0, 5),
+                                      customerName: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .fullname,
+                                      phone: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .phone,
+                                      package: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .spaPackage
+                                          .name,
+                                      customerGender: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .gender,
+                                      customerMail: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .email,
+                                      isConsult: true,
+                                    ),
+                                  ],
+                                )
+                              : Column(
+                                  children: [
+                                    dayTask(
+                                      startTime: widget.ConsultantSchedule
+                                          .data[index].startTime
+                                          .toString()
+                                          .substring(0, 5),
+                                      customerName: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .fullname,
+                                      phone: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .phone,
+                                      package: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .spaPackage
+                                          .name,
+                                      customerGender: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .gender,
+                                      customerMail: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .bookingDetail
+                                          .booking
+                                          .customer
+                                          .user
+                                          .email,
+                                      isConsult: false,
+                                      stepName: widget
+                                          .ConsultantSchedule
+                                          .data[index]
+                                          .treatmentService
+                                          .spaService
+                                          .name,
+                                    ),
+                                  ],
+                                ))
+                    ],
+                  )
+                ],
               ),
-            );
-          } else if (widget.ConsultantSchedule.data.length != 0) {
-            return Expanded(
-              child: Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40)),
-                    color: Colors.white),
-                child: Container(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              MyHelper.getUserDate(widget.selectedDay),
-                              style: TextStyle(color: Colors.grey),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Column(
-                          children: [
-                            ...List.generate(
-                                widget.ConsultantSchedule.data.length,
-                                (index) => widget.ConsultantSchedule
-                                            .data[index].isConsultation
-                                            .toString() ==
-                                        "TRUE"
-                                    ? Column(
-                                        children: [
-                                          dayTask(
-                                            startTime: widget.ConsultantSchedule
-                                                .data[index].startTime
-                                                .toString()
-                                                .substring(0, 5),
-                                            customerName: widget.ConsultantSchedule
-                                                .data[index]
-                                                .bookingDetail
-                                                .booking
-                                                .customer
-                                                .user
-                                                .fullname,
-                                            phone: widget.ConsultantSchedule
-                                                .data[index]
-                                                .bookingDetail
-                                                .booking
-                                                .customer
-                                                .user
-                                                .phone,
-                                            package: widget.ConsultantSchedule.data[index]
-                                                .bookingDetail.spaPackage.name,
-                                            customerGender: widget.ConsultantSchedule
-                                                .data[index]
-                                                .bookingDetail
-                                                .booking
-                                                .customer
-                                                .user
-                                                .gender,
-                                            customerMail: widget.ConsultantSchedule
-                                                .data[index]
-                                                .bookingDetail
-                                                .booking
-                                                .customer
-                                                .user
-                                                .email,
-                                          ),
-                                        ],
-                                      )
-                                    : SizedBox())
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }
-        }
+            ),
+          ),
+        ),
+      );
+    }
   }
 
-Row dayTask(
-    {String startTime,
-    String customerName,
-    String package,
-    String phone,
-    customerMail,
-    customerGender}) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Container(
-        padding: EdgeInsets.all(10),
-        width: MediaQuery.of(context).size.width * 0.2,
-        child: Text(
-          startTime,
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w700,
-          ),
-          textAlign: TextAlign.right,
-        ),
-      ),
-      Expanded(
-        child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.all(20),
-          color: Colors.grey[100],
+  Column dayTask(
+      {String startTime,
+      String customerName,
+      String stepName,
+      String package,
+      String phone,
+      customerMail,
+      customerGender,
+      bool isConsult}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+            ),
+          ], color: Colors.white, borderRadius: BorderRadius.circular(20)),
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                customerName,
-                style: TextStyle(
-                    color: Colors.orange, fontWeight: FontWeight.w700),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                package,
-                style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(Icons.wc_sharp, color: Colors.grey),
-                  SizedBox(width: 5),
-                  Text(
-                    customerGender,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(Icons.mail, color: Colors.grey),
-                  SizedBox(width: 5),
-                  Text(
-                    customerMail,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15,
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: 30,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20)),
+                  color: isConsult ? kBlue : kGreen,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          WidgetSpan(
+                            child: Icon(Icons.timer, size: 20, color: Colors.white,),
+                          ),
+                          TextSpan(
+                              text: startTime,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              )),
+                        ],
+                      ),
+                    ),
+                    isConsult
+                        ? Text(
+                            "Tư vấn",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          )
+                        : SizedBox(),
+                  ],
+                ),
               ),
               Container(
-                height: 0.5,
-                color: Colors.grey,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          customerName,
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    isConsult
+                        ? Text(
+                            package,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600),
+                          )
+                        : Text(
+                            stepName,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600),
+                          ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.wc_sharp, color: Colors.grey),
+                        SizedBox(width: 5),
+                        Text(
+                          customerGender,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500),
+                        )
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.mail, color: Colors.grey),
+                        SizedBox(width: 5),
+                        Text(
+                          customerMail,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      height: 0.5,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.call,
+                          color: Colors.green,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          phone,
+                          style: TextStyle(color: Colors.green),
+                        ),
+                        Expanded(
+                          child: Container(),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.call,
-                    color: Colors.green,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    phone,
-                    style: TextStyle(color: Colors.green),
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
-                ],
-              )
             ],
           ),
         ),
-      )
-    ],
-  );
+      ],
+    );
+  }
 }
-}
-
