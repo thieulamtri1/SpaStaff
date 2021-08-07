@@ -174,7 +174,7 @@ class _BookingDetailState extends State<CustomerDetail> {
                         press: (){
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => CustomerProcessDetailScreen(bookingDetail: bookingDetail.data[index],customerId: int.tryParse(widget.customerId),)),
+                            MaterialPageRoute(builder: (context) => ConsultantProcessDetailScreen(bookingDetail: bookingDetail.data[index],customerId: int.tryParse(widget.customerId),)),
                           );
                         },
                       );

@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
-import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/choose_treatment.dart';
-import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/edit_consultation_content.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
-import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/Staff/process_detail/components/edit_process_step.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
-import 'package:spa_and_beauty_staff/size_config.dart';
 
 class StaffProcessDetailBody extends StatefulWidget {
   const StaffProcessDetailBody({Key key, this.bookingDetail, this.customerId}) : super(key: key);

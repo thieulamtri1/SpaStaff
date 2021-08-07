@@ -3,15 +3,15 @@ import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/componen
 import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 
-class CustomerProcessDetailScreen extends StatefulWidget {
-  const CustomerProcessDetailScreen({Key key, this.bookingDetail, this.customerId}) : super(key: key);
+class ConsultantProcessDetailScreen extends StatefulWidget {
+  const ConsultantProcessDetailScreen({Key key, this.bookingDetail, this.customerId}) : super(key: key);
   final BookingDetailInstance bookingDetail;
   final int customerId;
   @override
-  _CustomerProcessDetailScreenState createState() => _CustomerProcessDetailScreenState();
+  _ConsultantProcessDetailScreenState createState() => _ConsultantProcessDetailScreenState();
 }
 
-class _CustomerProcessDetailScreenState extends State<CustomerProcessDetailScreen> {
+class _ConsultantProcessDetailScreenState extends State<ConsultantProcessDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

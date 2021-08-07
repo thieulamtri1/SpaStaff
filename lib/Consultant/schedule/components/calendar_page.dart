@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/process_detail.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
@@ -204,105 +205,121 @@ class _ListToDoConsultantState extends State<ListToDoConsultant> {
                                   "TRUE"
                               ? Column(
                                   children: [
-                                    dayTask(
-                                      startTime: widget.ConsultantSchedule
-                                          .data[index].startTime
-                                          .toString()
-                                          .substring(0, 5),
-                                      customerName: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .fullname,
-                                      phone: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .phone,
-                                      package: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .spaPackage
-                                          .name,
-                                      customerGender: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .gender,
-                                      customerMail: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .email,
-                                      isConsult: true,
+                                    InkWell(
+                                      onTap: (){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ConsultantProcessDetailScreen(bookingDetail: widget.ConsultantSchedule.data[index].bookingDetail,customerId: widget.ConsultantSchedule.data[index].bookingDetail.booking.customer.id,)),
+                                        );
+                                      },
+                                      child: dayTask(
+                                        startTime: widget.ConsultantSchedule
+                                            .data[index].startTime
+                                            .toString()
+                                            .substring(0, 5),
+                                        customerName: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .fullname,
+                                        phone: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .phone,
+                                        package: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .spaPackage
+                                            .name,
+                                        customerGender: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .gender,
+                                        customerMail: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .email,
+                                        isConsult: true,
+                                      ),
                                     ),
                                   ],
                                 )
                               : Column(
                                   children: [
-                                    dayTask(
-                                      startTime: widget.ConsultantSchedule
-                                          .data[index].startTime
-                                          .toString()
-                                          .substring(0, 5),
-                                      customerName: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .fullname,
-                                      phone: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .phone,
-                                      package: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .spaPackage
-                                          .name,
-                                      customerGender: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .gender,
-                                      customerMail: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .bookingDetail
-                                          .booking
-                                          .customer
-                                          .user
-                                          .email,
-                                      isConsult: false,
-                                      stepName: widget
-                                          .ConsultantSchedule
-                                          .data[index]
-                                          .treatmentService
-                                          .spaService
-                                          .name,
+                                    InkWell(
+                                      onTap: (){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ConsultantProcessDetailScreen(bookingDetail: widget.ConsultantSchedule.data[index].bookingDetail,customerId: widget.ConsultantSchedule.data[index].bookingDetail.booking.customer.id,)),
+                                        );
+                                      },
+                                      child: dayTask(
+                                        startTime: widget.ConsultantSchedule
+                                            .data[index].startTime
+                                            .toString()
+                                            .substring(0, 5),
+                                        customerName: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .fullname,
+                                        phone: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .phone,
+                                        package: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .spaPackage
+                                            .name,
+                                        customerGender: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .gender,
+                                        customerMail: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .bookingDetail
+                                            .booking
+                                            .customer
+                                            .user
+                                            .email,
+                                        isConsult: false,
+                                        stepName: widget
+                                            .ConsultantSchedule
+                                            .data[index]
+                                            .treatmentService
+                                            .spaService
+                                            .name,
+                                      ),
                                     ),
                                   ],
                                 ))

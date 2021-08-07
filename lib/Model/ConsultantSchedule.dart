@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
+
 ScheduleConsultant scheduleConsultantFromJson(String str) => ScheduleConsultant.fromJson(json.decode(str));
 
 String scheduleConsultantToJson(ScheduleConsultant data) => json.encode(data.toJson());
@@ -54,7 +56,7 @@ class Datum {
     this.consultant,
   });
 
-  BookingDetail bookingDetail;
+  BookingDetailInstance bookingDetail;
   int id;
   DateTime dateBooking;
   String startTime;
@@ -70,7 +72,7 @@ class Datum {
   Consultant consultant;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    bookingDetail: json["bookingDetail"] == null ? null : BookingDetail.fromJson(json["bookingDetail"]),
+    bookingDetail: json["bookingDetail"] == null ? null : BookingDetailInstance.fromJson(json["bookingDetail"]),
     id: json["id"] == null ? null : json["id"],
     dateBooking: json["date_booking"] == null ? null : DateTime.parse(json["date_booking"]),
     startTime: json["start_time"] == null ? null : json["start_time"],
@@ -104,49 +106,6 @@ class Datum {
   };
 }
 
-class BookingDetail {
-  BookingDetail({
-    this.id,
-    this.totalTime,
-    this.type,
-    this.totalPrice,
-    this.statusBooking,
-    this.booking,
-    this.spaTreatment,
-    this.spaPackage,
-  });
-
-  int id;
-  int totalTime;
-  String type;
-  double totalPrice;
-  String statusBooking;
-  Booking booking;
-  SpaTreatment spaTreatment;
-  SpaPackage spaPackage;
-
-  factory BookingDetail.fromJson(Map<String, dynamic> json) => BookingDetail(
-    id: json["id"] == null ? null : json["id"],
-    totalTime: json["totalTime"] == null ? null : json["totalTime"],
-    type: json["type"] == null ? null : json["type"],
-    totalPrice: json["totalPrice"] == null ? null : json["totalPrice"],
-    statusBooking: json["statusBooking"] == null ? null : json["statusBooking"],
-    booking: json["booking"] == null ? null : Booking.fromJson(json["booking"]),
-    spaTreatment: json["spaTreatment"] == null ? null : SpaTreatment.fromJson(json["spaTreatment"]),
-    spaPackage: json["spaPackage"] == null ? null : SpaPackage.fromJson(json["spaPackage"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id == null ? null : id,
-    "totalTime": totalTime == null ? null : totalTime,
-    "type": type == null ? null : type,
-    "totalPrice": totalPrice == null ? null : totalPrice,
-    "statusBooking": statusBooking == null ? null : statusBooking,
-    "booking": booking == null ? null : booking.toJson(),
-    "spaTreatment": spaTreatment == null ? null : spaTreatment.toJson(),
-    "spaPackage": spaPackage == null ? null : spaPackage.toJson(),
-  };
-}
 
 class Booking {
   Booking({
