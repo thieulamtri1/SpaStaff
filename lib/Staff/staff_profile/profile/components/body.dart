@@ -4,6 +4,7 @@ import 'package:spa_and_beauty_staff/Staff/staff_profile/change_password/change_
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile/components/profile_picture.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/profile_detail_screen.dart';
 import 'package:spa_and_beauty_staff/Staff/staff_profile/register_dayoff/register_dayoff_screen.dart';
+import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:spa_and_beauty_staff/sign_in/sign_in_screen.dart';
 
@@ -29,7 +30,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.person_outline,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Thông tin tài khoản",
             press: () {
@@ -43,7 +44,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.security,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Đổi mật khẩu",
             press: () {
@@ -55,7 +56,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.notifications_none_outlined,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Thông báo",
             press: () {
@@ -69,7 +70,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.work_off,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Đăng ký lịch nghỉ",
             press: () {
@@ -83,7 +84,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.logout,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Đăng xuất",
             press: () {
