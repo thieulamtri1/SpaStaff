@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
@@ -81,9 +80,9 @@ class _StaffProcessDetailBodyState extends State<StaffProcessDetailBody> {
             packageName: widget.bookingDetail.spaPackage.name,
             packageId: widget.bookingDetail.spaPackage.id,
             bookingDetailSteps: _bookingDetailSteps,
-            treatment: widget.bookingDetail.spaTreatment == null
+            treatment: _bookingDetailSteps.data[1] == null
                 ? "Chưa có liệu trình"
-                : widget.bookingDetail.spaTreatment.name,
+                : _bookingDetailSteps.data[1].bookingDetail.spaTreatment.name,
             consultantId: _bookingDetailSteps.data[0].consultant.id,
             spaId: _bookingDetailSteps.data[0].consultant.spa.id,
             customerId: widget.customerId,
