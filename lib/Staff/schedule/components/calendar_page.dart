@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
+import 'package:spa_and_beauty_staff/Staff/onestep_detail/onestep_detail.dart';
 import 'package:spa_and_beauty_staff/Staff/process_detail/process_detail_screen.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
@@ -182,18 +183,32 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                           (index) => Column(
                                 children: [
                                   GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                StaffProcessDetail(
-                                                  bookingDetail: widget
+                                    onTap: ()
+                                    {
+                                      if(widget.StaffSchedule.data[index].treatmentService.spaService.type == "MORESTEP") {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  StaffProcessDetail(
+                                                    bookingDetail: widget
+                                                        .StaffSchedule
+                                                        .data[index]
+                                                        .bookingDetail,
+                                                  )),
+                                        );
+                                      }
+                                      else{
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OneStepDetailScreen( bookingDetail: widget
                                                       .StaffSchedule
                                                       .data[index]
-                                                      .bookingDetail,
-                                                )),
-                                      );
+                                                      .bookingDetail,)),
+                                        );
+                                      }
                                     },
                                     child: dayTask(
                                       startTime: widget
@@ -216,8 +231,11 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                                           .customer
                                           .user
                                           .phone,
-                                      service: widget.StaffSchedule.data[index]
-                                          .treatmentService.spaService.name,
+                                      service:
+                                      widget.StaffSchedule.data[index].treatmentService.spaService.type == "MORESTEP"
+                                          ? widget.StaffSchedule.data[index].treatmentService.spaService.name
+                                          : widget.StaffSchedule.data[index].bookingDetail.spaPackage.name
+                                      ,
                                       durationMin: widget
                                           .StaffSchedule
                                           .data[index]
@@ -228,12 +246,18 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                                       note:widget
                                           .StaffSchedule
                                           .data[index]
+                                          .consultationContent == null ?
+                                      "Không có ghi chú."
+                                      :widget
+                                          .StaffSchedule
+                                          .data[index]
                                           .consultationContent.note==null ?
                                       "Không có ghi chú."
                                       :widget
                                           .StaffSchedule
                                           .data[index]
                                           .consultationContent.note,
+                                      type: widget.StaffSchedule.data[index].treatmentService.spaService.type ,
                                     ),
                                   )
                                 ],
@@ -255,6 +279,7 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
       String service,
       String phone,
       String durationMin,
+        String type,
       String note}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,7 +325,8 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                               )),
                         ],
                       ),
-                    ),
+                    )
+                    ,
                   ],
                 ),
               ),
@@ -325,20 +351,37 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                     SizedBox(
                       height: 10,
                     ),
+                    type == "MORESTEP"
+                        ?
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(Icons.timer, color: kPrimaryColor),
                         SizedBox(width: 5),
                         Text(
-                          "$durationMin min",
+                          "$durationMin phút",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 13,
                               fontWeight: FontWeight.w500),
                         )
                       ],
-                    ),
+                    )
+                    :Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.spa, color: kPrimaryColor),
+                        SizedBox(width: 5),
+                        Text(
+                          "Dịch vụ một lần",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500),
+                        )
+                      ],
+                    )
+                    ,
                     SizedBox(
                       height: 10,
                     ),
