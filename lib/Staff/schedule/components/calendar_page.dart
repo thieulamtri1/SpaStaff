@@ -258,6 +258,7 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                                           .data[index]
                                           .consultationContent.note,
                                       type: widget.StaffSchedule.data[index].treatmentService.spaService.type ,
+                                      status: widget.StaffSchedule.data[index].statusBooking
                                     ),
                                   )
                                 ],
@@ -276,6 +277,7 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
   Column dayTask(
       {String startTime,
       String customerName,
+        String status,
       String service,
       String phone,
       String durationMin,

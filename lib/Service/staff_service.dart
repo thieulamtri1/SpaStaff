@@ -19,6 +19,7 @@ class StaffService {
   static final String GET_BOOKING_DETAIL_STEP_BY_BOOKING_DETAIL_ID = "https://swp490spa.herokuapp.com/api/staff/bookingDetailStep/findByBookingDetail/";
   static final String UPDATE_PROCESS_STEP = "https://swp490spa.herokuapp.com/api/staff/bookingDetailStep/confirmFinishAStep";
   static final String GET_NOTIFICATION_STAFF = "https://swp490spa.herokuapp.com/api/staff/getAllNotification/";
+  static final String ONESTEP_PACKAGE_FINISH = "https://swp490spa.herokuapp.com/api/staff/bookingDetail/confirmFinishOneStep";
 
 
   static Future<String> editProcessStep(int bookingDetailStepId, String result, int staffId) async {
@@ -43,6 +44,29 @@ class StaffService {
       print("LOI ROI" + "Status code = " + res.statusCode.toString());
     }
     return res.statusCode.toString();
+  }
+
+  static Future<int> finishOnestepPackage(int bookingDetailId) async {
+    var jsonResponse;
+    final res = await http.put(ONESTEP_PACKAGE_FINISH,
+        headers: {
+          "accept" : "application/json",
+          "content-type" : "application/json",
+          "authorization" : "Bearer " + MyApp.storage.getItem("token"),
+        },
+        body: jsonEncode(
+            {
+              "id": bookingDetailId,
+            }));
+    if (res.statusCode == 200){
+      jsonResponse = utf8.decode(res.bodyBytes);
+      print(jsonResponse.toString());
+    }
+    else {
+      print("LOI ROI" + "Status code = " + res.statusCode.toString());
+    }
+    print("status code ne : " + res.statusCode.toString());
+    return res.statusCode;
   }
 
   static Future<Staff> getStaffProfileById(id, token) async {

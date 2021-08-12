@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/body.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
@@ -18,7 +21,7 @@ class OneStepDetailBody extends StatefulWidget {
 class _OneStepDetailBodyState extends State<OneStepDetailBody> {
   bool _loading;
   BookingDetailSteps _bookingDetailSteps;
-  int _duration=0;
+  int _duration = 0;
 
   @override
   void initState() {
@@ -27,8 +30,9 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
         .then((value) => {
               setState(() {
                 _bookingDetailSteps = value;
-                for(int i=0; i < value.data.length ; i++){
-                  _duration =_duration+ value.data[i].treatmentService.spaService.durationMin;
+                for (int i = 0; i < value.data.length; i++) {
+                  _duration = _duration +
+                      value.data[i].treatmentService.spaService.durationMin;
                 }
                 _loading = false;
               })
@@ -122,10 +126,15 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                       SizedBox(
                         height: 20,
                       ),
-                      Row(children: [
-                        Icon(Icons.timer,color: kTextColor,),
-                        Text(" $_duration phút")
-                      ],),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.timer,
+                            color: kTextColor,
+                          ),
+                          Text(" $_duration phút")
+                        ],
+                      ),
                       SizedBox(
                         height: 20,
                       ),
@@ -134,7 +143,11 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                           (index) => Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("BƯỚC ${index + 1}:", style: TextStyle(fontWeight: FontWeight.bold),),
+                                  Text(
+                                    "BƯỚC ${index + 1}:",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                   SizedBox(height: 10),
                                   Container(
                                     decoration: BoxDecoration(
@@ -174,7 +187,8 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 5, horizontal: 10),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   _bookingDetailSteps
@@ -183,8 +197,12 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                                                       .spaService
                                                       .name,
                                                   maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      fontSize: 17,
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                                 ),
                                                 Text(
                                                   _bookingDetailSteps
@@ -193,7 +211,8 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                                                       .spaService
                                                       .description,
                                                   maxLines: 4,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ],
                                             ),
@@ -242,9 +261,137 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                       SizedBox(
                         height: 40,
                       ),
-                      DefaultButton(
-                        text: "Hoàn thành",
-                        press: () {},
+
+                      _bookingDetailSteps.data[0].statusBooking=="FINISH" ?
+                       Row(
+                         children: [
+                           Icon(Icons.check_circle, color: kGreen,),
+                           SizedBox(width: 10,),
+                           Text("Dịch vụ đã hoàn thành", ),
+                         ],
+                       )
+                      :DefaultButton(
+                        text: "Hoàn thành dịch vụ",
+                        press:() {
+                          showDialog(
+                            context: context,
+                            builder: (builder) {
+                              return Dialog(
+                                child: Stack(
+                                  overflow: Overflow.visible,
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 50, 20, 20),
+                                      width: double.infinity,
+                                      height: 200,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Xác nhận",
+                                            style: TextStyle(fontSize: 24),
+                                          ),
+                                          Text(
+                                              "Bạn có chắc chắn muốn hoàn tất dịch vụ ?"),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                  flex: 1,
+                                                  child: TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (builder) {
+                                                            return Padding(
+                                                              padding: const EdgeInsets.symmetric(
+                                                                  horizontal: 80),
+                                                              child: Dialog(
+                                                                child: Container(
+                                                                  height: 150,
+                                                                  child: Lottie.asset(
+                                                                      "assets/lottie/circle_loading.json"),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                        StaffService.finishOnestepPackage(widget.bookingDetail.id).then((value)
+                                                            {
+                                                        Navigator.pop(context);
+                                                            value == 200
+                                                            ? showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return MyCustomDialog(
+                                                              height: 250,
+                                                              press: () {
+                                                                Navigator.pop(context);
+                                                                Navigator.pop(context);
+                                                              },
+                                                              title: "Thành Công !",
+                                                              description:
+                                                              "Hoàn tất dịch vụ thành công",
+                                                              buttonTitle: "Quay về",
+                                                              lottie:
+                                                              "assets/lottie/success.json",
+                                                            );
+                                                          },
+                                                        )
+                                                            : showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return MyCustomDialog(
+                                                              height: 250,
+                                                              press: () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                              title: "Thất bại !",
+                                                              description:
+                                                              "Dịch vụ không thể hoàn thành",
+                                                              buttonTitle: "Thoát",
+                                                              lottie: "assets/lottie/fail.json",
+                                                            );
+                                                          },
+                                                        );
+                                                            }
+
+                                                        );
+                                                      },
+                                                      child: Text("Xác nhận"))),
+                                              Expanded(
+                                                  flex: 1,
+                                                  child: TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text("Thoát"))),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: -35,
+                                      child: SvgPicture.asset(
+                                        "assets/icons/check.svg",
+                                        width: 70,
+                                        height: 70,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
                       )
                     ],
                   ),
