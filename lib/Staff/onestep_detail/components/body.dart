@@ -225,49 +225,25 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                                 ],
                               )),
                       SizedBox(height: 40),
-                      Text(
-                        "THÔNG TIN KẾT QUẢ",
-                        style: TextStyle(color: kTextColor),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Image.network(
-                                'https://via.placeholder.com/150'),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Image.network(
-                                'https://via.placeholder.com/150'),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Center(child: Text("Trước dịch vụ")),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Center(child: Text("Sau dịch vụ")),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 40,
-                      ),
 
                       _bookingDetailSteps.data[0].statusBooking=="FINISH" ?
-                       Row(
+                       Column(
+                         crossAxisAlignment: CrossAxisAlignment.start,
                          children: [
-                           Icon(Icons.check_circle, color: kGreen,),
-                           SizedBox(width: 10,),
-                           Text("Dịch vụ đã hoàn thành", ),
+                           Text(
+                             "THÔNG TIN KẾT QUẢ",
+                             style: TextStyle(color: kTextColor),
+                           ),
+                           SizedBox(
+                             height: 20,
+                           ),
+                           Row(
+                             children: [
+                               Icon(Icons.check_circle, color: kGreen,),
+                               SizedBox(width: 10,),
+                               Text("Dịch vụ đã hoàn thành", ),
+                             ],
+                           ),
                          ],
                        )
                       :DefaultButton(

@@ -276,6 +276,7 @@ class Spa {
     this.street,
     this.district,
     this.city,
+    this.phone,
     this.latitude,
     this.longitude,
     this.createBy,
@@ -285,10 +286,11 @@ class Spa {
 
   int id;
   String name;
-  dynamic image;
+  String image;
   String street;
   String district;
   String city;
+  String phone;
   String latitude;
   String longitude;
   String createBy;
@@ -298,10 +300,11 @@ class Spa {
   factory Spa.fromJson(Map<String, dynamic> json) => Spa(
     id: json["id"] == null ? null : json["id"],
     name: json["name"] == null ? null : json["name"],
-    image: json["image"],
+    image: json["image"] == null ? null : json["image"],
     street: json["street"] == null ? null : json["street"],
     district: json["district"] == null ? null : json["district"],
     city: json["city"] == null ? null : json["city"],
+    phone: json["phone"] == null ? null : json["phone"],
     latitude: json["latitude"] == null ? null : json["latitude"],
     longitude: json["longitude"] == null ? null : json["longitude"],
     createBy: json["createBy"] == null ? null : json["createBy"],
@@ -312,10 +315,11 @@ class Spa {
   Map<String, dynamic> toJson() => {
     "id": id == null ? null : id,
     "name": name == null ? null : name,
-    "image": image,
+    "image": image == null ? null : image,
     "street": street == null ? null : street,
     "district": district == null ? null : district,
     "city": city == null ? null : city,
+    "phone": phone == null ? null : phone,
     "latitude": latitude == null ? null : latitude,
     "longitude": longitude == null ? null : longitude,
     "createBy": createBy == null ? null : createBy,
@@ -493,30 +497,38 @@ class ConsultationContent {
     this.id,
     this.description,
     this.expectation,
+    this.imageBefore,
+    this.imageAfter,
     this.result,
     this.note,
   });
 
   int id;
   String description;
-  dynamic expectation;
-  dynamic result;
-  dynamic note;
+  String expectation;
+  String imageBefore;
+  String imageAfter;
+  String result;
+  String note;
 
   factory ConsultationContent.fromJson(Map<String, dynamic> json) => ConsultationContent(
     id: json["id"] == null ? null : json["id"],
     description: json["description"] == null ? null : json["description"],
-    expectation: json["expectation"],
-    result: json["result"],
-    note: json["note"],
+    expectation: json["expectation"] == null ? null : json["expectation"],
+    imageBefore: json["imageBefore"] == null ? null : json["imageBefore"],
+    imageAfter: json["imageAfter"] == null ? null : json["imageAfter"],
+    result: json["result"] == null ? null : json["result"],
+    note: json["note"] == null ? null : json["note"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id == null ? null : id,
     "description": description == null ? null : description,
-    "expectation": expectation,
-    "result": result,
-    "note": note,
+    "expectation": expectation == null ? null : expectation,
+    "imageBefore": imageBefore == null ? null : imageBefore,
+    "imageAfter": imageAfter == null ? null : imageAfter,
+    "result": result == null ? null : result,
+    "note": note == null ? null : note,
   };
 }
 
@@ -532,8 +544,8 @@ class Rating {
   });
 
   int id;
-  dynamic rate;
-  dynamic comment;
+  double rate;
+  String comment;
   DateTime createTime;
   DateTime expireTime;
   String statusRating;
@@ -541,8 +553,8 @@ class Rating {
 
   factory Rating.fromJson(Map<String, dynamic> json) => Rating(
     id: json["id"] == null ? null : json["id"],
-    rate: json["rate"],
-    comment: json["comment"],
+    rate: json["rate"] == null ? null : json["rate"],
+    comment: json["comment"] == null ? null : json["comment"],
     createTime: json["createTime"] == null ? null : DateTime.parse(json["createTime"]),
     expireTime: json["expireTime"] == null ? null : DateTime.parse(json["expireTime"]),
     statusRating: json["statusRating"] == null ? null : json["statusRating"],
@@ -551,8 +563,8 @@ class Rating {
 
   Map<String, dynamic> toJson() => {
     "id": id == null ? null : id,
-    "rate": rate,
-    "comment": comment,
+    "rate": rate == null ? null : rate,
+    "comment": comment == null ? null : comment,
     "createTime": createTime == null ? null : "${createTime.year.toString().padLeft(4, '0')}-${createTime.month.toString().padLeft(2, '0')}-${createTime.day.toString().padLeft(2, '0')}",
     "expireTime": expireTime == null ? null : "${expireTime.year.toString().padLeft(4, '0')}-${expireTime.month.toString().padLeft(2, '0')}-${expireTime.day.toString().padLeft(2, '0')}",
     "statusRating": statusRating == null ? null : statusRating,

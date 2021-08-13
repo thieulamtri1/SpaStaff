@@ -18,7 +18,6 @@ class _BottomNavigationState extends State<BottomNavigationStaff> {
   List<Widget> widgetOptions = <Widget>[
     StaffScheduleScreen(),
     StaffNotificationScreen(),
-    StaffFollowingScreen(),
     StaffProfileScreen(),
   ];
 
@@ -45,19 +44,13 @@ class _BottomNavigationState extends State<BottomNavigationStaff> {
             icon: Icon(
               Icons.calendar_today_outlined,
             ),
-            title: Text("Schedule"),
+            title: Text("Lịch làm"),
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.notifications_none_outlined,
             ),
             title: Text("Thông báo"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.assignment_outlined,
-            ),
-            title: Text("Theo dõi"),
           ),
           BottomNavigationBarItem(
             icon: Icon(

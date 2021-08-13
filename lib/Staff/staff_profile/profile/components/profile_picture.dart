@@ -2,9 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
-import 'package:spa_and_beauty_staff/Staff/staff_profile/profile_detail/components/body.dart';
 
-import '../../../../main.dart';
+import 'package:spa_and_beauty_staff/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'dart:convert';
@@ -138,7 +137,7 @@ class _ProfilePicState extends State<ProfilePicStaff> {
       child: Column(
         children: [
           Text(
-            "Choose Profile Photo",
+            "Chọn ảnh đại diện",
             style: TextStyle(
               fontSize: 20,
             ),

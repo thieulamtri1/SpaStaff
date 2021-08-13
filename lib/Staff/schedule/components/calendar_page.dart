@@ -256,6 +256,11 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                                       :widget
                                           .StaffSchedule
                                           .data[index]
+                                          .consultationContent.note=="" ?
+                                      "Không có ghi chú."
+                                      :widget
+                                          .StaffSchedule
+                                          .data[index]
                                           .consultationContent.note,
                                       type: widget.StaffSchedule.data[index].treatmentService.spaService.type ,
                                       status: widget.StaffSchedule.data[index].statusBooking
@@ -387,7 +392,8 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                     SizedBox(
                       height: 10,
                     ),
-                    Row(
+                    type == "MORESTEP"
+                        ?Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.description, color: kPrimaryColor),
@@ -402,7 +408,9 @@ class _ListToDoStaffState extends State<ListToDoStaff> {
                           ),
                         )
                       ],
-                    ),
+                    )
+                    :SizedBox()
+                    ,
                     SizedBox(
                       height: 10,
                     ),
