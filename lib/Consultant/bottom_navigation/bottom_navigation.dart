@@ -48,7 +48,7 @@ class _BottomNavigationState extends State<BottomNavigationConsultant> {
             icon: Icon(
               Icons.calendar_today_outlined,
             ),
-            title: Text("Schedule"),
+            title: Text("Lịch"),
           ),
           BottomNavigationBarItem(
             icon: Icon(
