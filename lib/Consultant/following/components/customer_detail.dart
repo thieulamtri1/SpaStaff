@@ -241,41 +241,46 @@ class _BookingdetailListState extends State<BookingdetailList> {
                 ),
               ),
               SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Dịch vụ: " + widget.bookingDetail.spaPackage.name,
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Dịch vụ: " + widget.bookingDetail.spaPackage.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    height: 0.5,
-                    width: 150,
-                    color: Colors.black,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Trạng thái: " + widget.bookingDetail.statusBooking,
-                    style: TextStyle(
-                      fontSize: 15,
+                    SizedBox(height: 10),
+                    Container(
+                      height: 0.5,
+                      width: 150,
+                      color: Colors.black,
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Expanded(
-                    child: Text(widget.bookingDetail.spaTreatment==null?"Chưa có liệu trình":
-                    "Liệu trình: "+widget.bookingDetail.spaTreatment.name,
-                      overflow: TextOverflow.ellipsis,
+                    SizedBox(height: 10),
+                    Text(
+                      "Trạng thái: " + widget.bookingDetail.statusBooking,
                       style: TextStyle(
                         fontSize: 15,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                ],
+                    SizedBox(height: 10),
+                    Expanded(
+                      child: Text(widget.bookingDetail.spaTreatment==null?"Chưa có liệu trình":
+                      "Liệu trình: "+widget.bookingDetail.spaTreatment.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
               ),
             ],
           ),

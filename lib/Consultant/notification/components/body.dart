@@ -14,7 +14,8 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   NotificationEmployee notification = NotificationEmployee();
-  bool loading ;
+  bool loading;
+
   String image = "";
 
   getNotificationConsultant() async {
@@ -51,25 +52,29 @@ class _BodyState extends State<Body> {
                 fontSize: 20,
               ),
             ))
-          : Column(
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: notification.data.length,
-                  itemBuilder: (context, index) {
-                    if (notification.data[index].type == "ASSIGN") {
-                      image = 'assets/notificationConsultant/assign.jpg';
-                    }else{
-                      image = 'assets/notificationConsultant/spa.jpg';
-                    }
-                    return NotificationBookingSuccessItem(
-                      image: image,
-                      title: notification.data[index].title,
-                      message: notification.data[index].message,
-                    );
-                  },
-                )
-              ],
+          : SingleChildScrollView(
+              physics: ScrollPhysics(),
+              child: Column(
+                children: [
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: notification.data.length,
+                    itemBuilder: (context, index) {
+                      if (notification.data[index].type == "ASSIGN") {
+                        image = 'assets/notificationConsultant/assign.jpg';
+                      } else {
+                        image = 'assets/notificationConsultant/spa.jpg';
+                      }
+                      return NotificationBookingSuccessItem(
+                        image: image,
+                        title: notification.data[index].title,
+                        message: notification.data[index].message,
+                      );
+                    },
+                  )
+                ],
+              ),
             );
     }
   }

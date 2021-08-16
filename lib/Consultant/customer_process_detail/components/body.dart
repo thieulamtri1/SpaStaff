@@ -81,7 +81,9 @@ class _BodyState extends State<Body> {
                   packageName: widget.bookingDetail.spaPackage.name,
                   packageId: widget.bookingDetail.spaPackage.id,
                   bookingDetailSteps: _bookingDetailSteps,
-                  treatment: _bookingDetailSteps.data[1] == null
+                  treatment: _bookingDetailSteps.data.length == 1?
+                      "Chưa có liệu trình"
+                      :_bookingDetailSteps.data[1] == null
                       ? "Chưa có liệu trình"
                       : _bookingDetailSteps.data[1].bookingDetail.spaTreatment.name,
                   consultantId: _bookingDetailSteps.data[0].consultant.id,
