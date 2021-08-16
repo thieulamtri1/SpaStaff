@@ -60,37 +60,123 @@ class _BodyState extends State<Body> {
                 SizedBox(
                   height: 10,
                 ),
-                CustomerSection(name: widget.bookingDetail.booking.customer.user.fullname, phone: widget.bookingDetail.booking.customer.user.phone),
+                CustomerSection(
+                    name: widget.bookingDetail.booking.customer.user.fullname,
+                    phone: widget.bookingDetail.booking.customer.user.phone),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25),
+                  child: TextButton(
+                    child: Text("Gửi yêu cầu đổi nhân viên"),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (builder) {
+                          return Dialog(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              height: 180,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Yêu cầu đổi nhân viên",
+                                    style: TextStyle(
+                                        color: kPrimaryColor, fontSize: 17),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  TextFormField(
+                                    minLines: 2,
+                                    maxLines: 2,
+                                    keyboardType: TextInputType.multiline,
+                                    decoration: InputDecoration(
+                                        hintText: "Lý do",
+                                        hintStyle:
+                                            TextStyle(color: Colors.grey),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide:
+                                              BorderSide(color: kPrimaryColor),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide:
+                                              BorderSide(color: kPrimaryColor),
+                                        )),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      TextButton(
+                                        child: Text("Gửi"),
+                                        onPressed: () {
+                                          int i = 0;
+                                          while(i<_bookingDetailSteps.data.length)
+                                          {
+                                            if(_bookingDetailSteps.data[i].dateBooking==null) {
+                                              print("id : ${_bookingDetailSteps.data[i].id}");
+                                              break;
+                                            }else{
+                                              i++;
+                                            }
+                                          }
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: Text("Hủy"),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
                 Divider(
                   thickness: 1,
                   height: 20,
                 ),
                 ProcessSection(
-                  notifyParent: (){setState(() {
-                    print("dang reload ne");
-                    _loading = true;
-                    ConsultantService.getBookingDetailStepsByBookingDetailId(
-                        widget.bookingDetail.id)
-                        .then((value) => {
-                      setState(() {
-                        _bookingDetailSteps = value;
-                        _loading = false;
-                      })
+                  notifyParent: () {
+                    setState(() {
+                      print("dang reload ne");
+                      _loading = true;
+                      ConsultantService.getBookingDetailStepsByBookingDetailId(
+                              widget.bookingDetail.id)
+                          .then((value) => {
+                                setState(() {
+                                  _bookingDetailSteps = value;
+                                  _loading = false;
+                                })
+                              });
                     });
-                  });
                   },
                   packageName: widget.bookingDetail.spaPackage.name,
                   packageId: widget.bookingDetail.spaPackage.id,
                   bookingDetailSteps: _bookingDetailSteps,
-                  treatment: _bookingDetailSteps.data.length == 1?
-                      "Chưa có liệu trình"
-                      :_bookingDetailSteps.data[1] == null
+                  treatment: _bookingDetailSteps.data.length == 1
                       ? "Chưa có liệu trình"
-                      : _bookingDetailSteps.data[1].bookingDetail.spaTreatment.name,
+                      : _bookingDetailSteps.data[1] == null
+                          ? "Chưa có liệu trình"
+                          : _bookingDetailSteps
+                              .data[1].bookingDetail.spaTreatment.name,
                   consultantId: _bookingDetailSteps.data[0].consultant.id,
                   spaId: _bookingDetailSteps.data[0].consultant.spa.id,
                   customerId: widget.customerId,
-                )
+                ),
+                SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           );
@@ -115,7 +201,8 @@ class ProcessSection extends StatefulWidget {
     @required this.treatment,
     @required this.consultantId,
     this.spaId,
-    this.customerId, this.notifyParent,
+    this.customerId,
+    this.notifyParent,
   }) : super(key: key);
 
   @override
@@ -243,13 +330,24 @@ class _ProcessSectionState extends State<ProcessSection> {
                 ...List.generate(
                   widget.bookingDetailSteps.data.length,
                   (index) => ProcessStepSection(
-                    staffName:  widget.bookingDetailSteps.data[index].staff == null ? null :widget.bookingDetailSteps.data[index].staff.user.fullname,
-                    bookingDetailStepInstance: widget.bookingDetailSteps.data[index],
+                    staffName:
+                        widget.bookingDetailSteps.data[index].staff == null
+                            ? null
+                            : widget.bookingDetailSteps.data[index].staff.user
+                                .fullname,
+                    bookingDetailStepInstance:
+                        widget.bookingDetailSteps.data[index],
                     notifyParent: widget.notifyParent,
                     spaId: widget.spaId,
                     customerId: widget.customerId,
-                    bookingDetailStepId: widget.bookingDetailSteps.data[index].id,
-                    spaServiceId: widget.bookingDetailSteps.data[index].treatmentService==null?0:widget.bookingDetailSteps.data[index].treatmentService.spaService.id,
+                    bookingDetailStepId:
+                        widget.bookingDetailSteps.data[index].id,
+                    spaServiceId: widget.bookingDetailSteps.data[index]
+                                .treatmentService ==
+                            null
+                        ? 0
+                        : widget.bookingDetailSteps.data[index].treatmentService
+                            .spaService.id,
                     status: widget.bookingDetailSteps.data[index].statusBooking,
                     date: widget.bookingDetailSteps.data[index].dateBooking ==
                             null
@@ -301,14 +399,17 @@ class ProcessStepSectionForConsultant extends StatefulWidget {
       this.consultantId,
       this.customerId,
       this.spaId,
-      this.bookingDetailId, this.notifyParent})
+      this.bookingDetailId,
+      this.notifyParent})
       : super(key: key);
 
   @override
-  _ProcessStepSectionForConsultantState createState() => _ProcessStepSectionForConsultantState();
+  _ProcessStepSectionForConsultantState createState() =>
+      _ProcessStepSectionForConsultantState();
 }
 
-class _ProcessStepSectionForConsultantState extends State<ProcessStepSectionForConsultant> {
+class _ProcessStepSectionForConsultantState
+    extends State<ProcessStepSectionForConsultant> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -346,8 +447,11 @@ class _ProcessStepSectionForConsultantState extends State<ProcessStepSectionForC
                               style: TextStyle(fontSize: 18),
                             ),
                             Expanded(
-                              child: Text(widget.treatmentInstance
-                                  .treatmentservices[index].spaService.description),
+                              child: Text(widget
+                                  .treatmentInstance
+                                  .treatmentservices[index]
+                                  .spaService
+                                  .description),
                             )
                           ],
                         ),
@@ -358,16 +462,17 @@ class _ProcessStepSectionForConsultantState extends State<ProcessStepSectionForC
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          ChooseStaffScreen(
+                                      builder: (context) => ChooseStaffScreen(
                                             consultantId: widget.consultantId,
                                             customerId: widget.customerId,
                                             spaId: widget.spaId,
                                             spaTreatmentId:
                                                 widget.treatmentInstance.id,
-                                            bookingDetailId: widget.bookingDetailId,
+                                            bookingDetailId:
+                                                widget.bookingDetailId,
                                           )),
-                                ).then((value) => setState(widget.notifyParent));
+                                ).then(
+                                    (value) => setState(widget.notifyParent));
                               },
                               child: Container(
                                 width: 32,
@@ -407,7 +512,10 @@ class ProcessStepSection extends StatefulWidget {
     this.bookingDetailStepId,
     this.customerId,
     this.spaId,
-    this.spaServiceId, this.notifyParent, this.bookingDetailStepInstance, this.staffName,
+    this.spaServiceId,
+    this.notifyParent,
+    this.bookingDetailStepInstance,
+    this.staffName,
   }) : super(key: key);
 
   @override
@@ -475,7 +583,8 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                 child: Row(
                   children: [
                     Visibility(
-                      visible: widget.date == "Chưa đặt lịch" && widget.staffName!=null,
+                      visible: widget.date == "Chưa đặt lịch" &&
+                          widget.staffName != null,
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -483,7 +592,8 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                             MaterialPageRoute(
                                 builder: (context) => BookingForNextStepScreen(
                                       spaServiceId: widget.spaServiceId,
-                                      bookingDetailStepId: widget.bookingDetailStepId,
+                                      bookingDetailStepId:
+                                          widget.bookingDetailStepId,
                                       customerId: widget.customerId,
                                       spaId: widget.spaId,
                                     )),
@@ -499,13 +609,16 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                       width: 15,
                     ),
                     Visibility(
-                      visible: widget.stepName!="Tư Vấn",
+                      visible: widget.stepName != "Tư Vấn",
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EditConsultantContent(bookingDetailStepInstance: widget.bookingDetailStepInstance,)),
+                                builder: (context) => EditConsultantContent(
+                                      bookingDetailStepInstance:
+                                          widget.bookingDetailStepInstance,
+                                    )),
                           ).then((value) => setState(widget.notifyParent));
                         },
                         child: Icon(
