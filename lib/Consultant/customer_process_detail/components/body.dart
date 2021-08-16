@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/booking_for_first_step_screen.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_next_step/booking_for_next_step.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/choose_staff.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/choose_treatment.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/edit_consultation_content.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
@@ -358,7 +359,7 @@ class _ProcessStepSectionForConsultantState extends State<ProcessStepSectionForC
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          BookingForFirstStepScreen(
+                                          ChooseStaffScreen(
                                             consultantId: widget.consultantId,
                                             customerId: widget.customerId,
                                             spaId: widget.spaId,

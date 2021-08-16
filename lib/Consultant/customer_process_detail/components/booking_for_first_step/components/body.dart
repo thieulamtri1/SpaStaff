@@ -254,6 +254,7 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
                               press: () {
                                 Navigator.pop(context);
                                 Navigator.pop(context);
+                                Navigator.pop(context);
                               },
                               title: "Thành Công !",
                               description:

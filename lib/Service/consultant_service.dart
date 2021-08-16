@@ -7,6 +7,7 @@ import 'package:spa_and_beauty_staff/Model/BookingDetail.dart';
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/CustomerOfConsultant.dart';
+import 'package:spa_and_beauty_staff/Model/ListStaffForBooking.dart';
 import 'package:spa_and_beauty_staff/Model/NotificationConsultant.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
@@ -24,6 +25,7 @@ class ConsultantService {
   static final String ADD_TREATMENT_FOR_BOOKING_DETAIL = "https://swp490spa.herokuapp.com/api/consultant/bookingdetailstep/addtreatment";
   static final String BOOKING_FOR_NEXT_STEP = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/addTimeNextStep";
   static final String EDIT_CONSULTATION_CONTENT = "https://swp490spa.herokuapp.com/api/consultant/consultationcontent/edit";
+  static final String GET_LIST_STAFF_FOR_BOOKING = "https://swp490spa.herokuapp.com/api/consultant/getAllStaff/";
 
   static const String GET_PROFILE_CONSULTANT =
       "https://swp490spa.herokuapp.com/api/consultant/findById/";
@@ -40,6 +42,29 @@ class ConsultantService {
   static final String GET_NOTIFICATION_CONSULTANT =
       "https://swp490spa.herokuapp.com/api/consultant/getAllNotification/";
 
+
+  static Future<ListStaffForBooking> getListStaffForBooking(int spaId) async{
+    try {
+      final response = await http.get(
+          Uri.parse(GET_LIST_STAFF_FOR_BOOKING + spaId.toString()),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${MyApp.storage.getItem("token")}',
+          });
+      print(response.body);
+      if (response.statusCode == 200) {
+        ListStaffForBooking result;
+        result = listStaffForBookingFromJson(utf8.decode(response.bodyBytes));
+        return result;
+      } else {
+        print("Error: ${response.statusCode}");
+        throw Exception('Failed to get List Staff');
+      }
+    } catch (e) {
+      throw Exception('Failed to get List Staff');
+    }
+  }
 
   static Future<CustomerOfConsultant> getListCustomerOfConsultant(id, token) async {
     try {
