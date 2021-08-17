@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/booking_for_first_step_screen.dart';
+import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/body.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_next_step/booking_for_next_step.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/choose_staff.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/choose_treatment.dart';
@@ -27,6 +28,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   bool _loading;
   BookingDetailSteps _bookingDetailSteps;
+  final reasonController = TextEditingController();
 
   @override
   void initState() {
@@ -56,90 +58,146 @@ class _BodyState extends State<Body> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                StatusSection(),
+                widget.bookingDetail.statusBooking == "CHANGE_STAFF"?
+                 StatusChangingStaffSection()
+                :StatusSection(),
                 SizedBox(
                   height: 10,
                 ),
                 CustomerSection(
                     name: widget.bookingDetail.booking.customer.user.fullname,
                     phone: widget.bookingDetail.booking.customer.user.phone),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: TextButton(
-                    child: Text("Gửi yêu cầu đổi nhân viên"),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (builder) {
-                          return Dialog(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              height: 180,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "Yêu cầu đổi nhân viên",
-                                    style: TextStyle(
-                                        color: kPrimaryColor, fontSize: 17),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextFormField(
-                                    minLines: 2,
-                                    maxLines: 2,
-                                    keyboardType: TextInputType.multiline,
-                                    decoration: InputDecoration(
-                                        hintText: "Lý do",
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide:
-                                              BorderSide(color: kPrimaryColor),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide:
-                                              BorderSide(color: kPrimaryColor),
-                                        )),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      TextButton(
-                                        child: Text("Gửi"),
-                                        onPressed: () {
-                                          int i = 0;
-                                          while(i<_bookingDetailSteps.data.length)
-                                          {
-                                            if(_bookingDetailSteps.data[i].dateBooking==null) {
-                                              print("id : ${_bookingDetailSteps.data[i].id}");
-                                              break;
-                                            }else{
-                                              i++;
+                Visibility(
+                  visible: widget.bookingDetail.statusBooking != "CHANGE_STAFF",
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 25),
+                    child: TextButton(
+                      child: Text("Gửi yêu cầu đổi nhân viên"),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (builder) {
+                            return Dialog(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                height: 180,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "Yêu cầu đổi nhân viên",
+                                      style: TextStyle(
+                                          color: kPrimaryColor, fontSize: 17),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    TextFormField(
+                                      controller: reasonController,
+                                      minLines: 2,
+                                      maxLines: 2,
+                                      keyboardType: TextInputType.multiline,
+                                      decoration: InputDecoration(
+                                          hintText: "Lý do",
+                                          hintStyle:
+                                              TextStyle(color: Colors.grey),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide:
+                                                BorderSide(color: kPrimaryColor),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide:
+                                                BorderSide(color: kPrimaryColor),
+                                          )),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        TextButton(
+                                          child: Text("Gửi"),
+                                          onPressed: () {
+                                            int i = 0;
+                                            while (i <
+                                                _bookingDetailSteps.data.length) {
+                                              if (_bookingDetailSteps
+                                                      .data[i].dateBooking ==
+                                                  null) {
+                                                ConsultantService
+                                                        .requestChangeStaff(
+                                                            _bookingDetailSteps
+                                                                .data[i].id,
+                                                            reasonController.value
+                                                                .toString())
+                                                    .then((value) => {
+                                                          print(
+                                                              "status code : $value"),
+                                                          if (value == 200)
+                                                            {
+                                                              showDialog(
+                                                                context: context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return MyCustomDialog(
+                                                                    height: 250,
+                                                                    press: () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    title: "Thành Công !",
+                                                                    description: "Gửi yêu cầu đổi nhân viên thành công",
+                                                                    buttonTitle: "thoát",
+                                                                    lottie: "assets/lottie/success.json",
+                                                                  );
+                                                                },
+                                                              ),
+                                                            }
+                                                        });
+                                                Navigator.pop(context);
+                                                setState(() {
+                                                  print("dang reload ne");
+                                                  _loading = true;
+                                                  ConsultantService
+                                                          .getBookingDetailStepsByBookingDetailId(
+                                                              widget.bookingDetail
+                                                                  .id)
+                                                      .then((value) => {
+                                                            setState(() {
+                                                              _bookingDetailSteps =
+                                                                  value;
+                                                              _loading = false;
+                                                            })
+                                                          });
+                                                });
+                                                print(
+                                                    "id : ${_bookingDetailSteps.data[i].id}");
+                                                break;
+                                              } else {
+                                                i++;
+                                              }
                                             }
-                                          }
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text("Hủy"),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ],
-                                  )
-                                ],
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text("Hủy"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
                 Divider(
@@ -147,6 +205,7 @@ class _BodyState extends State<Body> {
                   height: 20,
                 ),
                 ProcessSection(
+                  statusBooking: widget.bookingDetail.statusBooking,
                   notifyParent: () {
                     setState(() {
                       print("dang reload ne");
@@ -192,6 +251,7 @@ class ProcessSection extends StatefulWidget {
   final String treatment;
   final int packageId;
   final BookingDetailSteps bookingDetailSteps;
+  final String statusBooking;
 
   const ProcessSection({
     Key key,
@@ -202,7 +262,7 @@ class ProcessSection extends StatefulWidget {
     @required this.consultantId,
     this.spaId,
     this.customerId,
-    this.notifyParent,
+    this.notifyParent, this.statusBooking,
   }) : super(key: key);
 
   @override
@@ -330,6 +390,7 @@ class _ProcessSectionState extends State<ProcessSection> {
                 ...List.generate(
                   widget.bookingDetailSteps.data.length,
                   (index) => ProcessStepSection(
+                    visibleBookingButton: index > 0 ? widget.bookingDetailSteps.data[index-1].statusBooking=="FINISH" && widget.statusBooking!="CHANGE_STAFF": false,
                     staffName:
                         widget.bookingDetailSteps.data[index].staff == null
                             ? null
@@ -503,6 +564,7 @@ class ProcessStepSection extends StatefulWidget {
   final String date, stepName, status, staffName;
   final int bookingDetailStepId, customerId, spaId, spaServiceId;
   final BookingDetailStepInstance bookingDetailStepInstance;
+  final bool visibleBookingButton;
 
   const ProcessStepSection({
     Key key,
@@ -515,7 +577,7 @@ class ProcessStepSection extends StatefulWidget {
     this.spaServiceId,
     this.notifyParent,
     this.bookingDetailStepInstance,
-    this.staffName,
+    this.staffName, this.visibleBookingButton,
   }) : super(key: key);
 
   @override
@@ -584,7 +646,7 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                   children: [
                     Visibility(
                       visible: widget.date == "Chưa đặt lịch" &&
-                          widget.staffName != null,
+                          widget.staffName != null && widget.visibleBookingButton,
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -798,6 +860,59 @@ class StatusSection extends StatelessWidget {
                 width: 50,
                 height: 50,
                 child: SvgPicture.asset("assets/icons/ongoing.svg"),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+class StatusChangingStaffSection extends StatelessWidget {
+  const StatusChangingStaffSection({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      decoration: BoxDecoration(color: Colors.red),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: Container(
+                height: 60,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Liệu trình đang bị gián đoạn !",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                    Text(
+                      "Liệu trình đang được chờ để xét duyệt đổi nhân viên",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 15),
+              child: Container(
+                width: 50,
+                height: 50,
+                child: Icon(Icons.close, color: Colors.white, size: 50,),
               ),
             ),
           ],

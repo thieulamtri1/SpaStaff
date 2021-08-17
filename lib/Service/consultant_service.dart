@@ -14,33 +14,25 @@ import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 
 class ConsultantService {
-  static final String GET_LIST_CUSTOMER_OF_CONSULTANT =
-      "https://swp490spa.herokuapp.com/api/consultant/getListCustomerOfConsultant/";
-  static final String FIND_BOOKINGDETAIL_BY_CUSTOMER_AND_CONSULTANT =
-      "https://swp490spa.herokuapp.com/api/consultant/bookingDetail/findByCustomerAndConsultant/";
+  static final String GET_LIST_CUSTOMER_OF_CONSULTANT = "https://swp490spa.herokuapp.com/api/consultant/getListCustomerOfConsultant/";
+  static final String FIND_BOOKINGDETAIL_BY_CUSTOMER_AND_CONSULTANT = "https://swp490spa.herokuapp.com/api/consultant/bookingDetail/findByCustomerAndConsultant/";
   static final String GET_BOOKING_DETAIL_STEP_BY_BOOKING_DETAIL_ID = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/findByBookingDetail/";
   static final String GET_TREATMENTS_BY_PACKAGE_ID = "https://swp490spa.herokuapp.com/api/consultant/spatreatment/findbyspapackage?spaPackageId=";
   static final String GET_AVAILABLE_TIME_FOR_FIRST_STEP = "https://swp490spa.herokuapp.com/api/consultant/getListTimeBookingForAddTreatment?";
   static final String GET_AVAILABLE_TIME_FOR_NEXT_STEP = "https://swp490spa.herokuapp.com/api/consultant/getListTimeBookingForAStep?";
+  static final String GET_AVAILABLE_TIME_FOR_FIRST_STEP_WITH_STAFF = "https://swp490spa.herokuapp.com/api/consultant/getListTimeBookingForAddTreatmentChosenStaff?";
   static final String ADD_TREATMENT_FOR_BOOKING_DETAIL = "https://swp490spa.herokuapp.com/api/consultant/bookingdetailstep/addtreatment";
   static final String BOOKING_FOR_NEXT_STEP = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/addTimeNextStep";
   static final String EDIT_CONSULTATION_CONTENT = "https://swp490spa.herokuapp.com/api/consultant/consultationcontent/edit";
   static final String GET_LIST_STAFF_FOR_BOOKING = "https://swp490spa.herokuapp.com/api/consultant/getAllStaff/";
-
-  static const String GET_PROFILE_CONSULTANT =
-      "https://swp490spa.herokuapp.com/api/consultant/findById/";
-  static const String UPDATE_PROFILE_CONSULTANT =
-      "https://swp490spa.herokuapp.com/api/consultant/editprofile";
-  static const String EDIT_PASSWORD_CONSULTANT =
-      "https://swp490spa.herokuapp.com/api/consultant/editpassword";
-  static final String GET_CONSULTANT_SCHEDULE =
-      "https://swp490spa.herokuapp.com/api/consultant/workingofconsultant/findbydatechosen/";
-  static final String dateChosen =
-      "?dateChosen=";
-  static final String CREATE_DATEOFF =
-      "https://swp490spa.herokuapp.com/api/consultant/dateoff/create/";
-  static final String GET_NOTIFICATION_CONSULTANT =
-      "https://swp490spa.herokuapp.com/api/consultant/getAllNotification/";
+  static final String REQUEST_CHANGE_STAFF = "https://swp490spa.herokuapp.com/api/consultant/bookingDetailStep/requestChangeStaff";
+  static const String GET_PROFILE_CONSULTANT = "https://swp490spa.herokuapp.com/api/consultant/findById/";
+  static const String UPDATE_PROFILE_CONSULTANT = "https://swp490spa.herokuapp.com/api/consultant/editprofile";
+  static const String EDIT_PASSWORD_CONSULTANT = "https://swp490spa.herokuapp.com/api/consultant/editpassword";
+  static final String GET_CONSULTANT_SCHEDULE = "https://swp490spa.herokuapp.com/api/consultant/workingofconsultant/findbydatechosen/";
+  static final String dateChosen = "?dateChosen=";
+  static final String CREATE_DATEOFF = "https://swp490spa.herokuapp.com/api/consultant/dateoff/create/";
+  static final String GET_NOTIFICATION_CONSULTANT = "https://swp490spa.herokuapp.com/api/consultant/getAllNotification/";
 
 
   static Future<ListStaffForBooking> getListStaffForBooking(int spaId) async{
@@ -169,6 +161,26 @@ class ConsultantService {
       return AvailableTime();
     }
   }
+  static Future<AvailableTime> getAvailableTimeForFirstStepWithStaff(int consultantId,int customerId, String dateBooking, int spaId,int spaTreatmentId,int staffId) async {
+    try {
+      final response = await http.get(
+          Uri.parse(GET_AVAILABLE_TIME_FOR_FIRST_STEP_WITH_STAFF + "consultantId=$consultantId&customerId=$customerId&dateBooking=$dateBooking&spaId=$spaId&spaTreatmentId=$spaTreatmentId&staffId=$staffId"),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${MyApp.storage.getItem("token")}',
+          });
+      print(response.body);
+      if (response.statusCode == 200) {
+        AvailableTime availableTime = availableTimeFromJson(utf8.decode(response.bodyBytes));
+        return availableTime;
+      } else {
+        return AvailableTime();
+      }
+    } catch (e) {
+      return AvailableTime();
+    }
+  }
   static Future<String> bookingForFirstStep(int bookingDetailId, int consultantId, String dateBooking, int spaTreatmentId, String timeBooking) async {
     var jsonResponse;
     final res = await http.put(ADD_TREATMENT_FOR_BOOKING_DETAIL,
@@ -192,6 +204,28 @@ class ConsultantService {
     print("LOI ROI" + "Status code = " + res.statusCode.toString());
     return res.statusCode.toString();
   }
+  static Future<int> requestChangeStaff(int bookingDetailStepId, String reason) async {
+    var jsonResponse;
+    final res = await http.put(REQUEST_CHANGE_STAFF,
+        headers: {
+          "accept" : "application/json",
+          "content-type" : "application/json",
+          "authorization" : "Bearer " + MyApp.storage.getItem("token"),
+        },
+        body: jsonEncode(
+            {
+              "id": bookingDetailStepId,
+              "reason": reason,
+            }));
+    if (res.statusCode == 200){
+      jsonResponse = utf8.decode(res.bodyBytes);
+      print(jsonResponse.toString());
+    }
+    print("LOI ROI" + "Status code = " + res.statusCode.toString());
+    return res.statusCode;
+  }
+
+
   static Future<String> bookingForNextStep(int bookingDetailStepId, String dateBooking, String timeBooking) async {
     var jsonResponse;
     final res = await http.put(BOOKING_FOR_NEXT_STEP,
