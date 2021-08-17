@@ -7,6 +7,8 @@ import 'package:spa_and_beauty_staff/Consultant/notification/notification_screen
 import 'package:spa_and_beauty_staff/main.dart';
 import 'package:spa_and_beauty_staff/sign_in/sign_in_screen.dart';
 
+import '../../../../constants.dart';
+
 class Body extends StatefulWidget {
   @override
   _BodyState createState() => _BodyState();
@@ -29,7 +31,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.person_outline,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Thông tin tài khoản",
             press: () {
@@ -43,7 +45,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.security,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Đổi mật khẩu",
             press: () {
@@ -55,7 +57,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.notifications_none_outlined,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Thông báo",
             press: () {
@@ -69,7 +71,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.work_off,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Đăng ký lịch nghỉ",
             press: () {
@@ -83,7 +85,7 @@ class _BodyState extends State<Body> {
             icon: Icon(
               Icons.logout,
               size: 30,
-              color: Color(0xFFFF7643),
+              color: kPrimaryColor,
             ),
             text: "Đăng xuất",
             press: () {

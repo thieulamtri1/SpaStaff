@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/main.dart';
+import '../../../../constants.dart';
 import '../register_dayoff_screen.dart';
 import 'date_picker.dart';
 
@@ -62,7 +63,7 @@ class _BodyState extends State<Body> {
               Row(
                 children: [
                   Text(
-                    "Reason",
+                    "Lý do",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 24,
@@ -85,7 +86,7 @@ class _BodyState extends State<Body> {
                 child: FlatButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
-                  color: Colors.orangeAccent,
+                  color: kPrimaryColor,
                   onPressed: () async {
                     if(reasonTextController.text.trim() == ""){
                       final snackBar = SnackBar(
