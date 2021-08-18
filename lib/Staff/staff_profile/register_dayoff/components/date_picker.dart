@@ -14,7 +14,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
 
   String getText() {
     if (date == null) {
-      return 'Select Date';
+      return 'Chọn ngày';
     } else {
       Body.dateOff = date.toString().substring(0,10);
       return DateFormat('MM/dd/yyyy').format(date);
@@ -24,7 +24,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
 
   @override
   Widget build(BuildContext context) => ButtonHeaderWidget(
-    title: 'Date',
+    title: 'Ngày',
     text: getText(),
     onClicked: () => pickDate(context),
   );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../constants.dart';
+
 class ButtonHeaderWidget extends StatelessWidget {
   final String title;
   final String text;
@@ -36,7 +38,7 @@ class ButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) => ElevatedButton(
     style: ElevatedButton.styleFrom(
       minimumSize: Size.fromHeight(40),
-      primary: Colors.orangeAccent,
+      primary: kPrimaryColor,
     ),
     child: FittedBox(
       child: Text(
