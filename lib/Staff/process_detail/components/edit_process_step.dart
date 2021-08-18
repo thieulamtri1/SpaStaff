@@ -307,7 +307,7 @@ class _EditProcessStepState extends State<EditProcessStep> {
                                                     StaffService.editProcessStep(
                                                         widget.bookingDetailStepInstance.id,
                                                         _resultController.text,
-                                                        widget.bookingDetailStepInstance.staff.id)
+                                                        MyApp.storage.getItem("staffId"))
                                                         .then((value) {
                                                       Navigator.pop(context);
                                                       value.compareTo("200") == 0
