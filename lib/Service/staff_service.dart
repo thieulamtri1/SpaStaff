@@ -56,7 +56,8 @@ class StaffService {
         },
         body: jsonEncode(
             {
-              "id": bookingDetailId,
+              "staffId": MyApp.storage.getItem("staffId"),
+              "bookingDetailId": bookingDetailId,
             }));
     if (res.statusCode == 200){
       jsonResponse = utf8.decode(res.bodyBytes);
