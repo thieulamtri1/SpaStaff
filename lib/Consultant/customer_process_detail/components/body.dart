@@ -645,7 +645,7 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                 child: Row(
                   children: [
                     Visibility(
-                      visible: widget.date == "Chưa đặt lịch" &&
+                      visible:
                           widget.staffName != null && widget.visibleBookingButton,
                       child: GestureDetector(
                         onTap: () {
