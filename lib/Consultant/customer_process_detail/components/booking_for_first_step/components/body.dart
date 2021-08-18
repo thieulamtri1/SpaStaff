@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
-import 'package:spa_and_beauty_staff/Consultant/bottom_navigation/bottom_navigation.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/time_slot.dart';
 import 'package:spa_and_beauty_staff/Model/AvailableTime.dart';
+import 'package:spa_and_beauty_staff/Model/ListStaffForBooking.dart';
 import 'package:spa_and_beauty_staff/Service/consultant_service.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/default_button.dart';
@@ -17,12 +17,13 @@ class FirstStepBookingBody extends StatefulWidget {
   final int spaId;
   final int spaTreatmentId;
   final int bookingDetailId;
+  final StaffInstance choosenStaff;
   @override
   _FirstStepBookingBodyState createState() => _FirstStepBookingBodyState();
 
 
 
-  const FirstStepBookingBody({Key key, this.consultantId, this.customerId, this.spaId, this.spaTreatmentId, this.bookingDetailId})
+  const FirstStepBookingBody({Key key, this.consultantId, this.customerId, this.spaId, this.spaTreatmentId, this.bookingDetailId, this.choosenStaff})
       : super(key: key);
 }
 
@@ -43,18 +44,37 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
     _loading = true;
 
     requestDate = MyHelper.getMachineDate(DateTime.now());
-    ConsultantService.getAvailableTimeForFirstStep(widget.consultantId, widget.customerId, requestDate, widget.spaId, widget.spaTreatmentId)
-        .then((availableTime) => {
-      setState(() {
-        _availableTime = availableTime;
-        _loading = false;
-        if(_availableTime.data != null) {
-          isSelected =
-              List.generate(_availableTime.data.length, (index) => false);
-        }
-
-      })
-    });
+    if(widget.choosenStaff == null) {
+      ConsultantService.getAvailableTimeForFirstStep(
+          widget.consultantId, widget.customerId, requestDate, widget.spaId,
+          widget.spaTreatmentId)
+          .then((availableTime) =>
+      {
+        setState(() {
+          _availableTime = availableTime;
+          _loading = false;
+          if (_availableTime.data != null) {
+            isSelected =
+                List.generate(_availableTime.data.length, (index) => false);
+          }
+        })
+      });
+    }else{
+      ConsultantService.getAvailableTimeForFirstStepWithStaff(
+          widget.consultantId, widget.customerId, requestDate, widget.spaId,
+          widget.spaTreatmentId, widget.choosenStaff.id)
+          .then((availableTime) =>
+      {
+        setState(() {
+          _availableTime = availableTime;
+          _loading = false;
+          if (_availableTime.data != null) {
+            isSelected =
+                List.generate(_availableTime.data.length, (index) => false);
+          }
+        })
+      });
+    }
   }
 
   List<bool> _selections = [true, false, false, false, false, false, false];
@@ -74,65 +94,112 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
         child: Padding(
           padding:
           const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: GestureDetector(
-            onTap: () {
-              // Navigator.pushNamed(
-              //   context,
-              //   ServiceDetailScreen.routeName,
-              //   arguments:
-              //       ServiceDetailsArguments(service: widget.service),
-              // );
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "1.Chọn ngày",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Nhân viên đã chọn",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
                 ),
-                SizedBox(
-                  height: 20,
+              ),
+              widget.choosenStaff == null
+                  ?Text("Để quản lý chọn nhân viên.")
+                  :Container(
+                margin:  EdgeInsets.symmetric(vertical: 10),
+                padding:
+                EdgeInsets.symmetric(vertical: 10,),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            widget.choosenStaff.user.image),
+                        maxRadius: 30,
+                      ),
+                    ),
+                    Expanded(
+                        flex: 8,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            widget.choosenStaff.user.fullname,
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        )),
+
+                  ],
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: ToggleButtons(
-                    children: [
-                      DateBox(
-                        date: DateTime.now().add(Duration(days: 0)),
-                      ),
-                      DateBox(
-                        date: DateTime.now().add(Duration(days: 1)),
-                      ),
-                      DateBox(
-                        date: DateTime.now().add(Duration(days: 2)),
-                      ),
-                      DateBox(
-                        date: DateTime.now().add(Duration(days: 3)),
-                      ),
-                      DateBox(
-                        date: DateTime.now().add(Duration(days: 4)),
-                      ),
-                      DateBox(
-                        date: DateTime.now().add(Duration(days: 5)),
-                      ),
-                      DateBox(
-                        date: DateTime.now().add(Duration(days: 6)),
-                      ),
-                    ],
-                    isSelected: _selections,
-                    onPressed: (int index) {
-                      setState(() {
-                        _loadingSlot = true;
-                        for (int i = 0; i < _selections.length; i++) {
-                          _selections[i] = (i == index);
-                        }
-                        String selectedDay = MyHelper.getMachineDate(
-                            DateTime.now().add(Duration(days: index)));
-                        requestDate = selectedDay;
-                        ConsultantService.getAvailableTimeForFirstStep(widget.consultantId, widget.customerId, requestDate, widget.spaId, widget.spaTreatmentId)
+              ),
+              Text(
+                "1.Chọn ngày",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ToggleButtons(
+                  children: [
+                    DateBox(
+                      date: DateTime.now().add(Duration(days: 0)),
+                    ),
+                    DateBox(
+                      date: DateTime.now().add(Duration(days: 1)),
+                    ),
+                    DateBox(
+                      date: DateTime.now().add(Duration(days: 2)),
+                    ),
+                    DateBox(
+                      date: DateTime.now().add(Duration(days: 3)),
+                    ),
+                    DateBox(
+                      date: DateTime.now().add(Duration(days: 4)),
+                    ),
+                    DateBox(
+                      date: DateTime.now().add(Duration(days: 5)),
+                    ),
+                    DateBox(
+                      date: DateTime.now().add(Duration(days: 6)),
+                    ),
+                  ],
+                  isSelected: _selections,
+                  onPressed: (int index) {
+                    setState(() {
+                      _loadingSlot = true;
+                      for (int i = 0; i < _selections.length; i++) {
+                        _selections[i] = (i == index);
+                      }
+                      String selectedDay = MyHelper.getMachineDate(
+                          DateTime.now().add(Duration(days: index)));
+                      requestDate = selectedDay;
+                      if(widget.choosenStaff == null) {
+                        ConsultantService.getAvailableTimeForFirstStep(
+                            widget.consultantId, widget.customerId,
+                            requestDate, widget.spaId, widget.spaTreatmentId)
+                            .then((availableTime) =>
+                        {
+                          setState(() {
+                            _availableTime = availableTime;
+                            if (_availableTime.data != null) {
+                              isSelected = List.generate(
+                                  _availableTime.data.length, (
+                                  index) => false);
+                            }
+                            _loadingSlot = false;
+                          })
+                        });
+                      }else{
+                        ConsultantService.getAvailableTimeForFirstStepWithStaff(widget.consultantId, widget.customerId, requestDate, widget.spaId, widget.spaTreatmentId, widget.choosenStaff.id)
                             .then((availableTime) => {
                           setState(() {
                             _availableTime = availableTime;
@@ -143,148 +210,212 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
                             _loadingSlot = false;
                           })
                         });
-                      });
-                    },
-                  ),
+                      }
+                    });
+                  },
                 ),
-                SizedBox(
-                  height: 20,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "2.Chọn giờ",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
                 ),
-                Text(
-                  "2.Chọn giờ",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                TimeBookingDescriptionBar(),
-                SizedBox(
-                  height: 20,
-                ),
-                _availableTime.data != null ?
-                Container(
-                  child: _loadingSlot
-                      ? Container(
-                    height: 200,
-                    width: double.infinity,
-                    child:
-                    SpinKitWave(
-                      color: kPrimaryColor,
-                      size: 50,
-                    ),
-                  )
-                      : WrapToggleIconButtons(
-                    iconList: List.generate(
-                        _availableTime.data.length,
-                            (index) => TimeSlot()),
-                    isSelected: isSelected,
-                    availableTime: _availableTime,
-                    isDisabled: List.generate(
-                        _availableTime.data.length,
-                            (index) => false),
-                    // isDisabled: [false,false,false,false,false,false,false,false,false,false,],
-                    onPressed: (int index) {
-                      setState(() {
-                        if (isSelected.isEmpty) {
-                          isSelected = List.generate(
-                              _availableTime.data.length,
-                                  (index) => false);
-                        } else {
-                          for (var i = 0;
-                          i < isSelected.length;
-                          i++) isSelected.remove(i);
-                          isSelected = List.generate(
-                              _availableTime.data.length,
-                                  (index) => false);
-                        }
-                        for (int buttonIndex = 0;
-                        buttonIndex < isSelected.length;
-                        buttonIndex++) {
-                          if (buttonIndex == index) {
-                            isSelected[buttonIndex] =
-                            !isSelected[buttonIndex];
-                          } else {
-                            isSelected[buttonIndex] = false;
-                          }
-                        }
-                        print("$index is selected");
-                        slotId = index;
-                        print(slotId.toString() + " is selected");
-                      });
-                    },
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TimeBookingDescriptionBar(),
+              SizedBox(
+                height: 20,
+              ),
+              _availableTime.data != null ?
+              Container(
+                child: _loadingSlot
+                    ? Container(
+                  height: 200,
+                  width: double.infinity,
+                  child:
+                  SpinKitWave(
+                    color: kPrimaryColor,
+                    size: 50,
                   ),
                 )
-                :Text("Không có nhân viên rảnh")
-                ,
-                SizedBox(
-                  height: 40,
+                    : WrapToggleIconButtons(
+                  iconList: List.generate(
+                      _availableTime.data.length,
+                          (index) => TimeSlot()),
+                  isSelected: isSelected,
+                  availableTime: _availableTime,
+                  isDisabled: List.generate(
+                      _availableTime.data.length,
+                          (index) => false),
+                  // isDisabled: [false,false,false,false,false,false,false,false,false,false,],
+                  onPressed: (int index) {
+                    setState(() {
+                      if (isSelected.isEmpty) {
+                        isSelected = List.generate(
+                            _availableTime.data.length,
+                                (index) => false);
+                      } else {
+                        for (var i = 0;
+                        i < isSelected.length;
+                        i++) isSelected.remove(i);
+                        isSelected = List.generate(
+                            _availableTime.data.length,
+                                (index) => false);
+                      }
+                      for (int buttonIndex = 0;
+                      buttonIndex < isSelected.length;
+                      buttonIndex++) {
+                        if (buttonIndex == index) {
+                          isSelected[buttonIndex] =
+                          !isSelected[buttonIndex];
+                        } else {
+                          isSelected[buttonIndex] = false;
+                        }
+                      }
+                      print("$index is selected");
+                      slotId = index;
+                      print(slotId.toString() + " is selected");
+                    });
+                  },
                 ),
-                 DefaultButton(
-                    text: "Tiếp theo",
-                    press: () {
-                      showDialog(
-                        context: context,
-                        builder: (builder) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 80),
-                            child: Dialog(
-                              child: Container(
-                                height: 150,
-                                child: Lottie.asset(
-                                    "assets/lottie/circle_loading.json"),
-                              ),
+              )
+              :Text("Không có nhân viên rảnh")
+              ,
+              SizedBox(
+                height: 40,
+              ),
+               widget.choosenStaff == null
+                   ?DefaultButton(
+                  text: "Đặt lịch",
+                  press: () {
+                    showDialog(
+                      context: context,
+                      builder: (builder) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 80),
+                          child: Dialog(
+                            child: Container(
+                              height: 150,
+                              child: Lottie.asset(
+                                  "assets/lottie/circle_loading.json"),
                             ),
+                          ),
+                        );
+                      },
+                    );
+
+                    ConsultantService.bookingForFirstStep(widget.bookingDetailId, widget.consultantId, requestDate, widget.spaTreatmentId, _availableTime.data[slotId], null)
+                        .then((value) {
+                      Navigator.pop(context);
+                      value.compareTo("200") == 0
+                          ? showDialog(
+                        context: context,
+                        builder: (context) {
+                          return MyCustomDialog(
+                            height: 250,
+                            press: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            title: "Thành Công !",
+                            description:
+                            "Đặt lịch thành công",
+                            buttonTitle: "Quay về",
+                            lottie:
+                            "assets/lottie/success.json",
+                          );
+                        },
+                      )
+                          : showDialog(
+                        context: context,
+                        builder: (context) {
+                          return MyCustomDialog(
+                            height: 250,
+                            press: () {
+                              Navigator.pop(context);
+                            },
+                            title: "Thất bại !",
+                            description:
+                            "Đặt dịch vụ không thành công, vui lòng thử lại sau",
+                            buttonTitle: "Thoát",
+                            lottie: "assets/lottie/fail.json",
                           );
                         },
                       );
+                    });
+                  })
+                   :DefaultButton(
+                   text: "Đặt Lịch",
+                   press: () {
+                     showDialog(
+                       context: context,
+                       builder: (builder) {
+                         return Padding(
+                           padding: const EdgeInsets.symmetric(
+                               horizontal: 80),
+                           child: Dialog(
+                             child: Container(
+                               height: 150,
+                               child: Lottie.asset(
+                                   "assets/lottie/circle_loading.json"),
+                             ),
+                           ),
+                         );
+                       },
+                     );
 
-                      ConsultantService.bookingForFirstStep(widget.bookingDetailId, widget.consultantId, requestDate, widget.spaTreatmentId, _availableTime.data[slotId])
-                          .then((value) {
-                        Navigator.pop(context);
-                        value.compareTo("200") == 0
-                            ? showDialog(
-                          context: context,
-                          builder: (context) {
-                            return MyCustomDialog(
-                              height: 250,
-                              press: () {
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                              title: "Thành Công !",
-                              description:
-                              "Đặt lịch thành công",
-                              buttonTitle: "Quay về",
-                              lottie:
-                              "assets/lottie/success.json",
-                            );
-                          },
-                        )
-                            : showDialog(
-                          context: context,
-                          builder: (context) {
-                            return MyCustomDialog(
-                              height: 250,
-                              press: () {
-                                Navigator.pop(context);
-                              },
-                              title: "Thất bại !",
-                              description:
-                              "Đặt dịch vụ không thành công, vui lòng thử lại sau",
-                              buttonTitle: "Thoát",
-                              lottie: "assets/lottie/fail.json",
-                            );
-                          },
-                        );
-                      });
-                    }),
-              ],
-            ),
+                     ConsultantService.bookingForFirstStep(widget.bookingDetailId, widget.consultantId, requestDate, widget.spaTreatmentId, _availableTime.data[slotId], widget.choosenStaff.id)
+                         .then((value) {
+                       Navigator.pop(context);
+                       value.compareTo("200") == 0
+                           ? showDialog(
+                         context: context,
+                         builder: (context) {
+                           return MyCustomDialog(
+                             height: 250,
+                             press: () {
+                               Navigator.pop(context);
+                               Navigator.pop(context);
+                               Navigator.pop(context);
+                             },
+                             title: "Thành Công !",
+                             description:
+                             "Đặt lịch thành công",
+                             buttonTitle: "Quay về",
+                             lottie:
+                             "assets/lottie/success.json",
+                           );
+                         },
+                       )
+                           : showDialog(
+                         context: context,
+                         builder: (context) {
+                           return MyCustomDialog(
+                             height: 250,
+                             press: () {
+                               Navigator.pop(context);
+                             },
+                             title: "Thất bại !",
+                             description:
+                             "Đặt dịch vụ không thành công, vui lòng thử lại sau",
+                             buttonTitle: "Thoát",
+                             lottie: "assets/lottie/fail.json",
+                           );
+                         },
+                       );
+                     });
+                   }),
+
+
+            ],
           ),
         ),
       ),

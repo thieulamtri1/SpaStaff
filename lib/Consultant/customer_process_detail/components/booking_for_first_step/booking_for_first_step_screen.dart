@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/body.dart';
+import 'package:spa_and_beauty_staff/Model/ListStaffForBooking.dart';
 
 class BookingForFirstStepScreen extends StatefulWidget {
   final int consultantId;
@@ -7,8 +8,9 @@ class BookingForFirstStepScreen extends StatefulWidget {
   final int spaId;
   final int spaTreatmentId;
   final int bookingDetailId;
+  final StaffInstance choosenStaff;
 
-  const BookingForFirstStepScreen({Key key, this.consultantId, this.customerId, this.spaId, this.spaTreatmentId, this.bookingDetailId}) : super(key: key);
+  const BookingForFirstStepScreen({Key key, this.consultantId, this.customerId, this.spaId, this.spaTreatmentId, this.bookingDetailId, this.choosenStaff}) : super(key: key);
 
   @override
   _BookingForFirstStepScreenState createState() =>
@@ -29,7 +31,7 @@ class _BookingForFirstStepScreenState extends State<BookingForFirstStepScreen> {
           ),
         ),
       ),
-      body:FirstStepBookingBody(customerId: widget.customerId,spaId: widget.spaId,consultantId: widget.consultantId,bookingDetailId: widget.bookingDetailId,spaTreatmentId: widget.spaTreatmentId,),
+      body:FirstStepBookingBody(customerId: widget.customerId,spaId: widget.spaId,consultantId: widget.consultantId,bookingDetailId: widget.bookingDetailId,spaTreatmentId: widget.spaTreatmentId, choosenStaff: widget.choosenStaff,),
     );
   }
 }

@@ -181,7 +181,7 @@ class ConsultantService {
       return AvailableTime();
     }
   }
-  static Future<String> bookingForFirstStep(int bookingDetailId, int consultantId, String dateBooking, int spaTreatmentId, String timeBooking) async {
+  static Future<String> bookingForFirstStep(int bookingDetailId, int consultantId, String dateBooking, int spaTreatmentId, String timeBooking, int staffId) async {
     var jsonResponse;
     final res = await http.put(ADD_TREATMENT_FOR_BOOKING_DETAIL,
         headers: {
@@ -195,6 +195,7 @@ class ConsultantService {
               "consultantId": consultantId,
               "dateBooking": dateBooking,
               "spaTreatmentId": spaTreatmentId,
+              "staffId": staffId,
               "timeBooking": timeBooking
             }));
     if (res.statusCode == 200){

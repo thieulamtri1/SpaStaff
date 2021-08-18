@@ -17,12 +17,12 @@ class ListStaffForBooking {
 
   int code;
   String status;
-  List<Datum> data;
+  List<StaffInstance> data;
 
   factory ListStaffForBooking.fromJson(Map<String, dynamic> json) => ListStaffForBooking(
     code: json["code"] == null ? null : json["code"],
     status: json["status"] == null ? null : json["status"],
-    data: json["data"] == null ? null : List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? null : List<StaffInstance>.from(json["data"].map((x) => StaffInstance.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -32,8 +32,8 @@ class ListStaffForBooking {
   };
 }
 
-class Datum {
-  Datum({
+class StaffInstance {
+  StaffInstance({
     this.id,
     this.user,
     this.spa,
@@ -47,7 +47,7 @@ class Datum {
   String tokenFcm;
   String status;
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory StaffInstance.fromJson(Map<String, dynamic> json) => StaffInstance(
     id: json["id"] == null ? null : json["id"],
     user: json["user"] == null ? null : User.fromJson(json["user"]),
     spa: json["spa"] == null ? null : Spa.fromJson(json["spa"]),

@@ -74,6 +74,7 @@ class _ChooseStaffScreenState extends State<ChooseStaffScreen> {
                                       spaId: widget.spaId,
                                       spaTreatmentId: widget.spaTreatmentId,
                                       bookingDetailId: widget.bookingDetailId,
+                                      choosenStaff: null,
                                     )),
                           );
                         },
@@ -91,6 +92,7 @@ class _ChooseStaffScreenState extends State<ChooseStaffScreen> {
                                     spaId: widget.spaId,
                                     spaTreatmentId: widget.spaTreatmentId,
                                     bookingDetailId: widget.bookingDetailId,
+                                    choosenStaff: _listStaffForBooking.data[index],
                                   )),
                             );
                           },
