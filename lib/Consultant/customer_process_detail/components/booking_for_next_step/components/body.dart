@@ -245,7 +245,7 @@ class _NextStepBookingBodyState extends State<NextStepBookingBody> {
                       ConsultantService.bookingForNextStep(widget.bookingDetailStepId, requestDate, _availableTime.data[slotId])
                           .then((value) {
                         Navigator.pop(context);
-                        value.data == 200
+                        value.code == 200
                             ? showDialog(
                           context: context,
                           builder: (context) {

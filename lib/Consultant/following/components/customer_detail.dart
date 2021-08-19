@@ -30,15 +30,16 @@ class _BookingDetailState extends State<CustomerDetail> {
 
   getBookingDetail() {
     ConsultantService.findBookingDetailByCustomerAndConsultant(
-            widget.customerId,
-            MyApp.storage.getItem("consultantId"),
-            MyApp.storage.getItem("token"))
-        .then((value) => {
-              setState(() {
-                bookingDetail = value;
-                loading = false;
-              })
-            });
+        widget.customerId,
+        MyApp.storage.getItem("consultantId"),
+        MyApp.storage.getItem("token"))
+        .then((value) =>
+    {
+      setState(() {
+        bookingDetail = value;
+        loading = false;
+      })
+    });
   }
 
   @override
@@ -54,9 +55,9 @@ class _BookingDetailState extends State<CustomerDetail> {
         backgroundColor: Colors.white,
         body: Center(
             child: SpinKitWave(
-          color: kPrimaryColor,
-          size: 50,
-        )),
+              color: kPrimaryColor,
+              size: 50,
+            )),
       );
     } else {
       return Scaffold(
@@ -158,10 +159,9 @@ class _BookingDetailState extends State<CustomerDetail> {
                   Text(
                     "Các liệu trình đang theo dõi",
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: kTextColor
-                    ),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: kTextColor),
                   ),
                   SizedBox(height: 20),
                   ListView.builder(
@@ -171,10 +171,16 @@ class _BookingDetailState extends State<CustomerDetail> {
                     itemBuilder: (BuildContext ctx, int index) {
                       return BookingdetailList(
                         bookingDetail: bookingDetail.data[index],
-                        press: (){
+                        press: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ConsultantProcessDetailScreen(bookingDetail: bookingDetail.data[index],customerId: int.tryParse(widget.customerId),)),
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ConsultantProcessDetailScreen(
+                                      bookingDetail: bookingDetail.data[index],
+                                      customerId:
+                                      int.tryParse(widget.customerId),
+                                    )),
                           );
                         },
                       );
@@ -230,13 +236,13 @@ class _BookingdetailListState extends State<BookingdetailList> {
                     borderRadius: BorderRadius.circular(15),
                     child: widget.bookingDetail.spaPackage.image == null
                         ? Image.asset(
-                            "assets/images/Splash_1.PNG",
-                            fit: BoxFit.cover,
-                          )
+                      "assets/images/Splash_1.PNG",
+                      fit: BoxFit.cover,
+                    )
                         : Image.network(
-                            widget.bookingDetail.spaPackage.image,
-                            fit: BoxFit.cover,
-                          ),
+                      widget.bookingDetail.spaPackage.image,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -263,15 +269,22 @@ class _BookingdetailListState extends State<BookingdetailList> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      "Trạng thái: " + widget.bookingDetail.statusBooking,
+                      widget.bookingDetail.statusBooking == "FINISH"
+                          ? "Hoàn thành"
+                          : widget.bookingDetail.statusBooking == "CHANGE_STAFF"?
+                      "Đang đổi nhân viên"
+                      : "Đang tiến hành",
                       style: TextStyle(
                         fontSize: 15,
                       ),
                     ),
                     SizedBox(height: 10),
                     Expanded(
-                      child: Text(widget.bookingDetail.spaTreatment==null?"Chưa có liệu trình":
-                      "Liệu trình: "+widget.bookingDetail.spaTreatment.name,
+                      child: Text(
+                        widget.bookingDetail.spaTreatment == null
+                            ? "Chưa có liệu trình"
+                            : "Liệu trình: " +
+                            widget.bookingDetail.spaTreatment.name,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 15,
