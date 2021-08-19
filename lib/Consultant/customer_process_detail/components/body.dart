@@ -646,7 +646,7 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                   children: [
                     Visibility(
                       visible:
-                          widget.staffName != null && widget.visibleBookingButton,
+                          widget.staffName != null && widget.visibleBookingButton && widget.status!="FINISH",
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
