@@ -314,7 +314,7 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
                     ConsultantService.bookingForFirstStep(widget.bookingDetailId, widget.consultantId, requestDate, widget.spaTreatmentId, _availableTime.data[slotId], null)
                         .then((value) {
                       Navigator.pop(context);
-                      value.compareTo("200") == 0
+                      value.code == 200
                           ? showDialog(
                         context: context,
                         builder: (context) {
@@ -343,8 +343,7 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
                               Navigator.pop(context);
                             },
                             title: "Thất bại !",
-                            description:
-                            "Đặt dịch vụ không thành công, vui lòng thử lại sau",
+                            description:value.data,
                             buttonTitle: "Thoát",
                             lottie: "assets/lottie/fail.json",
                           );
@@ -375,7 +374,7 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
                      ConsultantService.bookingForFirstStep(widget.bookingDetailId, widget.consultantId, requestDate, widget.spaTreatmentId, _availableTime.data[slotId], widget.choosenStaff.id)
                          .then((value) {
                        Navigator.pop(context);
-                       value.compareTo("200") == 0
+                       value.code == 200
                            ? showDialog(
                          context: context,
                          builder: (context) {
@@ -404,8 +403,7 @@ class _FirstStepBookingBodyState extends State<FirstStepBookingBody> {
                                Navigator.pop(context);
                              },
                              title: "Thất bại !",
-                             description:
-                             "Đặt dịch vụ không thành công, vui lòng thử lại sau",
+                             description:value.data,
                              buttonTitle: "Thoát",
                              lottie: "assets/lottie/fail.json",
                            );

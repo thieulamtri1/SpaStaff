@@ -222,7 +222,7 @@ class _EditConsultantContentState extends State<EditConsultantContent> {
                         _noteControler.text)
                         .then((value) {
                       Navigator.pop(context);
-                      value.compareTo("200") == 0
+                      value.code == 200
                           ? showDialog(
                         context: context,
                         builder: (context) {
@@ -251,8 +251,7 @@ class _EditConsultantContentState extends State<EditConsultantContent> {
                               Navigator.pop(context);
                             },
                             title: "Thất bại !",
-                            description:
-                            "Cập nhật thông tin thất bại.",
+                            description:value.data,
                             buttonTitle: "Thoát",
                             lottie: "assets/lottie/fail.json",
                           );

@@ -544,7 +544,7 @@ class Rating {
   });
 
   int id;
-  double rate;
+  int rate;
   String comment;
   DateTime createTime;
   DateTime expireTime;

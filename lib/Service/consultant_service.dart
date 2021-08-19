@@ -9,6 +9,7 @@ import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/CustomerOfConsultant.dart';
 import 'package:spa_and_beauty_staff/Model/ListStaffForBooking.dart';
 import 'package:spa_and_beauty_staff/Model/NotificationConsultant.dart';
+import 'package:spa_and_beauty_staff/Model/PutResponse.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/main.dart';
@@ -181,7 +182,7 @@ class ConsultantService {
       return AvailableTime();
     }
   }
-  static Future<String> bookingForFirstStep(int bookingDetailId, int consultantId, String dateBooking, int spaTreatmentId, String timeBooking, int staffId) async {
+  static Future<PutResponse> bookingForFirstStep(int bookingDetailId, int consultantId, String dateBooking, int spaTreatmentId, String timeBooking, int staffId) async {
     var jsonResponse;
     final res = await http.put(ADD_TREATMENT_FOR_BOOKING_DETAIL,
         headers: {
@@ -199,13 +200,15 @@ class ConsultantService {
               "timeBooking": timeBooking
             }));
     if (res.statusCode == 200){
-      jsonResponse = utf8.decode(res.bodyBytes);
+      PutResponse response;
+      response = putResponseFromJson(utf8.decode(res.bodyBytes));
       print(jsonResponse.toString());
+      print(response.code.toString() +" "+ response.data);
+      return response;
     }
     print("LOI ROI" + "Status code = " + res.statusCode.toString());
-    return res.statusCode.toString();
   }
-  static Future<int> requestChangeStaff(int bookingDetailStepId, String reason) async {
+  static Future<PutResponse> requestChangeStaff(int bookingDetailStepId, String reason) async {
     var jsonResponse;
     final res = await http.put(REQUEST_CHANGE_STAFF,
         headers: {
@@ -219,15 +222,17 @@ class ConsultantService {
               "reason": reason,
             }));
     if (res.statusCode == 200){
-      jsonResponse = utf8.decode(res.bodyBytes);
+      PutResponse response;
+      response = putResponseFromJson(utf8.decode(res.bodyBytes));
       print(jsonResponse.toString());
+      print(response.code.toString() +" "+ response.data);
+      return response;
     }
     print("LOI ROI" + "Status code = " + res.statusCode.toString());
-    return res.statusCode;
   }
 
 
-  static Future<String> bookingForNextStep(int bookingDetailStepId, String dateBooking, String timeBooking) async {
+  static Future<PutResponse> bookingForNextStep(int bookingDetailStepId, String dateBooking, String timeBooking) async {
     var jsonResponse;
     final res = await http.put(BOOKING_FOR_NEXT_STEP,
         headers: {
@@ -242,14 +247,17 @@ class ConsultantService {
               "dateBooking": dateBooking,
             }));
     if (res.statusCode == 200){
-      jsonResponse = utf8.decode(res.bodyBytes);
+      PutResponse response;
+      response = putResponseFromJson(utf8.decode(res.bodyBytes));
       print(jsonResponse.toString());
+      print(response.code.toString() +" "+ response.data);
+      return response;
+    }else {
+      print("LOI ROI" + "Status code = " + res.statusCode.toString());
     }
-    print("LOI ROI" + "Status code = " + res.statusCode.toString());
-    return res.statusCode.toString();
   }
 
-  static Future<String> editConsultationContent(int id, String description, String expectation, String note) async {
+  static Future<PutResponse> editConsultationContent(int id, String description, String expectation, String note) async {
     var jsonResponse;
     final res = await http.put(EDIT_CONSULTATION_CONTENT,
         headers: {
@@ -265,13 +273,15 @@ class ConsultantService {
               "note": note,
             }));
     if (res.statusCode == 200){
-      jsonResponse = utf8.decode(res.bodyBytes);
+      PutResponse response;
+      response = putResponseFromJson(utf8.decode(res.bodyBytes));
       print(jsonResponse.toString());
+      print(response.code.toString() +" "+ response.data);
+      return response;
     }
     else {
       print("LOI ROI" + "Status code = " + res.statusCode.toString());
     }
-    return res.statusCode.toString();
   }
 
   static Future<AvailableTime> getAvailableTimeForNextStep(int bookingDetailStepId, int customerId, String dateBooking, spaId, spaServiceId) async {

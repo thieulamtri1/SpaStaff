@@ -58,9 +58,9 @@ class _BodyState extends State<Body> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                widget.bookingDetail.statusBooking == "CHANGE_STAFF"?
-                 StatusChangingStaffSection()
-                :StatusSection(),
+                widget.bookingDetail.statusBooking == "CHANGE_STAFF"
+                    ? StatusChangingStaffSection()
+                    : StatusSection(),
                 SizedBox(
                   height: 10,
                 ),
@@ -104,14 +104,14 @@ class _BodyState extends State<Body> {
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            borderSide:
-                                                BorderSide(color: kPrimaryColor),
+                                            borderSide: BorderSide(
+                                                color: kPrimaryColor),
                                           ),
                                           focusedBorder: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            borderSide:
-                                                BorderSide(color: kPrimaryColor),
+                                            borderSide: BorderSide(
+                                                color: kPrimaryColor),
                                           )),
                                     ),
                                     Row(
@@ -123,7 +123,8 @@ class _BodyState extends State<Body> {
                                           onPressed: () {
                                             int i = 0;
                                             while (i <
-                                                _bookingDetailSteps.data.length) {
+                                                _bookingDetailSteps
+                                                    .data.length) {
                                               if (_bookingDetailSteps
                                                       .data[i].dateBooking ==
                                                   null) {
@@ -131,15 +132,13 @@ class _BodyState extends State<Body> {
                                                         .requestChangeStaff(
                                                             _bookingDetailSteps
                                                                 .data[i].id,
-                                                            reasonController.value
-                                                                .toString())
+                                                            reasonController.text)
                                                     .then((value) => {
-                                                          print(
-                                                              "status code : $value"),
-                                                          if (value == 200)
+                                                          if (value.code == 200)
                                                             {
                                                               showDialog(
-                                                                context: context,
+                                                                context:
+                                                                    context,
                                                                 builder:
                                                                     (context) {
                                                                   return MyCustomDialog(
@@ -148,13 +147,38 @@ class _BodyState extends State<Body> {
                                                                       Navigator.pop(
                                                                           context);
                                                                     },
-                                                                    title: "Thành Công !",
-                                                                    description: "Gửi yêu cầu đổi nhân viên thành công",
-                                                                    buttonTitle: "thoát",
-                                                                    lottie: "assets/lottie/success.json",
+                                                                    title:
+                                                                        "Thành Công !",
+                                                                    description:
+                                                                        "Gửi yêu cầu đổi nhân viên thành công",
+                                                                    buttonTitle:
+                                                                        "thoát",
+                                                                    lottie:
+                                                                        "assets/lottie/success.json",
                                                                   );
                                                                 },
                                                               ),
+                                                            }
+                                                          else
+                                                            {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return MyCustomDialog(
+                                                                    height: 250,
+                                                                    press: () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    title: "Thất bại !",
+                                                                    description: value.data,
+                                                                    buttonTitle: "Thoát",
+                                                                    lottie: "assets/lottie/fail.json",
+                                                                  );
+                                                                },
+                                                              )
                                                             }
                                                         });
                                                 Navigator.pop(context);
@@ -163,7 +187,8 @@ class _BodyState extends State<Body> {
                                                   _loading = true;
                                                   ConsultantService
                                                           .getBookingDetailStepsByBookingDetailId(
-                                                              widget.bookingDetail
+                                                              widget
+                                                                  .bookingDetail
                                                                   .id)
                                                       .then((value) => {
                                                             setState(() {
@@ -262,7 +287,8 @@ class ProcessSection extends StatefulWidget {
     @required this.consultantId,
     this.spaId,
     this.customerId,
-    this.notifyParent, this.statusBooking,
+    this.notifyParent,
+    this.statusBooking,
   }) : super(key: key);
 
   @override
@@ -390,7 +416,12 @@ class _ProcessSectionState extends State<ProcessSection> {
                 ...List.generate(
                   widget.bookingDetailSteps.data.length,
                   (index) => ProcessStepSection(
-                    visibleBookingButton: index > 0 ? widget.bookingDetailSteps.data[index-1].statusBooking=="FINISH" && widget.statusBooking!="CHANGE_STAFF": false,
+                    visibleBookingButton: index > 0
+                        ? widget.bookingDetailSteps.data[index - 1]
+                                    .statusBooking ==
+                                "FINISH" &&
+                            widget.statusBooking != "CHANGE_STAFF"
+                        : false,
                     staffName:
                         widget.bookingDetailSteps.data[index].staff == null
                             ? null
@@ -577,7 +608,8 @@ class ProcessStepSection extends StatefulWidget {
     this.spaServiceId,
     this.notifyParent,
     this.bookingDetailStepInstance,
-    this.staffName, this.visibleBookingButton,
+    this.staffName,
+    this.visibleBookingButton,
   }) : super(key: key);
 
   @override
@@ -645,8 +677,9 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                 child: Row(
                   children: [
                     Visibility(
-                      visible:
-                          widget.staffName != null && widget.visibleBookingButton && widget.status!="FINISH",
+                      visible: widget.staffName != null &&
+                          widget.visibleBookingButton &&
+                          widget.status != "FINISH",
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -868,6 +901,7 @@ class StatusSection extends StatelessWidget {
     );
   }
 }
+
 class StatusChangingStaffSection extends StatelessWidget {
   const StatusChangingStaffSection({
     Key key,
@@ -912,7 +946,11 @@ class StatusChangingStaffSection extends StatelessWidget {
               child: Container(
                 width: 50,
                 height: 50,
-                child: Icon(Icons.close, color: Colors.white, size: 50,),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 50,
+                ),
               ),
             ),
           ],

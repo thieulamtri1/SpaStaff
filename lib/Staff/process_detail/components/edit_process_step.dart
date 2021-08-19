@@ -310,7 +310,7 @@ class _EditProcessStepState extends State<EditProcessStep> {
                                                         MyApp.storage.getItem("staffId"))
                                                         .then((value) {
                                                       Navigator.pop(context);
-                                                      value.compareTo("200") == 0
+                                                      value.code == 200
                                                           ? showDialog(
                                                         context: context,
                                                         builder: (context) {
@@ -322,7 +322,7 @@ class _EditProcessStepState extends State<EditProcessStep> {
                                                             },
                                                             title: "Thành Công !",
                                                             description:
-                                                            "Cập nhật thông tin thành công",
+                                                            value.data,
                                                             buttonTitle: "Thoát",
                                                             lottie: "assets/lottie/success.json",
                                                           );
@@ -338,7 +338,7 @@ class _EditProcessStepState extends State<EditProcessStep> {
                                                               Navigator.pop(context);
                                                             },
                                                             title: "Thất bại !",
-                                                            description: "Cập nhật thông tin thất bại.",
+                                                            description: value.data,
                                                             buttonTitle: "Thoát",
                                                             lottie: "assets/lottie/fail.json",
                                                           );

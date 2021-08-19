@@ -245,7 +245,7 @@ class _NextStepBookingBodyState extends State<NextStepBookingBody> {
                       ConsultantService.bookingForNextStep(widget.bookingDetailStepId, requestDate, _availableTime.data[slotId])
                           .then((value) {
                         Navigator.pop(context);
-                        value.compareTo("200") == 0
+                        value.data == 200
                             ? showDialog(
                           context: context,
                           builder: (context) {
@@ -273,8 +273,7 @@ class _NextStepBookingBodyState extends State<NextStepBookingBody> {
                                 Navigator.pop(context);
                               },
                               title: "Thất bại !",
-                              description:
-                              "Đặt dịch vụ không thành công, vui lòng thử lại sau",
+                              description:value.data,
                               buttonTitle: "Thoát",
                               lottie: "assets/lottie/fail.json",
                             );

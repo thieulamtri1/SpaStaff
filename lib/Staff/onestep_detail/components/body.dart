@@ -302,7 +302,7 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                                                         StaffService.finishOnestepPackage(widget.bookingDetail.id).then((value)
                                                             {
                                                         Navigator.pop(context);
-                                                            value == 200
+                                                            value.code == 200
                                                             ? showDialog(
                                                           context: context,
                                                           builder: (context) {
@@ -331,7 +331,7 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                                                               },
                                                               title: "Thất bại !",
                                                               description:
-                                                              "Dịch vụ không thể hoàn thành",
+                                                              value.data,
                                                               buttonTitle: "Thoát",
                                                               lottie: "assets/lottie/fail.json",
                                                             );

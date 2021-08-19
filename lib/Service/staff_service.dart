@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:spa_and_beauty_staff/Model/BookingDetailSteps.dart';
 import 'package:spa_and_beauty_staff/Model/ConsultantSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/NotificationConsultant.dart';
+import 'package:spa_and_beauty_staff/Model/PutResponse.dart';
 import 'package:spa_and_beauty_staff/Model/Staff.dart';
 import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/main.dart';
@@ -22,7 +23,7 @@ class StaffService {
   static final String ONESTEP_PACKAGE_FINISH = "https://swp490spa.herokuapp.com/api/staff/bookingDetail/confirmFinishOneStep";
 
 
-  static Future<String> editProcessStep(int bookingDetailStepId, String result, int staffId) async {
+  static Future<PutResponse> editProcessStep(int bookingDetailStepId, String result, int staffId) async {
     var jsonResponse;
     final res = await http.put(UPDATE_PROCESS_STEP,
         headers: {
@@ -37,16 +38,18 @@ class StaffService {
               "staffId": staffId
             }));
     if (res.statusCode == 200){
-      jsonResponse = utf8.decode(res.bodyBytes);
+      PutResponse response;
+      response = putResponseFromJson(utf8.decode(res.bodyBytes));
       print(jsonResponse.toString());
+      return response;
     }
     else {
-      print("LOI ROI" + "Status code = " + res.statusCode.toString());
+      print("LOI ROI " + "Status code = " + res.statusCode.toString());
     }
-    return res.statusCode.toString();
+    print("LOI ROI " + "Status code = " + res.statusCode.toString());
   }
 
-  static Future<int> finishOnestepPackage(int bookingDetailId) async {
+  static Future<PutResponse> finishOnestepPackage(int bookingDetailId) async {
     var jsonResponse;
     final res = await http.put(ONESTEP_PACKAGE_FINISH,
         headers: {
@@ -60,14 +63,15 @@ class StaffService {
               "bookingDetailId": bookingDetailId,
             }));
     if (res.statusCode == 200){
-      jsonResponse = utf8.decode(res.bodyBytes);
+      PutResponse response;
+      response = putResponseFromJson(utf8.decode(res.bodyBytes));
       print(jsonResponse.toString());
+      return response;
     }
     else {
       print("LOI ROI" + "Status code = " + res.statusCode.toString());
     }
     print("status code ne : " + res.statusCode.toString());
-    return res.statusCode;
   }
 
   static Future<Staff> getStaffProfileById(id, token) async {
