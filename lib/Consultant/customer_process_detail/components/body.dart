@@ -60,7 +60,9 @@ class _BodyState extends State<Body> {
               children: [
                 widget.bookingDetail.statusBooking == "CHANGE_STAFF"
                     ? StatusChangingStaffSection()
-                    : StatusSection(),
+                    : widget.bookingDetail.statusBooking == "FINISH"
+                        ? StatusFinishSection()
+                        : StatusSection(),
                 SizedBox(
                   height: 10,
                 ),
@@ -68,7 +70,7 @@ class _BodyState extends State<Body> {
                     name: widget.bookingDetail.booking.customer.user.fullname,
                     phone: widget.bookingDetail.booking.customer.user.phone),
                 Visibility(
-                  visible: widget.bookingDetail.statusBooking != "CHANGE_STAFF",
+                  visible: widget.bookingDetail.statusBooking == "BOOKING",
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 25),
                     child: TextButton(
@@ -132,7 +134,8 @@ class _BodyState extends State<Body> {
                                                         .requestChangeStaff(
                                                             _bookingDetailSteps
                                                                 .data[i].id,
-                                                            reasonController.text)
+                                                            reasonController
+                                                                .text)
                                                     .then((value) => {
                                                           if (value.code == 200)
                                                             {
@@ -172,10 +175,15 @@ class _BodyState extends State<Body> {
                                                                       Navigator.pop(
                                                                           context);
                                                                     },
-                                                                    title: "Thất bại !",
-                                                                    description: value.data,
-                                                                    buttonTitle: "Thoát",
-                                                                    lottie: "assets/lottie/fail.json",
+                                                                    title:
+                                                                        "Thất bại !",
+                                                                    description:
+                                                                        value
+                                                                            .data,
+                                                                    buttonTitle:
+                                                                        "Thoát",
+                                                                    lottie:
+                                                                        "assets/lottie/fail.json",
                                                                   );
                                                                 },
                                                               )
@@ -642,14 +650,14 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
               widget.status == "FINISH"
                   ? "${widget.stepName} (Đã hoàn tất)"
                   : widget.status == "BOOKING"
-                  ? "${widget.stepName} (Đang chờ...)"
-                  : widget.stepName,
+                      ? "${widget.stepName} (Đang chờ...)"
+                      : widget.stepName,
               style: TextStyle(
                   color: widget.status == "FINISH"
                       ? kGreen
                       : widget.status == "BOOKING"
-                      ? kYellow
-                      : Colors.black,
+                          ? kYellow
+                          : Colors.black,
                   fontSize: 17),
             ),
           ],
@@ -948,6 +956,64 @@ class StatusChangingStaffSection extends StatelessWidget {
                 height: 50,
                 child: Icon(
                   Icons.close,
+                  color: Colors.white,
+                  size: 50,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class StatusFinishSection extends StatelessWidget {
+  const StatusFinishSection({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      decoration: BoxDecoration(color: kGreen),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: Container(
+                height: 60,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Liệu trình đã hoàn tất !",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                    Text(
+                      "Liệu trình đã hoàn tất, bạn có thể xem lại thông tin",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 15),
+              child: Container(
+                width: 50,
+                height: 50,
+                child: Icon(
+                  Icons.check,
                   color: Colors.white,
                   size: 50,
                 ),
