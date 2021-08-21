@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
-import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/booking_for_first_step_screen.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_first_step/components/body.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/booking_for_next_step/booking_for_next_step.dart';
 import 'package:spa_and_beauty_staff/Consultant/customer_process_detail/components/choose_staff.dart';
@@ -638,9 +636,9 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                 borderRadius: BorderRadius.circular(10),
                 color: widget.status == "FINISH"
                     ? kGreen
-                    : widget.status == "PENDING"
-                        ? Colors.black
-                        : kYellow,
+                    : widget.status == "BOOKING"
+                        ? kYellow
+                        : Colors.black,
               ),
             ),
             SizedBox(
