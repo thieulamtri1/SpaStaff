@@ -6,8 +6,10 @@ import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Model/Treatment.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/Staff/process_detail/components/edit_process_step.dart';
+import 'package:spa_and_beauty_staff/Staff/process_detail/components/process_step_detail.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/helper/Helper.dart';
+import 'package:spa_and_beauty_staff/main.dart';
 
 class StaffProcessDetailBody extends StatefulWidget {
   const StaffProcessDetailBody({Key key, this.bookingDetail, this.customerId}) : super(key: key);
@@ -264,15 +266,15 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
             Text(
               widget.status == "FINISH"
                   ? "${widget.stepName} (Đã hoàn tất)"
-                  : widget.status == "PENDING"
-                  ? widget.stepName
-                  : "${widget.stepName} (Đang chờ...)",
+                  : widget.status == "BOOKING"
+                  ? "${widget.stepName} (Đang chờ...)"
+                  : widget.stepName,
               style: TextStyle(
                   color: widget.status == "FINISH"
                       ? kGreen
-                      : widget.status == "PENDING"
-                      ? Colors.black
-                      : kYellow,
+                      : widget.status == "BOOKING"
+                      ? kYellow
+                      : Colors.black,
                   fontSize: 17),
             ),
           ],
@@ -282,40 +284,68 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  VerticalDivider(
-                    thickness: 1,
-                    width: 10,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text("Ngày hẹn : ${widget.date}"),
-                ],
-              ),
-              Container(
-                padding: EdgeInsets.only(right: 10),
+              Expanded(
+                flex: 8,
                 child: Row(
                   children: [
-                    Visibility(
-                      visible: widget.status == "BOOKING" && widget.date != "Chưa đặt lịch",
-                      child: GestureDetector(
-                        onTap: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditProcessStep(bookingDetailStepInstance: widget.bookingDetailStepInstance,)),
-                          ).then((value) => setState(widget.notifyParent));
-                        },
-                        child: Icon(
-                          Icons.edit,
-                          color: kGreen,
-                        ),
-                      ),
-                    )
+                    VerticalDivider(
+                      thickness: 1,
+                      width: 10,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Ngày hẹn : ${widget.date}"),
                   ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Row(
+                    children: [
+                      Visibility(
+                        visible: widget.status == "BOOKING" && widget.date != "Chưa đặt lịch" && widget.bookingDetailStepInstance.staff.id == MyApp.storage.getItem("staffId"),
+                        child: GestureDetector(
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProcessStep(bookingDetailStepInstance: widget.bookingDetailStepInstance,)),
+                            ).then((value) => setState(widget.notifyParent));
+                          },
+                          child: Icon(
+                            Icons.edit,
+                            color: kGreen,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Visibility(
+                  visible: widget.stepName != "Tư Vấn",
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProcessStepDetailScreen(
+                              bookingDetailStep: widget.bookingDetailStepInstance,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        Icons.more_vert,
+                        color: kTextColor,
+                        size: 28,
+                      )),
                 ),
               ),
             ],

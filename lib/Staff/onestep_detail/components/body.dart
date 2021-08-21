@@ -9,6 +9,7 @@ import 'package:spa_and_beauty_staff/Model/StaffSchedule.dart';
 import 'package:spa_and_beauty_staff/Service/staff_service.dart';
 import 'package:spa_and_beauty_staff/constants.dart';
 import 'package:spa_and_beauty_staff/default_button.dart';
+import 'package:spa_and_beauty_staff/main.dart';
 
 class OneStepDetailBody extends StatefulWidget {
   const OneStepDetailBody({Key key, this.bookingDetail}) : super(key: key);
@@ -119,6 +120,35 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                       SizedBox(
                         height: 20,
                       ),
+                      _bookingDetailSteps.data[0].rating != null ?
+                      Visibility(
+                        visible: _bookingDetailSteps.data[0].rating.rate != null ,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "ĐÁNH GIÁ CỦA KHÁCH HÀNG",
+                              style: TextStyle(color: kTextColor),
+                            ),
+                            SizedBox(height: 10,),
+                            Row(
+                              children: [
+                                ...List.generate(_bookingDetailSteps.data[0].rating.rate, (index) => Icon(Icons.star, color: kPrimaryColor,))
+                              ],
+                            ),
+                            Text(
+                              _bookingDetailSteps.data[0].rating.comment==null?"Khách hàng không nhận xét thêm" :_bookingDetailSteps.data[0].rating.comment,
+                              style: TextStyle( color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      )
+                          :SizedBox()
+                      ,
+                      SizedBox(height: 20,),
                       Text(
                         "THÔNG TIN DỊCH VỤ",
                         style: TextStyle(color: kTextColor),

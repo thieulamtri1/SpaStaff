@@ -641,15 +641,15 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
             Text(
               widget.status == "FINISH"
                   ? "${widget.stepName} (Đã hoàn tất)"
-                  : widget.status == "PENDING"
-                      ? widget.stepName
-                      : "${widget.stepName} (Đang chờ...)",
+                  : widget.status == "BOOKING"
+                  ? "${widget.stepName} (Đang chờ...)"
+                  : widget.stepName,
               style: TextStyle(
                   color: widget.status == "FINISH"
                       ? kGreen
-                      : widget.status == "PENDING"
-                          ? Colors.black
-                          : kYellow,
+                      : widget.status == "BOOKING"
+                      ? kYellow
+                      : Colors.black,
                   fontSize: 17),
             ),
           ],
