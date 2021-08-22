@@ -23,7 +23,7 @@ class _BodyState extends State<Body> {
           children: [
             ProfilePicConsultant(),
             SizedBox(height: 20),
-            Text(MyApp.storage.getItem("email"), textAlign: TextAlign.center),
+            //Text(MyApp.storage.getItem("email"), textAlign: TextAlign.center),
             SizedBox(height: 40),
             ChangePasswordForm(),
           ],
@@ -76,6 +76,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
 
   TextFormField OldPasswordTextField() {
     return TextFormField(
+      obscureText: true,
       controller: oldPasswordTextController,
       decoration: InputDecoration(
         labelText: "Mật khẩu cũ",
@@ -87,6 +88,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
 
   TextFormField NewPasswordTextField() {
     return TextFormField(
+      obscureText: true,
       controller: newPasswordTextController,
       decoration: InputDecoration(
         labelText: "Mật khẩu mới",
@@ -98,6 +100,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
 
   TextFormField ConfirmPasswordTextField() {
     return TextFormField(
+      obscureText: true,
       controller: confirmPasswordTextController,
       decoration: InputDecoration(
         labelText: "Nhập lại mật khẩu",
