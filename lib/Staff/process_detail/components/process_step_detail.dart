@@ -171,6 +171,7 @@ class ProcessStepDetailScreen extends StatelessWidget {
                           )
                         : Text("Chưa có chuyên viên"),
                     bookingDetailStep.rating != null ?
+                    bookingDetailStep.rating.rate != null?
                     Visibility(
                       visible: bookingDetailStep.rating.rate != null && bookingDetailStep.staff.id == MyApp.storage.getItem("staffId"),
                       child: Column(
@@ -198,6 +199,7 @@ class ProcessStepDetailScreen extends StatelessWidget {
                       ),
                     )
                     :SizedBox()
+                        :SizedBox()
                     ,
                     SizedBox(
                       height: 30,

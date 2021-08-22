@@ -12,7 +12,8 @@ import 'package:spa_and_beauty_staff/helper/Helper.dart';
 import 'package:spa_and_beauty_staff/main.dart';
 
 class StaffProcessDetailBody extends StatefulWidget {
-  const StaffProcessDetailBody({Key key, this.bookingDetail, this.customerId}) : super(key: key);
+  const StaffProcessDetailBody({Key key, this.bookingDetail, this.customerId})
+      : super(key: key);
   final StaffBookingDetailInstance bookingDetail;
   final int customerId;
 
@@ -27,14 +28,13 @@ class _StaffProcessDetailBodyState extends State<StaffProcessDetailBody> {
   @override
   void initState() {
     _loading = true;
-    StaffService.getBookingDetailStepsByBookingDetailId(
-        widget.bookingDetail.id)
+    StaffService.getBookingDetailStepsByBookingDetailId(widget.bookingDetail.id)
         .then((value) => {
-      setState(() {
-        _bookingDetailSteps = value;
-        _loading = false;
-      })
-    });
+              setState(() {
+                _bookingDetailSteps = value;
+                _loading = false;
+              })
+            });
     // TODO: implement initState
     super.initState();
   }
@@ -43,55 +43,60 @@ class _StaffProcessDetailBodyState extends State<StaffProcessDetailBody> {
   Widget build(BuildContext context) {
     return _loading
         ? Container(
-      child: SpinKitWave(
-        color: kPrimaryColor,
-        size: 50,
-      ),
-    )
-        : SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          StatusSection(),
-          SizedBox(
-            height: 10,
-          ),
-
-          CustomerSection(
-            name: _bookingDetailSteps.data[0].bookingDetail.booking.customer.user.fullname,
-            phone: _bookingDetailSteps.data[0].bookingDetail.booking.customer.user.phone,
-          ),
-          Divider(
-            thickness: 1,
-            height: 20,
-          ),
-          ProcessSection(
-            notifyParent: (){setState(() {
-              print("dang reload ne");
-              _loading = true;
-              StaffService.getBookingDetailStepsByBookingDetailId(
-                  widget.bookingDetail.id)
-                  .then((value) => {
-                setState(() {
-                  _bookingDetailSteps = value;
-                  _loading = false;
-                })
-              });
-            });
-            },
-            packageName: widget.bookingDetail.spaPackage.name,
-            packageId: widget.bookingDetail.spaPackage.id,
-            bookingDetailSteps: _bookingDetailSteps,
-            treatment: _bookingDetailSteps.data[1] == null
-                ? "Chưa có liệu trình"
-                : _bookingDetailSteps.data[1].bookingDetail.spaTreatment.name,
-            consultantId: _bookingDetailSteps.data[0].consultant.id,
-            spaId: _bookingDetailSteps.data[0].consultant.spa.id,
-            customerId: widget.customerId,
+            child: SpinKitWave(
+              color: kPrimaryColor,
+              size: 50,
+            ),
           )
-        ],
-      ),
-    );
+        : SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                widget.bookingDetail.statusBooking == "FINISH"
+                    ? StatusFinishSection()
+                    : StatusSection(),
+                SizedBox(
+                  height: 10,
+                ),
+                CustomerSection(
+                  name: _bookingDetailSteps
+                      .data[0].bookingDetail.booking.customer.user.fullname,
+                  phone: _bookingDetailSteps
+                      .data[0].bookingDetail.booking.customer.user.phone,
+                ),
+                Divider(
+                  thickness: 1,
+                  height: 20,
+                ),
+                ProcessSection(
+                  notifyParent: () {
+                    setState(() {
+                      print("dang reload ne");
+                      _loading = true;
+                      StaffService.getBookingDetailStepsByBookingDetailId(
+                              widget.bookingDetail.id)
+                          .then((value) => {
+                                setState(() {
+                                  _bookingDetailSteps = value;
+                                  _loading = false;
+                                })
+                              });
+                    });
+                  },
+                  packageName: widget.bookingDetail.spaPackage.name,
+                  packageId: widget.bookingDetail.spaPackage.id,
+                  bookingDetailSteps: _bookingDetailSteps,
+                  treatment: _bookingDetailSteps.data[1] == null
+                      ? "Chưa có liệu trình"
+                      : _bookingDetailSteps
+                          .data[1].bookingDetail.spaTreatment.name,
+                  consultantId: _bookingDetailSteps.data[0].consultant.id,
+                  spaId: _bookingDetailSteps.data[0].consultant.spa.id,
+                  customerId: widget.customerId,
+                )
+              ],
+            ),
+          );
   }
 }
 
@@ -113,7 +118,8 @@ class ProcessSection extends StatefulWidget {
     @required this.treatment,
     @required this.consultantId,
     this.spaId,
-    this.customerId, this.notifyParent,
+    this.customerId,
+    this.notifyParent,
   }) : super(key: key);
 
   @override
@@ -176,7 +182,6 @@ class _ProcessSectionState extends State<ProcessSection> {
                         "Liệu trình: " + _treatmentName,
                         style: TextStyle(fontSize: 15, color: Colors.black),
                       ),
-
                     ],
                   ),
                 ),
@@ -185,31 +190,37 @@ class _ProcessSectionState extends State<ProcessSection> {
                 ),
                 ...List.generate(
                   widget.bookingDetailSteps.data.length,
-                      (index) => ProcessStepSection(
-                    bookingDetailStepInstance: widget.bookingDetailSteps.data[index],
+                  (index) => ProcessStepSection(
+                    bookingDetailStepInstance:
+                        widget.bookingDetailSteps.data[index],
                     notifyParent: widget.notifyParent,
                     spaId: widget.spaId,
                     customerId: widget.customerId,
-                    bookingDetailStepId: widget.bookingDetailSteps.data[index].id,
-                    spaServiceId: widget.bookingDetailSteps.data[index].treatmentService==null?0:widget.bookingDetailSteps.data[index].treatmentService.spaService.id,
+                    bookingDetailStepId:
+                        widget.bookingDetailSteps.data[index].id,
+                    spaServiceId: widget.bookingDetailSteps.data[index]
+                                .treatmentService ==
+                            null
+                        ? 0
+                        : widget.bookingDetailSteps.data[index].treatmentService
+                            .spaService.id,
                     status: widget.bookingDetailSteps.data[index].statusBooking,
                     date: widget.bookingDetailSteps.data[index].dateBooking ==
-                        null
+                            null
                         ? "Chưa đặt lịch"
                         : MyHelper.getUserDate(widget
-                        .bookingDetailSteps.data[index].dateBooking) +
-                        " Lúc " +
-                        widget.bookingDetailSteps.data[index].startTime
-                            .substring(0, 5),
+                                .bookingDetailSteps.data[index].dateBooking) +
+                            " Lúc " +
+                            widget.bookingDetailSteps.data[index].startTime
+                                .substring(0, 5),
                     stepName: widget.bookingDetailSteps.data[index]
-                        .treatmentService ==
-                        null
+                                .treatmentService ==
+                            null
                         ? "Tư Vấn"
                         : widget.bookingDetailSteps.data[index].treatmentService
-                        .spaService.name,
+                            .spaService.name,
                   ),
                 ),
-
               ],
             ),
           )
@@ -218,7 +229,6 @@ class _ProcessSectionState extends State<ProcessSection> {
     );
   }
 }
-
 
 class ProcessStepSection extends StatefulWidget {
   final Function() notifyParent;
@@ -234,7 +244,9 @@ class ProcessStepSection extends StatefulWidget {
     this.bookingDetailStepId,
     this.customerId,
     this.spaId,
-    this.spaServiceId, this.notifyParent, this.bookingDetailStepInstance,
+    this.spaServiceId,
+    this.notifyParent,
+    this.bookingDetailStepInstance,
   }) : super(key: key);
 
   @override
@@ -256,8 +268,8 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                 color: widget.status == "FINISH"
                     ? kGreen
                     : widget.status == "PENDING"
-                    ? Colors.black
-                    : kYellow,
+                        ? Colors.black
+                        : kYellow,
               ),
             ),
             SizedBox(
@@ -267,14 +279,14 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
               widget.status == "FINISH"
                   ? "${widget.stepName} (Đã hoàn tất)"
                   : widget.status == "BOOKING"
-                  ? "${widget.stepName} (Đang chờ...)"
-                  : widget.stepName,
+                      ? "${widget.stepName} (Đang chờ...)"
+                      : widget.stepName,
               style: TextStyle(
                   color: widget.status == "FINISH"
                       ? kGreen
                       : widget.status == "BOOKING"
-                      ? kYellow
-                      : Colors.black,
+                          ? kYellow
+                          : Colors.black,
                   fontSize: 17),
             ),
           ],
@@ -307,13 +319,19 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                   child: Row(
                     children: [
                       Visibility(
-                        visible: widget.status == "BOOKING" && widget.date != "Chưa đặt lịch" && widget.bookingDetailStepInstance.staff.id == MyApp.storage.getItem("staffId"),
+                        visible: widget.status == "BOOKING" &&
+                            widget.date != "Chưa đặt lịch" &&
+                            widget.bookingDetailStepInstance.staff.id ==
+                                MyApp.storage.getItem("staffId"),
                         child: GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EditProcessStep(bookingDetailStepInstance: widget.bookingDetailStepInstance,)),
+                                  builder: (context) => EditProcessStep(
+                                        bookingDetailStepInstance:
+                                            widget.bookingDetailStepInstance,
+                                      )),
                             ).then((value) => setState(widget.notifyParent));
                           },
                           child: Icon(
@@ -336,7 +354,8 @@ class _ProcessStepSectionState extends State<ProcessStepSection> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProcessStepDetailScreen(
-                              bookingDetailStep: widget.bookingDetailStepInstance,
+                              bookingDetailStep:
+                                  widget.bookingDetailStepInstance,
                             ),
                           ),
                         );
@@ -407,13 +426,10 @@ class CustomerSection extends StatelessWidget {
             ],
           ),
         ),
-
       ],
     );
   }
 }
-
-
 
 class StatusSection extends StatelessWidget {
   const StatusSection({
@@ -460,6 +476,64 @@ class StatusSection extends StatelessWidget {
                 width: 50,
                 height: 50,
                 child: SvgPicture.asset("assets/icons/ongoing.svg"),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class StatusFinishSection extends StatelessWidget {
+  const StatusFinishSection({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      decoration: BoxDecoration(color: kGreen),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: Container(
+                height: 60,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Liệu trình đã hoàn tất !",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                    Text(
+                      "Liệu trình đã hoàn tất, bạn có thể xem lại thông tin",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 15),
+              child: Container(
+                width: 50,
+                height: 50,
+                child: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 50,
+                ),
               ),
             ),
           ],

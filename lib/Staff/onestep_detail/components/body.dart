@@ -121,6 +121,7 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                         height: 20,
                       ),
                       _bookingDetailSteps.data[0].rating != null ?
+                      _bookingDetailSteps.data[0].rating.rate != null?
                       Visibility(
                         visible: _bookingDetailSteps.data[0].rating.rate != null ,
                         child: Column(
@@ -147,7 +148,7 @@ class _OneStepDetailBodyState extends State<OneStepDetailBody> {
                         ),
                       )
                           :SizedBox()
-                      ,
+                          :SizedBox(),
                       SizedBox(height: 20,),
                       Text(
                         "THÔNG TIN DỊCH VỤ",
