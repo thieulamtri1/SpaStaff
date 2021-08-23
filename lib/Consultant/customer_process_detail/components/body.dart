@@ -68,7 +68,7 @@ class _BodyState extends State<Body> {
                     name: widget.bookingDetail.booking.customer.user.fullname,
                     phone: widget.bookingDetail.booking.customer.user.phone),
                 Visibility(
-                  visible: widget.bookingDetail.statusBooking == "BOOKING",
+                  visible: widget.bookingDetail.statusBooking != "CHANGE_STAFF" && widget.bookingDetail.statusBooking!="FINISH",
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 25),
                     child: TextButton(
